@@ -7,7 +7,7 @@ import styles from "./RepoBadge.module.css";
  * @param {Array<string>} [props.classArr = []] A list of CSS classes that can be apply to the component
  * @param {string} [props.label = ""] The label that should be display in some screen sizes
  * @param {string} props.repoUrl The url of the git repo
- * @param {JSX.Element} props.Icon The icon component that represents the repo
+ * @param {CurrentColorIcon} props.Icon The icon component that represents the repo
  * @returns JSX.Element
  */
 function RepoBadge({ classArr = [], label = "", repoUrl, Icon }) {
@@ -21,7 +21,7 @@ function RepoBadge({ classArr = [], label = "", repoUrl, Icon }) {
       rel="noreferrer noopener"
     >
       <p className={styles.text}>{typeof label === "string" ? label : ""}</p>
-      <Icon styles={styles}></Icon>
+      <Icon className={styles.icon}></Icon>
     </a>
   );
 }

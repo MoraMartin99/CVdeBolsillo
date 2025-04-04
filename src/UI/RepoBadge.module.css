@@ -22,6 +22,7 @@
 .icon {
   width: var(--iconWidth);
   height: var(--iconWidth);
+  color: inherit;
 }
 
 .fills {
