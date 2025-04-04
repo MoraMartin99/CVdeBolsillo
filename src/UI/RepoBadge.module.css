@@ -1,0 +1,29 @@
+.main {
+  --columnGap: 0px;
+  --color: var(--primary1200color);
+  --fontSize: 10px;
+  --iconWidth: 25px;
+  display: flex;
+  column-gap: var(--columnGap);
+  align-items: center;
+  color: var(--color);
+}
+
+.main:hover {
+  --color: var(--primary1300color);
+}
+
+.text {
+  color: inherit;
+  font-size: var(--fontSize);
+  font-weight: 700;
+}
+
+.icon {
+  width: var(--iconWidth);
+  height: var(--iconWidth);
+}
+
+.fills {
+  fill: var(--color);
+}
