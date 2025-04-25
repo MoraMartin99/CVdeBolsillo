@@ -1,0 +1,71 @@
+.main {
+  --mainWidth: 260px;
+  --minHeight: 30px;
+  --color: var(--primary400color);
+  --BGColor: var(--primary1100color);
+  --BGColorHover: var(--primary1000color);
+  --paddingLeft: 20px;
+  --paddingRight: 5px;
+  --customIconWidth: 14px;
+  --stateIcon: 20px;
+  --fontSize: 0.875rem;
+  --headerColumnGap: 5px;
+  --transitionTime: 0.15s;
+  --contentRowGap: 10px;
+  color: var(--color);
+  background-color: var(--BGColor);
+  width: var(--mainWidth);
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 0fr;
+  transition: grid-template-rows var(--transitionTime) linear;
+}
+
+.expand.main {
+  grid-template-rows: auto 1fr;
+}
+
+.headerButton {
+  width: 100%;
+  height: var(--minHeight);
+  background-color: inherit;
+  padding-inline: var(--paddingLeft) var(--paddingRight);
+  color: inherit;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  grid-template-rows: 1fr;
+  justify-items: start;
+  align-items: center;
+  column-gap: var(--headerColumnGap);
+  font-size: var(--fontSize);
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.headerButton:hover {
+  background-color: var(--BGColorHover);
+}
+
+.customIcon {
+  width: var(--customIconWidth);
+  height: var(--customIconWidth);
+}
+
+.stateIcon {
+  width: var(--stateIcon);
+  height: var(--stateIcon);
+  transition: transform var(--transitionTime) linear;
+}
+
+.expand .stateIcon {
+  transform: rotate(-90deg);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  row-gap: var(--contentRowGap);
+  align-items: center;
+  overflow: hidden;
+}
