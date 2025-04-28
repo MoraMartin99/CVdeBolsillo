@@ -1,0 +1,25 @@
+.container {
+  --bgColor: var(--primary800color);
+  --color: var(--primary1100color);
+  --width: 95px;
+  --height: 23px;
+  --fontSize: 14px;
+  --fontWeight: 600;
+  background-color: var(--bgColor);
+  color: var(--color);
+  width: var(--width);
+  height: var(--height);
+  font-size: var(--fontSize);
+  font-weight: var(--fontWeight);
+  cursor: pointer;
+}
+
+.current {
+  --bgColor: var(--primary500color);
+  --color: var(--primary1400color);
+}
+
+.container:hover:not(.current) {
+  --bgColor: var(--primary700color);
+  --color: var(--primary1400color);
+}
