@@ -1,0 +1,21 @@
+.Home {
+  --homeFontSize: 1rem;
+  --columnGap: 7px;
+  --logoWidth: 32px;
+  --paddingBlock: 5px;
+  display: flex;
+  align-items: center;
+  column-gap: var(--columnGap);
+  padding-block: var(--paddingBlock);
+}
+
+.Home .homeText {
+  font-size: var(--homeFontSize);
+  font-weight: 600;
+  color: var(--primary1300color);
+}
+
+.logo {
+  width: var(--logoWidth);
+  height: var(--logoWidth);
+}

@@ -1,0 +1,19 @@
+.layout {
+  --paddingInline: 10px;
+  display: grid;
+  grid-template-rows: 1fr;
+  grid-template-columns: repeat(3, 1fr);
+  padding-inline: var(--paddingInline);
+  grid-template-areas: ". center right";
+  background-color: var(--primary300color);
+  justify-items: center;
+}
+
+.center {
+  grid-area: center;
+}
+
+.right {
+  grid-area: right;
+  justify-self: right;
+}
