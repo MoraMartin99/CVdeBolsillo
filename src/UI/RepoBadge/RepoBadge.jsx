@@ -1,4 +1,5 @@
 import styles from "./RepoBadge.module.css";
+import GithubIcon from "../../assets/images/githubLogo.svg?react";
 
 /**
  * The RepoBadge component lets you create a hyperlink badge to the git repo of your project
@@ -7,12 +8,15 @@ import styles from "./RepoBadge.module.css";
  * @param {Array<string>} [props.classArr = []] A list of CSS classes that can be apply to the component
  * @param {string} [props.label = ""] The label that should be display in some screen sizes
  * @param {string} props.repoUrl The url of the git repo
- * @param {CurrentColorIcon} props.Icon The icon component that represents the repo
+ * @param {CurrentColorIcon} [props.Icon = "githubLogo.svg"] The icon component that represents the repo
  * @returns JSX.Element
  */
-function RepoBadge({ classArr = [], label = "", repoUrl, Icon }) {
-  const classNames = [...classArr, styles.main].join(" ");
-
+function RepoBadge({
+  classArr = [],
+  label = "",
+  repoUrl = "",
+  Icon = GithubIcon,
+}) {
   return (
     <a
       className={classNames}
