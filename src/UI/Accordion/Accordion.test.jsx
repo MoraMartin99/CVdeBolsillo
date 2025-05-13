@@ -3,16 +3,20 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import Accordion from "./Accordion";
 import TestIcon from "../../assets/images/DPIcon.svg?react";
 
-describe.each([{}, { name: "test", Icon: TestIcon }])(
-  `Accordion with props: {name: $name, Icon: $Icon, contentList: $contentList, userStyleClass: $userStyleClass}`,
-  ({ name, Icon, contentList, userStyleClass }) => {
+describe.each([
+  {},
+  { name: "test", Icon: TestIcon },
+  { name: "test", Icon: TestIcon, classArr: ["test1 test2"] },
+])(
+  `Accordion with props: {name: $name, Icon: $Icon, contentList: $contentList, classArr: $classArr}`,
+  ({ name, Icon, contentList, classArr }) => {
     beforeEach(() =>
       render(
         <Accordion
           name={name}
           Icon={Icon}
           contentList={contentList}
-          userStyleClass={userStyleClass}
+          classArr={classArr}
         ></Accordion>,
       ),
     );
@@ -70,13 +74,10 @@ describe.each([{}, { name: "test", Icon: TestIcon }])(
       expect(contentElement).not.toContainElement(targetElement);
     });
 
-    it.skipIf(!userStyleClass)(
-      "sets userStyleClass to the parent element",
-      () => {
-        const testClass = ".Accordion";
-        const testElement = document.querySelector(testClass);
-        expect(Array.from(testElement.classList)).toContain(userStyleClass);
-      },
-    );
+    it.skipIf(!classArr)("sets classArr to the parent element", () => {
+      const testClass = ".Accordion";
+      const testElement = document.querySelector(testClass);
+      expect(testElement).toHaveClass(...classArr);
+    });
   },
 );

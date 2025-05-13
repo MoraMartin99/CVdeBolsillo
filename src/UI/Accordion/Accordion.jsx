@@ -11,13 +11,13 @@ import styles from "./Accordion.module.css";
  * @property {string} prop.name The name and label of the Accordion
  * @property {CurrentColorIcon} prop.Icon The icon component that represents the Accordion
  * @property {Array<JSX.Element>} prop.children An ordered group of child components
- * @property {string} [prop.styleClass = ""] A CSS class that style the parent element using custom properties like: --mainWidth, --minHeight, --BGColor, --color
+ * @property {Array<string>} [prop.classArr = []]  A CSS classes list that style the parent element using custom properties like: --mainWidth, --minHeight, --BGColor, --color
  * @returns {JSX.Element}
  */
-function Accordion({ name, Icon, children, userStyleClass = "" }) {
+function Accordion({ name, Icon, children, classArr = [] }) {
   const [isOpen, setIsOpen] = useState(false);
   const toggleExpansion = () => (isOpen ? setIsOpen(false) : setIsOpen(true));
-  const mainClassArr = [styles.main, userStyleClass, "Accordion"];
+  const mainClassArr = [styles.main, ...classArr, "Accordion"];
   if (isOpen) mainClassArr.push(styles.expand);
 
   return (
