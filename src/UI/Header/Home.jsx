@@ -14,7 +14,7 @@ function Home({ classArr = [], children = "appName" }) {
   return (
     <a
       href=""
-      className={reduceToClassName([...classArr, styles.Home, "home"])}
+      className={reduceToClassName([styles.Home, "home", ...classArr])}
     >
       <img className={styles.logo} src={homeLogo} alt="Home logo" />
       <p className={styles.homeText}>{children}</p>

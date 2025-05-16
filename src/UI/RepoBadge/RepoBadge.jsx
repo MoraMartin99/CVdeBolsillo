@@ -20,7 +20,7 @@ function RepoBadge({
 }) {
   return (
     <a
-      className={reduceToClassName([...classArr, styles.main, "repobadge"])}
+      className={reduceToClassName([styles.main, "repobadge", ...classArr])}
       href={repoUrl}
       target="_blank"
       rel="noreferrer noopener"

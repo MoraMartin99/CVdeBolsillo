@@ -35,9 +35,9 @@ function Button({
   return (
     <button
       className={reduceToClassName([
-        ...classArr,
         iconPositionClass,
         styles.main,
+        ...classArr,
       ])}
       onClick={onClickCallback}
     >

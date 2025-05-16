@@ -17,7 +17,7 @@ import styles from "./Accordion.module.css";
 function Accordion({ name, Icon, children, classArr = [] }) {
   const [isOpen, setIsOpen] = useState(false);
   const toggleExpansion = () => (isOpen ? setIsOpen(false) : setIsOpen(true));
-  const mainClassArr = [styles.main, ...classArr, "Accordion"];
+  const mainClassArr = [styles.main, "Accordion", ...classArr];
   if (isOpen) mainClassArr.push(styles.expand);
 
   return (
