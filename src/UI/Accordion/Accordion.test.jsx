@@ -74,10 +74,13 @@ describe.each([
       expect(contentElement).not.toContainElement(targetElement);
     });
 
-    it.skipIf(!classArr)("sets classArr to the parent element", () => {
+    it.skipIf(!classArr)("has classArr applied as the last classes", () => {
       const testClass = ".Accordion";
-      const testElement = document.querySelector(testClass);
-      expect(testElement).toHaveClass(...classArr);
+      const targetElement = document.querySelector(testClass);
+      const classList = Array.from(targetElement.classList);
+      expect(classList.slice(-classArr.length)).toEqual(
+        expect.arrayContaining(classArr),
+      );
     });
   },
 );

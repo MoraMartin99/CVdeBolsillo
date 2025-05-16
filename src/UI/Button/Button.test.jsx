@@ -62,9 +62,12 @@ describe.each(propList)(
       expect(targetElement).toBeInTheDocument();
     });
 
-    it.runIf(classArr)("has classArr applied", () => {
+    it.runIf(classArr)("has classArr applied as the last classes", () => {
       const targetElement = screen.getByRole("button");
-      expect(targetElement).toHaveClass(...classArr);
+      const classList = Array.from(targetElement.classList);
+      expect(classList.slice(-classArr.length)).toEqual(
+        expect.arrayContaining(classArr),
+      );
     });
 
     it.runIf(onClickCallback)("runs onClickCallback on click events", () => {

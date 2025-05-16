@@ -27,10 +27,13 @@ describe.each(propList)(
       expect(targetElement).toBeInTheDocument();
     });
 
-    it.runIf(classArr)("has classArr applied", () => {
+    it.runIf(classArr)("has classArr applied as the last classes", () => {
       const targetClass = "home";
       const targetElement = document.querySelector(`.${targetClass}`);
-      expect(targetElement).toHaveClass(...classArr);
+      const classList = Array.from(targetElement.classList);
+      expect(classList.slice(-classArr.length)).toEqual(
+        expect.arrayContaining(classArr),
+      );
     });
   },
 );
