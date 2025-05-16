@@ -6,7 +6,7 @@ import TestIcon from "../../assets/images/DPIcon.svg?react";
 describe.each([
   {},
   { name: "test", Icon: TestIcon },
-  { name: "test", Icon: TestIcon, classArr: ["test1 test2"] },
+  { name: "test", Icon: TestIcon, classArr: ["test1", "test2"] },
 ])(
   `Accordion with props: {name: $name, Icon: $Icon, contentList: $contentList, classArr: $classArr}`,
   ({ name, Icon, contentList, classArr }) => {
