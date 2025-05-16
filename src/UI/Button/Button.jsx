@@ -11,7 +11,7 @@ import styles from "./Button.module.css";
 /**
  * @typedef ButtonProps
  * @property {object} props The Button properties
- * @property {string} props.children The visible text of the Button
+ * @property {string} [props.children] The visible text of the Button
  * @property {Array<string>} [props.classArr = []] A list of CSS classes to apply to the Button
  * @property {CurrentColorIcon} [props.Icon] The icon component that represents the button
  * @property {"left" | "right"} [props.iconPosition = "left"] The position of the icon
