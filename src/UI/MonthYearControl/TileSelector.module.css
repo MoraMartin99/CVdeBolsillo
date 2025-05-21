@@ -1,0 +1,108 @@
+.TileSelector {
+  --TileSelectorColor: var(--secondary500color);
+  --TileSelectorRowGap: 5px;
+  --tileMinWidth: 50px;
+  --tileHeight: 25px;
+  --TileControlRowGap: 5px;
+  --tileBGColor: var(--secondary1400color);
+  --tileBGColorHover: var(--secondary1200color);
+  --tileBGColorCurrent: var(--secondary900color);
+  --tileColor: var(--secondary1100color);
+  --tileColorHover: var(--secondary1500color);
+  --tileColorCurrent: var(--secondary1500color);
+  --tileFontSize: 1rem;
+  --tilePaddingInline: 4px;
+  --tileContainerWidth: var(--tileMinWidth);
+  --tileContainerHeight: 125px;
+  --tileContainerScrollPaddingBlock: calc(
+    (var(--tileContainerHeight) - var(--tileHeight)) / 2
+  );
+  --labelFontSize: 0.875rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  row-gap: var(--TileSelectorRowGap);
+}
+
+.TileSelector.disable {
+  --TileSelectorColor: var(--secondary1200color);
+}
+
+.TileControl {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  row-gap: var(--TileControlRowGap);
+}
+
+.tileContainer {
+  min-width: var(--tileContainerWidth);
+  height: var(--tileContainerHeight);
+  display: flex;
+  flex-direction: column;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  scroll-padding-block: var(--tileContainerScrollPaddingBlock);
+  background-color: inherit;
+}
+
+.disable .tileContainer {
+  overflow-y: hidden;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.tileContainer::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.tileContainer {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.tile {
+  scroll-snap-align: start;
+  min-width: var(--tileMinWidth);
+  height: var(--tileHeight);
+  background-color: var(--tileBGColor);
+  color: var(--tileColor);
+  font-size: var(--tileFontSize);
+  font-weight: 500;
+  padding-inline: var(--tilePaddingInline);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.tile:hover {
+  --tileBGColor: var(--tileBGColorHover);
+  --tileColor: var(--tileColorHover);
+}
+
+.tile.current {
+  --tileBGColor: var(--tileBGColorCurrent);
+  --tileColor: var(--tileColorCurrent);
+}
+
+.Button {
+  --BGColor: inherit;
+  --BGColorHover: inherit;
+  --color: var(--TileSelectorColor);
+  --iconSize: 15px;
+  min-width: initial;
+  height: initial;
+  padding: 2.5px;
+}
+
+.Button:hover {
+  --color: var(--secondary600color);
+}
+
+.label {
+  font-size: var(--labelFontSize);
+  font-weight: 600;
+  color: var(--TileSelectorColor);
+}
