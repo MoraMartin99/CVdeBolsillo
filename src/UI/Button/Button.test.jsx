@@ -3,7 +3,7 @@ import Icon from "../../assets/images/genericIcon.svg?react";
 import Button from "./Button";
 import { render, screen, fireEvent } from "@testing-library/react";
 
-const onClickCallback = vi.fn();
+const onClick = vi.fn();
 
 const propList = [
   {},
@@ -13,21 +13,21 @@ const propList = [
     classArr: ["test1", "test2"],
     iconPosition: "right",
     Icon,
-    onClickCallback,
+    onClick,
   },
   {
     children: "test",
     classArr: ["test1", "test2"],
     iconPosition: "Right",
     Icon,
-    onClickCallback,
+    onClick,
   },
   {
     children: "test",
     classArr: ["test1", "test2"],
     iconPosition: "test",
     Icon,
-    onClickCallback,
+    onClick,
   },
 ];
 

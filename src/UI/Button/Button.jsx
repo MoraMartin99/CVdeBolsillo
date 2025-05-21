@@ -15,7 +15,7 @@ import styles from "./Button.module.css";
  * @property {Array<string>} [props.classArr = []] A list of CSS classes to apply to the Button
  * @property {CurrentColorIcon} [props.Icon] The icon component that represents the button
  * @property {"left" | "right"} [props.iconPosition = "left"] The position of the icon
- * @property {onClickCallback} props.onClickCallback The function that runs on click events
+ * @property {onClickCallback} props.onClick The function that runs on click events
  */
 
 /**
@@ -28,7 +28,7 @@ function Button({
   classArr = [],
   Icon,
   iconPosition = "left",
-  onClickCallback,
+  onClick,
 }) {
   const iconPositionClass =
     iconPosition.toLowerCase() === "right" ? styles.right : "";
@@ -39,7 +39,7 @@ function Button({
         styles.main,
         ...classArr,
       ])}
-      onClick={onClickCallback}
+      onClick={onClick}
     >
       {Icon ? <Icon className={styles.icon}></Icon> : undefined}
       {children}
