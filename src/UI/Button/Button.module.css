@@ -7,7 +7,7 @@
   --BGColor: var(--primary300color);
   --BGColorHover: var(--primary400color);
   --fontSize: 0.688rem;
-  --iconWidth: 10px;
+  --iconSize: 10px;
   min-width: var(--minWidth);
   height: var(--height);
   padding-inline: var(--inlinePadding);
@@ -32,6 +32,6 @@
 
 .icon {
   color: inherit;
-  width: var(--iconWidth);
-  height: var(--iconWidth);
+  width: var(--iconSize);
+  height: var(--iconSize);
 }
