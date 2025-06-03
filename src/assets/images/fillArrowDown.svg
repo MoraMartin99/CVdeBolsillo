@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none">
+  <defs>
+    <clipPath id="a" class="frame-clip frame-clip-def">
+      <rect width="15" height="15" rx="0" ry="0" transform="rotate(180 7.5 7.5)"/>
+    </clipPath>
+  </defs>
+  <g class="frame-container-wrapper">
+    <g class="frame-container-blur">
+      <g class="frame-container-shadows" clip-path="url(#a)">
+        <g class="fills">
+          <rect width="15" height="15" fill="none" class="frame-background" rx="0" ry="0" style="fill:#fff;fill-opacity:0" transform="rotate(180 7.5 7.5)"/>
+        </g>
+        <g class="frame-children">
+          <path d="m7.5 10.5-6-6h12l-6 6Z" class="fills" fill="currentColor" style="fill-opacity:1"/>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

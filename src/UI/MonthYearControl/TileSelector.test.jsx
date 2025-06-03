@@ -1,0 +1,439 @@
+import { beforeEach, describe, vi, it, expect } from "vitest";
+import { render, screen, fireEvent } from "@testing-library/react";
+import TileSelector from "./TileSelector";
+
+const onChangeMock = vi.fn();
+
+const IntersectionObserverMock = vi.fn((callback) => {
+  let observedList = [];
+
+  const trigger = (entryList) => {
+    const mapper = ({ isIntersecting, index }) => {
+      const target = observedList.find((item) => {
+        return Number(item.getAttribute("data-index")) === index;
+      });
+      return { isIntersecting, target };
+    };
+    return callback(entryList.map(mapper));
+  };
+  return {
+    disconnect: vi.fn(() => (observedList = [])),
+    observe: vi.fn((item) => observedList.push(item)),
+    takeRecords: vi.fn(),
+    unobserve: vi.fn(),
+    trigger,
+  };
+});
+
+const scrollIntoViewMock = vi.fn(function () {
+  const trigger = IntersectionObserverMock.mock.results[0].value.trigger;
+  const currentElement = this;
+  const childrenList = Array.from(currentElement.parentElement.children);
+  const mapper = (item) => {
+    return item === currentElement
+      ? {
+          isIntersecting: true,
+          index: Number(item.getAttribute("data-index")),
+        }
+      : {
+          isIntersecting: false,
+          index: Number(item.getAttribute("data-index")),
+        };
+  };
+  trigger(childrenList.map(mapper));
+});
+
+const propList = [
+  {},
+  {
+    itemArr: [{ value: "test0", label: "0" }],
+  },
+  {
+    currentIndex: 0,
+    onChange: onChangeMock,
+  },
+  {
+    itemArr: [{ value: "test0", label: "0" }],
+    currentIndex: 0,
+    isDisable: false,
+    onChange: onChangeMock,
+  },
+  {
+    itemArr: [
+      { value: "test0", label: "0" },
+      { value: "test1", label: "1" },
+      { value: "test2", label: "2" },
+      { value: "test3", label: "3" },
+      { value: "test4", label: "4" },
+      { value: "test5", label: "5" },
+      { value: "test6", label: "6" },
+      { value: "test7", label: "7" },
+    ],
+    currentIndex: 0,
+    isDisable: true,
+    onChange: onChangeMock,
+  },
+  {
+    itemArr: [
+      { value: "test0", label: "0" },
+      { value: "test1", label: "1" },
+      { value: "test2", label: "2" },
+      { value: "test3", label: "3" },
+      { value: "test4", label: "4" },
+      { value: "test5", label: "5" },
+      { value: "test6", label: "6" },
+      { value: "test7", label: "7" },
+    ],
+    currentIndex: 6,
+    onChange: onChangeMock,
+  },
+  {
+    itemArr: [
+      { value: "test0", label: "label1" },
+      { value: "test1", label: "label2" },
+      { value: "test2", label: "label3" },
+    ],
+    label: "testLabel",
+    currentIndex: -1,
+    onChange: onChangeMock,
+  },
+  {
+    itemArr: [
+      { value: "test0", label: "0" },
+      { value: "test1", label: "1" },
+      { value: "test2", label: "2" },
+    ],
+    label: "testLabel",
+    visibleTiles: 3,
+    currentIndex: 30,
+    onChange: onChangeMock,
+  },
+  {
+    itemArr: [
+      { value: "test0", label: "0" },
+      { value: "test1", label: "1" },
+      { value: "test2", label: "2" },
+    ],
+    label: "testLabel",
+    visibleTiles: 5,
+    classArr: ["test1", "test2"],
+    onChange: onChangeMock,
+  },
+];
+
+describe.each(propList)(
+  "TileSelector component with props: {label: $label, classArr: $classArr, itemArr: $itemArr, currentIndex: $currentIndex, onChange: $onChange, isDisable: $isDisable, visibleTiles: $visibleTiles}",
+  ({
+    label,
+    classArr,
+    itemArr,
+    currentIndex,
+    onChange,
+    isDisable,
+    visibleTiles,
+  }) => {
+    const requiredProps = { itemArr, onChange };
+    const hasRequiredProps = Object.values(requiredProps).every((item) => item);
+    const boundedCurrentIndex = (() => {
+      switch (true) {
+        case currentIndex < 0:
+        case currentIndex === undefined:
+        case !Object(itemArr).length:
+          return 0;
+        case currentIndex >= itemArr.length:
+          return itemArr.length - 1;
+        default:
+          return currentIndex;
+      }
+    })();
+    const hasBoundedCurrentIndex = currentIndex === boundedCurrentIndex;
+
+    const findElementByClass = (list, token) => {
+      const finder = (item) => {
+        const list = Array.from(item.classList);
+        const tester = (item) => {
+          return typeof token === "string"
+            ? item === token
+            : token instanceof RegExp
+              ? token.test(item)
+              : false;
+        };
+        return list.some(tester);
+      };
+      return list.find(finder);
+    };
+
+    const getCurrentElement = () => {
+      const classRegex = /current/i;
+      const elementList = screen.queryAllByRole("listitem");
+      return findElementByClass(elementList, classRegex);
+    };
+
+    beforeEach(() => {
+      vi.stubGlobal("IntersectionObserver", IntersectionObserverMock);
+      window.HTMLElement.prototype.scrollIntoView = scrollIntoViewMock;
+      [IntersectionObserverMock, scrollIntoViewMock, onChangeMock].forEach(
+        (item) => item.mockClear(),
+      );
+      render(
+        <TileSelector
+          {...{
+            label,
+            classArr,
+            itemArr,
+            currentIndex,
+            onChange,
+            isDisable,
+            visibleTiles,
+          }}
+        ></TileSelector>,
+      );
+    });
+
+    it.runIf(hasRequiredProps)(
+      "renders the parent element if itemArr & onChange props are passed",
+      () => {
+        const testId = "parent";
+        const targetElement = screen.queryByTestId(testId);
+        expect(targetElement).toBeInTheDocument();
+      },
+    );
+
+    it.runIf(hasRequiredProps && label)("has the corresponding label", () => {
+      const targetElement = screen.queryByRole("paragraph", {
+        value: { name: label },
+      });
+      expect(targetElement).toBeInTheDocument();
+    });
+
+    it.runIf(hasRequiredProps && !label)(
+      "doesn't render the labels tag if label prop is undefined",
+      () => {
+        const targetElement = screen.queryByRole("paragraph", {
+          value: { name: label },
+        });
+        expect(targetElement).not.toBeInTheDocument();
+      },
+    );
+
+    it.runIf(hasRequiredProps && classArr)(
+      "has classArr applied as the last classes",
+      () => {
+        const testId = "parent";
+        const targetElement = screen.queryByTestId(testId);
+        const classList = Array.from(targetElement.classList);
+        expect(classList.slice(-classArr.length)).toEqual(
+          expect.arrayContaining(classArr),
+        );
+      },
+    );
+
+    it.runIf(hasRequiredProps && itemArr)("renders the items as tiles", () => {
+      const setExpectations = ({ label }) => {
+        const tile = screen.queryByText(label);
+        expect(tile).toBeInTheDocument();
+      };
+      itemArr.forEach(setExpectations);
+    });
+
+    it.runIf(hasRequiredProps && currentIndex && hasBoundedCurrentIndex)(
+      "selects the tile associated with the currentIndex as the current tile if currentIndex is defined",
+      () => {
+        const classRegex = /current/i;
+        const currentLabel = itemArr[currentIndex].label;
+        const currentValue = itemArr[currentIndex].value;
+        const targetElement = screen.queryByText(currentLabel);
+        expect(targetElement).toBeInTheDocument();
+        expect(targetElement).toHaveClass(classRegex);
+        expect(onChange).toHaveBeenCalledWith(currentValue);
+        expect(onChange).toHaveBeenCalledTimes(1);
+      },
+    );
+
+    it.runIf(hasRequiredProps && currentIndex && !hasBoundedCurrentIndex)(
+      "remains currentIndex within 0 and itemArr.length -1 if currentIndex is defined outside the range and selects the closest tile end",
+      () => {
+        const classRegex = /current/i;
+        const currentLabel = itemArr[boundedCurrentIndex].label;
+        const currentValue = itemArr[boundedCurrentIndex].value;
+        const targetElement = screen.queryByText(currentLabel);
+        expect(targetElement).toBeInTheDocument();
+        expect(targetElement).toHaveClass(classRegex);
+        expect(onChange).toHaveBeenCalledWith(currentValue);
+        expect(onChange).toHaveBeenCalledTimes(1);
+      },
+    );
+
+    it.runIf(hasRequiredProps && currentIndex === undefined)(
+      "starts with the first tile as the current if currentIndex is undefined",
+      () => {
+        const classRegex = /current/i;
+        const currentLabel = itemArr[0].label;
+        const currentValue = itemArr[0].value;
+        const targetElement = screen.queryByText(currentLabel);
+        expect(targetElement).toBeInTheDocument();
+        expect(targetElement).toHaveClass(classRegex);
+        expect(onChange).toHaveBeenCalledWith(currentValue);
+        expect(onChange).toHaveBeenCalledTimes(1);
+      },
+    );
+
+    it.runIf(hasRequiredProps && !isDisable)(
+      "sets the clicked tile as current ",
+      () => {
+        const setExpectations = ({ label, value }) => {
+          const classRegex = /current/i;
+          const targetElement = screen.queryByText(label);
+          fireEvent.click(targetElement);
+          expect(targetElement).toBeInTheDocument();
+          expect(targetElement).toHaveClass(classRegex);
+          expect(onChange).toHaveBeenCalledWith(value);
+        };
+        itemArr.forEach(setExpectations);
+      },
+    );
+
+    it.runIf(hasRequiredProps && !isDisable)(
+      "selects the current tile`s next sibling if exists on nextTile button click",
+      () => {
+        const loopCount = itemArr.length - boundedCurrentIndex;
+        const token = /nextTileButton/i;
+        const button = findElementByClass(
+          screen.queryAllByRole("button"),
+          token,
+        );
+        for (let i = 0; i <= loopCount; i++) {
+          const currentElement = getCurrentElement();
+          const nextCurrentElement = currentElement.nextElementSibling
+            ? currentElement.nextElementSibling
+            : currentElement;
+          const nextCurrentValue =
+            itemArr[Number(nextCurrentElement.getAttribute("data-index"))]
+              .value;
+          fireEvent.click(button);
+          expect(getCurrentElement()).toBe(nextCurrentElement);
+          if (currentElement !== nextCurrentValue) {
+            expect(onChange).toHaveBeenCalledWith(nextCurrentValue);
+          }
+        }
+      },
+    );
+
+    it.runIf(hasRequiredProps && !isDisable)(
+      "selects the current tile`s previous sibling if exists on previousTile button click",
+      () => {
+        const loopCount = boundedCurrentIndex + 1;
+        const token = /previousTileButton/i;
+        const button = findElementByClass(
+          screen.queryAllByRole("button"),
+          token,
+        );
+        for (let i = 0; i <= loopCount; i++) {
+          const currentElement = getCurrentElement();
+          const nextCurrentElement = currentElement.previousSibling
+            ? currentElement.previousSibling
+            : currentElement;
+          const nextCurrentValue =
+            itemArr[Number(nextCurrentElement.getAttribute("data-index"))]
+              .value;
+          fireEvent.click(button);
+          expect(getCurrentElement()).toBe(nextCurrentElement);
+          if (currentElement !== nextCurrentValue) {
+            expect(onChange).toHaveBeenCalledWith(nextCurrentValue);
+          }
+        }
+      },
+    );
+
+    it.runIf(hasRequiredProps && !isDisable)(
+      "selects the tile that intersects the trigger area on scroll",
+      () => {
+        const list = screen.queryAllByRole("listitem");
+        const setExpectation = (item) => {
+          const value = itemArr[Number(item.getAttribute("data-index"))].value;
+          item.scrollIntoView();
+          expect(item).toBe(getCurrentElement());
+          expect(onChange).toHaveBeenCalledWith(value);
+        };
+        list.forEach(setExpectation);
+      },
+    );
+
+    it.runIf(hasRequiredProps && isDisable)(
+      "disables click events, scroll and doesn't run onChange if isDisable is truthy",
+      () => {
+        const currentElement = getCurrentElement();
+        const tileElementList = screen.queryAllByRole("listitem");
+        const clickTargetList = [
+          ...screen.queryAllByRole("button"),
+          ...tileElementList,
+        ];
+
+        const clickCallback = (item) => {
+          fireEvent.click(item);
+          expect(currentElement).toBe(getCurrentElement());
+        };
+
+        const scrollCallback = (item) => {
+          item.scrollIntoView();
+          expect(currentElement).toBe(getCurrentElement());
+        };
+
+        clickTargetList.forEach(clickCallback);
+        tileElementList.forEach(scrollCallback);
+        expect(onChange).not.toHaveBeenCalled();
+      },
+    );
+  },
+);
+
+describe.each(propList)(
+  "TileSelector component with props: {label: $label, classArr: $classArr, itemArr: $itemArr, currentIndex: $currentIndex, onChange: $onChange, isDisable: $isDisable, visibleTiles: $visibleTiles}",
+  ({
+    label,
+    classArr,
+    itemArr,
+    currentIndex,
+    onChange,
+    isDisable,
+    visibleTiles,
+  }) => {
+    const requiredProps = { itemArr, onChange };
+    const hasRequiredProps = Object.values(requiredProps).every((item) => item);
+
+    beforeEach(() => {
+      vi.stubGlobal("IntersectionObserver", IntersectionObserverMock);
+      window.HTMLElement.prototype.scrollIntoView = scrollIntoViewMock;
+      [IntersectionObserverMock, scrollIntoViewMock].forEach((item) =>
+        item.mockClear(),
+      );
+    });
+
+    it.runIf(!hasRequiredProps)(
+      "throws an error if the required props are undefined",
+      () => {
+        const filter = ([, value]) => !value;
+        const mapper = ([key]) => key;
+        const setExpectations = (key) => {
+          expect(() =>
+            render(
+              <TileSelector
+                {...{
+                  label,
+                  classArr,
+                  itemArr,
+                  currentIndex,
+                  onChange,
+                  isDisable,
+                  visibleTiles,
+                }}
+              ></TileSelector>,
+            ),
+          ).toThrowError(key);
+        };
+        const list = Object.entries(requiredProps).filter(filter).map(mapper);
+        list.forEach(setExpectations);
+      },
+    );
+  },
+);

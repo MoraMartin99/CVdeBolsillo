@@ -4,7 +4,7 @@
   --tileMinWidth: 50px;
   --tileHeight: 25px;
   --TileControlRowGap: 5px;
-  --tileBGColor: var(--secondary1400color);
+  --tileBGColor: inherit;
   --tileBGColorHover: var(--secondary1200color);
   --tileBGColorCurrent: var(--secondary900color);
   --tileColor: var(--secondary1100color);
@@ -13,7 +13,8 @@
   --tileFontSize: 1rem;
   --tilePaddingInline: 4px;
   --tileContainerWidth: var(--tileMinWidth);
-  --tileContainerHeight: 125px;
+  --tileContainerHeight: calc(var(--tileHeight) * var(--visibleTiles));
+  --tileContainerBGColor: var(--secondary1400color);
   --tileContainerScrollPaddingBlock: calc(
     (var(--tileContainerHeight) - var(--tileHeight)) / 2
   );
@@ -36,6 +37,7 @@
 }
 
 .tileContainer {
+  background-color: var(--tileContainerBGColor);
   min-width: var(--tileContainerWidth);
   height: var(--tileContainerHeight);
   display: flex;
@@ -43,7 +45,6 @@
   overflow-y: scroll;
   scroll-snap-type: y mandatory;
   scroll-padding-block: var(--tileContainerScrollPaddingBlock);
-  background-color: inherit;
 }
 
 .disable .tileContainer {
@@ -75,6 +76,15 @@
   align-items: center;
   cursor: pointer;
   flex-shrink: 0;
+  transition: background-color 0.2s linear;
+}
+
+.tile:first-child {
+  margin-top: calc(var(--tileHeight) * var(--tileMarginMultiplier));
+}
+
+.tile:last-child {
+  margin-bottom: calc(var(--tileHeight) * var(--tileMarginMultiplier));
 }
 
 .tile:hover {
