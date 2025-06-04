@@ -29,12 +29,19 @@ const propList = [
     Icon,
     onClick: onClickMock,
   },
+  {
+    children: "test",
+    classArr: ["test1", "test2"],
+    iconPosition: "test",
+    Icon,
+    onClick: onClickMock,
+    isDisable: true,
   },
 ];
 
 describe.each(propList)(
   "Button component with props: {text: $text, classArr: $classArr, iconPosition: $iconPosition, Icon: $Icon, onClick: $onClick}",
-  ({ children, classArr, iconPosition, Icon, onClick }) => {
+  ({ children, classArr, iconPosition, Icon, onClick, isDisable }) => {
     beforeEach(() => {
       onClickMock.mockClear();
       render(
@@ -43,6 +50,7 @@ describe.each(propList)(
           iconPosition={iconPosition}
           Icon={Icon}
           onClick={onClick}
+          isDisable={isDisable}
         >
           {children}
         </Button>,
@@ -72,7 +80,34 @@ describe.each(propList)(
       );
     });
 
+    it.runIf(onClick && !isDisable)(
+      "runs onClickCallback on click events if isDisabled is falsy",
+      () => {
+        const targetElement = screen.getByRole("button");
+        fireEvent.click(targetElement);
+        expect(onClick).toHaveBeenCalledTimes(1);
+      },
+    );
+    it.runIf(onClick && isDisable)(
+      "doesn't runs onClickCallback on click events if isDisabled is truthy",
+      () => {
+        const targetElement = screen.getByRole("button");
+        fireEvent.click(targetElement);
+        expect(onClick).not.toHaveBeenCalled();
+      },
+    );
+
+    it.runIf(isDisable)("disables the component if isDisable = true", () => {
       const targetElement = screen.getByRole("button");
+      expect(targetElement).toBeDisabled();
     });
+
+    it.skipIf(isDisable)(
+      "enables the component if isDisable is not defined",
+      () => {
+        const targetElement = screen.getByRole("button");
+        expect(targetElement).toBeEnabled();
+      },
+    );
   },
 );

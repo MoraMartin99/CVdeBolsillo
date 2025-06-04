@@ -16,6 +16,7 @@ import styles from "./Button.module.css";
  * @property {CurrentColorIcon} [props.Icon] The icon component that represents the button
  * @property {"left" | "right"} [props.iconPosition = "left"] The position of the icon
  * @property {onClickCallback} props.onClick The function that runs on click events
+ * @property {boolean} [prop.isDisable = false] If true sets the disable attribute as true, if false sets the opposite
  */
 
 /**
@@ -29,11 +30,13 @@ function Button({
   Icon,
   iconPosition = "left",
   onClick,
+  isDisable = false,
 }) {
   const iconPositionClass =
     iconPosition.toLowerCase() === "right" ? styles.right : "";
   return (
     <button
+      disabled={isDisable}
       className={reduceToClassName([
         iconPositionClass,
         styles.main,
