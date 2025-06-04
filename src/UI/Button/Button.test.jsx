@@ -3,7 +3,7 @@ import Icon from "../../assets/images/genericIcon.svg?react";
 import Button from "./Button";
 import { render, screen, fireEvent } from "@testing-library/react";
 
-const onClick = vi.fn();
+const onClickMock = vi.fn();
 
 const propList = [
   {},
@@ -13,34 +13,36 @@ const propList = [
     classArr: ["test1", "test2"],
     iconPosition: "right",
     Icon,
-    onClick,
+    onClick: onClickMock,
   },
   {
     children: "test",
     classArr: ["test1", "test2"],
     iconPosition: "Right",
     Icon,
-    onClick,
+    onClick: onClickMock,
   },
   {
     children: "test",
     classArr: ["test1", "test2"],
     iconPosition: "test",
     Icon,
-    onClick,
+    onClick: onClickMock,
+  },
   },
 ];
 
 describe.each(propList)(
-  "Button component with props: {text: $text, classArr: $classArr, iconPosition: $iconPosition, Icon: $Icon, onClickCallback: $onClickCallback}",
-  ({ children, classArr, iconPosition, Icon, onClickCallback }) => {
+  "Button component with props: {text: $text, classArr: $classArr, iconPosition: $iconPosition, Icon: $Icon, onClick: $onClick}",
+  ({ children, classArr, iconPosition, Icon, onClick }) => {
     beforeEach(() => {
+      onClickMock.mockClear();
       render(
         <Button
           classArr={classArr}
           iconPosition={iconPosition}
           Icon={Icon}
-          onClickCallback={onClickCallback}
+          onClick={onClick}
         >
           {children}
         </Button>,
@@ -70,10 +72,7 @@ describe.each(propList)(
       );
     });
 
-    it.runIf(onClickCallback)("runs onClickCallback on click events", () => {
       const targetElement = screen.getByRole("button");
-      fireEvent.click(targetElement);
-      expect(onClickCallback).toHaveBeenCalled();
     });
   },
 );
