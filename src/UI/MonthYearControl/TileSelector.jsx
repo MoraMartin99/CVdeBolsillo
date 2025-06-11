@@ -16,7 +16,7 @@ import { useEffect, useRef } from "react";
  * @memberof module:MonthYearControl
  * @typedef {object} item An object that represents an option and is required to build a tile
  * @property {*} value The value of the item
- * @property {string|number} [label] A text to display in the corresponding tile
+ * @property {string|number} label A text to display in the corresponding tile
  */
 
 /**
