@@ -4,6 +4,7 @@ import DecreaseIcon from "../../assets/images/fillArrowUp.svg?react";
 import IncreaseIcon from "../../assets/images/fillArrowDown.svg?react";
 import { reduceToClassName } from "../../utils";
 import { useEffect, useRef } from "react";
+import useOnUpdate from "../../hooks/useOnUpdate";
 /**
  * A callback that runs if the value change and is valid
  * @memberof module:MonthYearControl
@@ -26,7 +27,7 @@ import { useEffect, useRef } from "react";
  * @param {Array<string>} [props.classArr = []] A list of CSS classes to apply to the component
  * @param {Array<item>} props.itemArr A list of items to display as tiles
  * @param {number} [props.currentIndex = 0] The index of the current tile
- * @param {onChange} props.onChange A callback that runs if the value change and is valid
+ * @param {onChange} props.onChange A callback that runs if the value change and is valid and id isDisable prop changes from true to false
  * @param {boolean} [props.isDisable = false] If true sets the component as readonly, if false sets the opposite
  * @param {3|5} [visibleTiles = 5] The total number of tiles that are visible to the user
  */
@@ -78,7 +79,7 @@ function TileSelector({
   };
 
   const scrollTo = (target) => {
-    if (target) {
+    if (target && !isDisable) {
       target.scrollIntoView({ behavior: "smooth", block: "center" });
     }
   };
@@ -89,7 +90,7 @@ function TileSelector({
     return (
       <li
         key={key}
-        onClick={isDisable ? undefined : onClick}
+        onClick={onClick}
         data-index={index}
         className={styles.tile}
       >
@@ -131,7 +132,7 @@ function TileSelector({
     };
     const callback = (entries) => {
       entries.forEach(({ target, isIntersecting }) => {
-        isIntersecting && !isDisable
+        isIntersecting
           ? setCurrentTile(target)
           : target.classList.remove(styles.current);
       });
@@ -146,6 +147,14 @@ function TileSelector({
 
     return () => observer.disconnect();
   }, []);
+
+  useOnUpdate(() => {
+    const currentElement = getCurrentElement();
+    const currentIndex = currentElement ? getIndex(currentElement) : undefined;
+    if (!isDisable && typeof currentIndex === "number") {
+      onChange(itemArr[currentIndex].value);
+    }
+  }, [isDisable]);
 
   return (
     <div

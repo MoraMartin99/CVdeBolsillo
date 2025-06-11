@@ -1,6 +1,7 @@
 import { beforeEach, describe, vi, it, expect } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import TileSelector from "./TileSelector";
+import { useState } from "react";
 
 const onChangeMock = vi.fn();
 
@@ -173,7 +174,7 @@ describe.each(propList)(
       vi.stubGlobal("IntersectionObserver", IntersectionObserverMock);
       window.HTMLElement.prototype.scrollIntoView = scrollIntoViewMock;
       [IntersectionObserverMock, scrollIntoViewMock, onChangeMock].forEach(
-        (item) => item.mockClear(),
+        (item) => item.mockReset(),
       );
       render(
         <TileSelector
@@ -236,7 +237,7 @@ describe.each(propList)(
       itemArr.forEach(setExpectations);
     });
 
-    it.runIf(hasRequiredProps && currentIndex && hasBoundedCurrentIndex)(
+    it.runIf(hasRequiredProps && hasBoundedCurrentIndex && !isDisable)(
       "selects the tile associated with the currentIndex as the current tile if currentIndex is defined",
       () => {
         const classRegex = /current/i;
@@ -369,6 +370,8 @@ describe.each(propList)(
           ...tileElementList,
         ];
 
+        scrollIntoViewMock.mockImplementation(function () {});
+
         const clickCallback = (item) => {
           fireEvent.click(item);
           expect(currentElement).toBe(getCurrentElement());
@@ -400,12 +403,24 @@ describe.each(propList)(
   }) => {
     const requiredProps = { itemArr, onChange };
     const hasRequiredProps = Object.values(requiredProps).every((item) => item);
+    const boundedCurrentIndex = (() => {
+      switch (true) {
+        case currentIndex < 0:
+        case currentIndex === undefined:
+        case !Object(itemArr).length:
+          return 0;
+        case currentIndex >= itemArr.length:
+          return itemArr.length - 1;
+        default:
+          return currentIndex;
+      }
+    })();
 
     beforeEach(() => {
       vi.stubGlobal("IntersectionObserver", IntersectionObserverMock);
       window.HTMLElement.prototype.scrollIntoView = scrollIntoViewMock;
-      [IntersectionObserverMock, scrollIntoViewMock].forEach((item) =>
-        item.mockClear(),
+      [IntersectionObserverMock, scrollIntoViewMock, onChangeMock].forEach(
+        (item) => item.mockClear(),
       );
     });
 
@@ -433,6 +448,41 @@ describe.each(propList)(
         };
         const list = Object.entries(requiredProps).filter(filter).map(mapper);
         list.forEach(setExpectations);
+      },
+    );
+
+    it.runIf(hasRequiredProps && !isDisable)(
+      "runs onChange with the last current value if isDisable toggles from falsy to truthy",
+      () => {
+        const dataTestId = "tester";
+        const TestButton = () => {
+          const [testIsDisable, setTestIsDisable] = useState(isDisable);
+          const onClick = () => setTestIsDisable(!testIsDisable);
+          return (
+            <button data-testid={dataTestId} onClick={onClick}>
+              <TileSelector
+                {...{
+                  label,
+                  classArr,
+                  itemArr,
+                  currentIndex,
+                  onChange,
+                  isDisable: testIsDisable,
+                  visibleTiles,
+                }}
+              ></TileSelector>
+            </button>
+          );
+        };
+
+        render(<TestButton></TestButton>);
+
+        const containerElement = screen.queryByTestId(dataTestId);
+        fireEvent.click(containerElement);
+        expect(onChange).toHaveBeenCalledTimes(1);
+        expect(onChange).toHaveBeenCalledWith(
+          itemArr[boundedCurrentIndex].value,
+        );
       },
     );
   },
