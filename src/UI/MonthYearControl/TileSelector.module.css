@@ -87,12 +87,12 @@
   margin-bottom: calc(var(--tileHeight) * var(--tileMarginMultiplier));
 }
 
-.tile:hover {
+.tile:hover:not(.disable .tile:hover) {
   --tileBGColor: var(--tileBGColorHover);
   --tileColor: var(--tileColorHover);
 }
 
-.tile.current {
+.tile.current:not(.disable .tile.current) {
   --tileBGColor: var(--tileBGColorCurrent);
   --tileColor: var(--tileColorCurrent);
 }
@@ -107,7 +107,7 @@
   padding: 2.5px;
 }
 
-.Button:hover {
+.Button:hover:not(.disable .Button:hover) {
   --color: var(--secondary600color);
 }
 
