@@ -98,8 +98,8 @@
 }
 
 .Button {
-  --BGColor: inherit;
-  --BGColorHover: inherit;
+  --BGColor: transparent;
+  --BGColorHover: transparent;
   --color: var(--TileSelectorColor);
   --iconSize: 15px;
   min-width: initial;
