@@ -7,13 +7,29 @@ const onClickMock = vi.fn();
 
 const propList = [
   {},
-  { children: "test", classArr: ["test1"], iconPosition: "left" },
+  {
+    children: "test",
+    classArr: ["test1"],
+    iconPosition: "left",
+    style: {},
+  },
   {
     children: "test",
     classArr: ["test1", "test2"],
     iconPosition: "right",
     Icon,
     onClick: onClickMock,
+    style: {
+      "--height": "50px",
+      "--minWidth": "60px",
+      "--inlinePadding": "70px",
+      "--columnGap": "80px",
+      "--color": "red",
+      "--BGColor": "Crimson",
+      "--BGColorHover": "PaleVioletRed",
+      "--fontSize": "90rem",
+      "--iconSize": "100px",
+    },
   },
   {
     children: "test",
@@ -21,6 +37,15 @@ const propList = [
     iconPosition: "Right",
     Icon,
     onClick: onClickMock,
+    style: {
+      "--height": "initial",
+      "--minWidth": "initial",
+      "--inlinePadding": "initial",
+      "--default1": "foo",
+      "--default2": "faa",
+      "--default3": "fii",
+      width: "6.5px",
+    },
   },
   {
     children: "test",
@@ -28,6 +53,10 @@ const propList = [
     iconPosition: "test",
     Icon,
     onClick: onClickMock,
+    style: {
+      "--test1": "soyUntest",
+      opacity: "0.5",
+    },
   },
   {
     children: "test",
@@ -36,21 +65,23 @@ const propList = [
     Icon,
     onClick: onClickMock,
     isDisable: true,
+    style: {
+      "--BGColor": "Crimson",
+      "--BGColorHover": "PaleVioletRed",
+      "--fontSize": "90rem",
+      "--iconSize": "100px",
+    },
   },
 ];
 
 describe.each(propList)(
-  "Button component with props: {text: $text, classArr: $classArr, iconPosition: $iconPosition, Icon: $Icon, onClick: $onClick}",
-  ({ children, classArr, iconPosition, Icon, onClick, isDisable }) => {
+  "Button component with props: {text: $text, classArr: $classArr, iconPosition: $iconPosition, Icon: $Icon, onClick: $onClick, style: $style}",
+  ({ children, classArr, iconPosition, Icon, onClick, isDisable, style }) => {
     beforeEach(() => {
       onClickMock.mockClear();
       render(
         <Button
-          classArr={classArr}
-          iconPosition={iconPosition}
-          Icon={Icon}
-          onClick={onClick}
-          isDisable={isDisable}
+          {...{ classArr, iconPosition, Icon, onClick, isDisable, style }}
         >
           {children}
         </Button>,
@@ -109,5 +140,15 @@ describe.each(propList)(
         expect(targetElement).toBeEnabled();
       },
     );
+
+    it.runIf(style)("overrides and extends the default styles", () => {
+      const targetElement = screen.getByRole("button");
+      const styles = getComputedStyle(targetElement);
+      const setExpectations = ([key, value]) => {
+        expect(styles.getPropertyValue(key)).toBe(value);
+      };
+      const entries = Object.entries(style);
+      entries.forEach(setExpectations);
+    });
   },
 );

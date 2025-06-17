@@ -17,6 +17,7 @@ import styles from "./Button.module.css";
  * @property {"left" | "right"} [props.iconPosition = "left"] The position of the icon
  * @property {onClickCallback} props.onClick The function that runs on click events
  * @property {boolean} [prop.isDisable = false] If true sets the disable attribute as true, if false sets the opposite
+ * @property {Object} [style = {}] An object that sets the inline style
  */
 
 /**
@@ -31,9 +32,11 @@ function Button({
   iconPosition = "left",
   onClick,
   isDisable = false,
+  style: initialStyle = {},
 }) {
   const iconPositionClass =
     iconPosition.toLowerCase() === "right" ? styles.right : "";
+
   return (
     <button
       disabled={isDisable}
@@ -43,6 +46,7 @@ function Button({
         ...classArr,
       ])}
       onClick={onClick}
+      style={{ ...initialStyle }}
     >
       {Icon ? <Icon className={styles.icon}></Icon> : undefined}
       {children}
