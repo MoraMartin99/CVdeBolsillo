@@ -5,20 +5,24 @@ import { render, screen, fireEvent } from "@testing-library/react";
 
 const onClickMock = vi.fn();
 
-const dataTestId = "testComponent";
+const elementTestId = "testComponent";
+const iconTestId = "testIcon";
+const Icon = <TestIcon data-testid={iconTestId}></TestIcon>;
+const leftPosition = "left";
+const rightPosition = "right";
 
 const propList = [
   {},
   {
     children: "test",
     classArr: ["test1"],
-    iconPosition: "left",
+    iconPosition: leftPosition,
     style: {},
   },
   {
-    children: <p data-testid={dataTestId}>test</p>,
+    children: <p data-testid={elementTestId}>test</p>,
     classArr: ["test1", "test2"],
-    iconPosition: "right",
+    iconPosition: rightPosition,
     onClick: onClickMock,
     style: {
       "--height": "50px",
@@ -34,12 +38,13 @@ const propList = [
   },
   {
     children: [
-      <div data-testid={dataTestId} key={1}>
+      <div data-testid={elementTestId} key={1}>
         test2
       </div>,
     ],
     classArr: ["test1", "test2"],
-    iconPosition: "Right",
+    iconPosition: rightPosition,
+    Icon,
     onClick: onClickMock,
     style: {
       "--height": "initial",
@@ -52,9 +57,15 @@ const propList = [
     },
   },
   {
-    children: ["test", <TestIcon data-testid={dataTestId} key={1}></TestIcon>],
+    children: [
+      "test",
+      <div data-testid={elementTestId} key={1}>
+        test2
+      </div>,
+    ],
     classArr: ["test1", "test2"],
-    iconPosition: "test",
+    Icon,
+    iconPosition: leftPosition,
     onClick: onClickMock,
     style: {
       "--test1": "soyUntest",
@@ -77,12 +88,14 @@ const propList = [
 ];
 
 describe.each(propList)(
-  "BaseButton component with props: {children: $children, classArr: $classArr, onClick: $onClick, style: $style, isDisable: $isDisable}",
-  ({ children, classArr, onClick, isDisable, style }) => {
+  "BaseButton component with props: {children: $children, classArr: $classArr, onClick: $onClick, style: $style, isDisable: $isDisable, iconPosition: $iconPosition, Icon: $Icon}",
+  ({ children, classArr, onClick, isDisable, style, iconPosition, Icon }) => {
     beforeEach(() => {
       onClickMock.mockClear();
       render(
-        <BaseButton {...{ classArr, onClick, isDisable, style }}>
+        <BaseButton
+          {...{ classArr, onClick, isDisable, style, iconPosition, Icon }}
+        >
           {children}
         </BaseButton>,
       );
@@ -100,11 +113,16 @@ describe.each(propList)(
         if (typeof children === "string") {
           expect(parentElement).toHaveTextContent(item);
         } else {
-          const itemElement = screen.queryByTestId(dataTestId);
+          const itemElement = screen.queryByTestId(elementTestId);
           expect(parentElement).toContainElement(itemElement);
         }
       };
       list.forEach(setExpectations);
+    });
+
+    it.runIf(Icon)("has the corresponding icon", () => {
+      const targetElement = screen.queryByTestId(iconTestId);
+      expect(targetElement).toBeInTheDocument();
     });
 
     it.runIf(classArr)("has classArr applied as the last classes", () => {

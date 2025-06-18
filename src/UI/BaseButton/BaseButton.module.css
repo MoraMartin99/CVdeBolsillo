@@ -1,0 +1,7 @@
+.main {
+  display: flex;
+}
+
+.right {
+  flex-direction: row-reverse;
+}
