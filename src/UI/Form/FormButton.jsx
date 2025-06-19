@@ -38,7 +38,7 @@ function FormButton({
   console.log(reduceToClassName([css.main, ...classArr]));
   return (
     <BaseButton
-      disabled={isDisable}
+      isDisable={isDisable}
       classArr={[css.main, ...classArr]}
       onClick={onClick}
       style={{ ...initialStyle }}
