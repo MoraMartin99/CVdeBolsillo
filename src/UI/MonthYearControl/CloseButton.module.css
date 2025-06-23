@@ -1,0 +1,27 @@
+.main {
+  --height: initial;
+  --minWidth: initial;
+  --padding: 1.5px;
+  --color: var(--secondary500color);
+  --colorHover: var(--secondary600color);
+  --BGColor: transparent;
+  --iconSize: 20px;
+  min-width: var(--minWidth);
+  height: var(--height);
+  padding: var(--padding);
+  justify-content: center;
+  align-items: center;
+  color: var(--color);
+  background-color: var(--BGColor);
+  cursor: pointer;
+}
+
+.main:hover {
+  color: var(--colorHover);
+}
+
+.icon {
+  color: inherit;
+  width: var(--iconSize);
+  height: var(--iconSize);
+}
