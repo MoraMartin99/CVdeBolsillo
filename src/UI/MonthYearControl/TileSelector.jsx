@@ -1,7 +1,5 @@
-import Button from "../Button/Button";
+import NavigationButton from "./NavigationButton";
 import styles from "./TileSelector.module.css";
-import DecreaseIcon from "../../assets/images/fillArrowUp.svg?react";
-import IncreaseIcon from "../../assets/images/fillArrowDown.svg?react";
 import { reduceToClassName } from "../../utils";
 import { useEffect, useRef } from "react";
 import useOnUpdate from "../../hooks/useOnUpdate";
@@ -171,25 +169,24 @@ function TileSelector({
       ])}
     >
       <div className={reduceToClassName(["TileControl", styles.TileControl])}>
-        <Button
+        <NavigationButton
           classArr={[
             styles.Button,
             styles.previousTileButton,
             "previousTileButton",
           ]}
-          Icon={DecreaseIcon}
           onClick={previousTile}
-          disabled={isDisable}
-        ></Button>
+          isDisable={isDisable}
+        ></NavigationButton>
         <ol ref={tileContainerRef} className={styles.tileContainer}>
           {itemArr.map(tileMapper)}
         </ol>
-        <Button
+        <NavigationButton
+          iconDirection="down"
           classArr={[styles.Button, styles.nextTileButton, "nextTileButton"]}
-          Icon={IncreaseIcon}
           onClick={nextTile}
-          disabled={isDisable}
-        ></Button>
+          isDisable={isDisable}
+        ></NavigationButton>
       </div>
       {label ? <p className={styles.label}>{label}</p> : undefined}
     </div>
