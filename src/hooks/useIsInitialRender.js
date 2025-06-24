@@ -9,7 +9,8 @@ import { useRef, useEffect } from "react";
  */
 
 /**
- * The useIsInitialRender hook returns an [useRef]{@link https://react.dev/reference/react/useRef} that represents if the current rendering cycle is the initial
+ * The useIsInitialRender hook returns an [useRef]{@link https://react.dev/reference/react/useRef} that represents if the current rendering cycle is the initial.
+ * Note: this hook doesn't work as intended inside [useEffects]{@link https://react.dev/reference/react/useEffect#useeffect} hooks
  * @returns {isInitial}
  */
 function useIsInitialRender() {
