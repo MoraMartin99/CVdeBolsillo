@@ -1,8 +1,9 @@
 import NavigationButton from "./NavigationButton";
 import styles from "./TileSelector.module.css";
 import { reduceToClassName } from "../../utils";
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import useOnUpdate from "../../hooks/useOnUpdate";
+
 /**
  * A callback that runs if the value change and is valid
  * @memberof module:MonthYearControl
@@ -62,25 +63,15 @@ function TileSelector({
   const tileMarginMultiplier = (visibleTiles - 1) / 2;
 
   const getIndex = (element) => Number(element.getAttribute("data-index"));
-  const getBoundedIndex = (index) => {
-    return index < MIN_TILE_INDEX
-      ? MIN_TILE_INDEX
-      : index > MAX_TILE_INDEX
-        ? MAX_TILE_INDEX
-        : index;
-  };
 
-  const setCurrentTile = (element) => {
-    const index = getIndex(element);
-    element.classList.add(styles.current);
-    onChange(itemArr[index].value);
-  };
-
-  const scrollTo = (target) => {
-    if (target && !isDisable) {
-      target.scrollIntoView({ behavior: "smooth", block: "center" });
-    }
-  };
+  const scrollTo = useCallback(
+    (target) => {
+      if (target && !isDisable) {
+        target.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    },
+    [isDisable],
+  );
 
   const tileMapper = ({ label, key }, index) => {
     const onClick = ({ target }) => scrollTo(target);
@@ -103,15 +94,10 @@ function TileSelector({
     )[0];
   };
 
-  const getCurrentElement = () => {
+  const getCurrentElement = useCallback(() => {
     const filter = (item) => item.classList.contains(styles.current);
     return getElementBy(filter);
-  };
-
-  const getElementByIndex = (index) => {
-    const filter = (item) => getIndex(item) === index;
-    return getElementBy(filter);
-  };
+  }, []);
 
   const nextTile = () => {
     scrollTo(Object(getCurrentElement()).nextElementSibling);
@@ -128,6 +114,26 @@ function TileSelector({
       rootMargin: `${margin} 0px ${margin}`,
       threshold: 0.95,
     };
+
+    const getElementByIndex = (index) => {
+      const filter = (item) => getIndex(item) === index;
+      return getElementBy(filter);
+    };
+
+    const getBoundedIndex = (index) => {
+      return index < MIN_TILE_INDEX
+        ? MIN_TILE_INDEX
+        : index > MAX_TILE_INDEX
+          ? MAX_TILE_INDEX
+          : index;
+    };
+
+    const setCurrentTile = (element) => {
+      const index = getIndex(element);
+      element.classList.add(styles.current);
+      onChange(itemArr[index].value);
+    };
+
     const callback = (entries) => {
       entries.forEach(({ target, isIntersecting }) => {
         isIntersecting
@@ -144,7 +150,15 @@ function TileSelector({
     scrollTo(getElementByIndex(getBoundedIndex(currentIndex)));
 
     return () => observer.disconnect();
-  }, []);
+  }, [
+    tileMarginMultiplier,
+    visibleTiles,
+    scrollTo,
+    currentIndex,
+    MAX_TILE_INDEX,
+    itemArr,
+    onChange,
+  ]);
 
   useOnUpdate(() => {
     const currentElement = getCurrentElement();
@@ -152,7 +166,7 @@ function TileSelector({
     if (!isDisable && typeof currentIndex === "number") {
       onChange(itemArr[currentIndex].value);
     }
-  }, [isDisable]);
+  }, [isDisable, itemArr, onChange, getCurrentElement]);
 
   return (
     <div
