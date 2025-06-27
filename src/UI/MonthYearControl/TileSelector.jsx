@@ -136,7 +136,7 @@ function TileSelector({
 
     const callback = (entries) => {
       entries.forEach(({ target, isIntersecting }) => {
-        isIntersecting
+        isIntersecting && !isDisable
           ? setCurrentTile(target)
           : target.classList.remove(styles.current);
       });
@@ -158,6 +158,7 @@ function TileSelector({
     MAX_TILE_INDEX,
     itemArr,
     onChange,
+    isDisable,
   ]);
 
   useOnUpdate(() => {
