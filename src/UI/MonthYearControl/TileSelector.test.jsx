@@ -28,10 +28,12 @@ const IntersectionObserverMock = vi.fn((callback) => {
 
 const scrollIntoViewMock = vi.fn(function () {
   const trigger = IntersectionObserverMock.mock.results[0].value.trigger;
-  const currentElement = this;
-  const childrenList = Array.from(currentElement.parentElement.children);
+  const targetElement = this;
+  const isCurrentTile = containsClass(targetElement, currentClassRegex);
+  const parentElement = targetElement.parentElement;
+  const childrenList = Array.from(parentElement.children);
   const mapper = (item) => {
-    return item === currentElement
+    return item === targetElement
       ? {
           isIntersecting: true,
           index: Number(item.getAttribute("data-index")),
@@ -41,7 +43,11 @@ const scrollIntoViewMock = vi.fn(function () {
           index: Number(item.getAttribute("data-index")),
         };
   };
+
+  if (isCurrentTile) return;
   trigger(childrenList.map(mapper));
+  fireEvent.scroll(parentElement);
+  vi.runAllTimers();
 });
 
 const propList = [
@@ -171,6 +177,7 @@ describe.each(propList)(
     };
 
     beforeEach(() => {
+      vi.useFakeTimers();
       vi.stubGlobal("IntersectionObserver", IntersectionObserverMock);
       window.HTMLElement.prototype.scrollIntoView = scrollIntoViewMock;
       [IntersectionObserverMock, scrollIntoViewMock, onChangeMock].forEach(
@@ -189,6 +196,7 @@ describe.each(propList)(
           }}
         ></TileSelector>,
       );
+      vi.runAllTimers();
     });
 
     it.runIf(hasRequiredProps)(
@@ -288,9 +296,14 @@ describe.each(propList)(
           fireEvent.click(targetElement);
           expect(targetElement).toBeInTheDocument();
           expect(targetElement).toHaveClass(classRegex);
-          expect(onChange).toHaveBeenCalledWith(value);
+          expect(onChange).toHaveBeenLastCalledWith(value);
         };
-        itemArr.forEach(setExpectations);
+        /* The list is defined this way so its possible to test a jump from the last tile to the first time by clicking if there ir some tiles in between */
+        const list = itemArr.length > 2 ? [...itemArr, itemArr[0]] : itemArr;
+        const expectedCalls =
+          boundedCurrentIndex === 0 ? list.length : list.length + 1;
+        list.forEach(setExpectations);
+        expect(onChange).toHaveBeenCalledTimes(expectedCalls);
       },
     );
 
@@ -349,14 +362,22 @@ describe.each(propList)(
     it.runIf(hasRequiredProps && !isDisable)(
       "selects the tile that intersects the trigger area on scroll",
       () => {
-        const list = screen.queryAllByRole("listitem");
+        /* The list is defined this way so its possible to test a jump from the last tile to the first time by scrolling if there ir some tiles in between */
+        const listItemArr = Array.from(screen.queryAllByRole("listitem"));
+        const list =
+          listItemArr.length > 2
+            ? [...listItemArr, listItemArr[0]]
+            : listItemArr;
         const setExpectation = (item) => {
           const value = itemArr[Number(item.getAttribute("data-index"))].value;
           item.scrollIntoView();
           expect(item).toBe(getCurrentElement());
-          expect(onChange).toHaveBeenCalledWith(value);
+          expect(onChange).toHaveBeenLastCalledWith(value);
         };
+        const expectedCalls =
+          boundedCurrentIndex === 0 ? list.length : list.length + 1;
         list.forEach(setExpectation);
+        expect(onChange).toHaveBeenCalledTimes(expectedCalls);
       },
     );
 
@@ -374,6 +395,7 @@ describe.each(propList)(
 
         const clickCallback = (item) => {
           fireEvent.click(item);
+          vi.runAllTimers();
           expect(currentElement).toBe(getCurrentElement());
         };
 
@@ -417,6 +439,7 @@ describe.each(propList)(
     })();
 
     beforeEach(() => {
+      vi.useFakeTimers();
       vi.stubGlobal("IntersectionObserver", IntersectionObserverMock);
       window.HTMLElement.prototype.scrollIntoView = scrollIntoViewMock;
       [IntersectionObserverMock, scrollIntoViewMock, onChangeMock].forEach(
@@ -476,6 +499,7 @@ describe.each(propList)(
         };
 
         render(<TestButton></TestButton>);
+        vi.runAllTimers();
 
         const containerElement = screen.queryByTestId(dataTestId);
         fireEvent.click(containerElement);
