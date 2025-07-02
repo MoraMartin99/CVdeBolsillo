@@ -3,6 +3,20 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import TileSelector from "./TileSelector";
 import { useState } from "react";
 
+const containsClass = (element, token) => {
+  const list = Array.from(element.classList);
+  const tester =
+    typeof token === "string"
+      ? (item) => item === token
+      : token instanceof RegExp
+        ? (item) => token.test(item)
+        : () => false;
+
+  return list.some(tester);
+};
+
+const currentClassRegex = /current/i;
+
 const onChangeMock = vi.fn();
 
 const IntersectionObserverMock = vi.fn((callback) => {
@@ -156,24 +170,12 @@ describe.each(propList)(
     const hasBoundedCurrentIndex = currentIndex === boundedCurrentIndex;
 
     const findElementByClass = (list, token) => {
-      const finder = (item) => {
-        const list = Array.from(item.classList);
-        const tester = (item) => {
-          return typeof token === "string"
-            ? item === token
-            : token instanceof RegExp
-              ? token.test(item)
-              : false;
-        };
-        return list.some(tester);
-      };
-      return list.find(finder);
+      return list.find((item) => containsClass(item, token));
     };
 
     const getCurrentElement = () => {
-      const classRegex = /current/i;
       const elementList = screen.queryAllByRole("listitem");
-      return findElementByClass(elementList, classRegex);
+      return findElementByClass(elementList, currentClassRegex);
     };
 
     beforeEach(() => {
@@ -248,12 +250,11 @@ describe.each(propList)(
     it.runIf(hasRequiredProps && hasBoundedCurrentIndex && !isDisable)(
       "selects the tile associated with the currentIndex as the current tile if currentIndex is defined",
       () => {
-        const classRegex = /current/i;
         const currentLabel = itemArr[currentIndex].label;
         const currentValue = itemArr[currentIndex].value;
         const targetElement = screen.queryByText(currentLabel);
         expect(targetElement).toBeInTheDocument();
-        expect(targetElement).toHaveClass(classRegex);
+        expect(targetElement).toHaveClass(currentClassRegex);
         expect(onChange).toHaveBeenCalledWith(currentValue);
         expect(onChange).toHaveBeenCalledTimes(1);
       },
@@ -262,12 +263,11 @@ describe.each(propList)(
     it.runIf(hasRequiredProps && currentIndex && !hasBoundedCurrentIndex)(
       "remains currentIndex within 0 and itemArr.length -1 if currentIndex is defined outside the range and selects the closest tile end",
       () => {
-        const classRegex = /current/i;
         const currentLabel = itemArr[boundedCurrentIndex].label;
         const currentValue = itemArr[boundedCurrentIndex].value;
         const targetElement = screen.queryByText(currentLabel);
         expect(targetElement).toBeInTheDocument();
-        expect(targetElement).toHaveClass(classRegex);
+        expect(targetElement).toHaveClass(currentClassRegex);
         expect(onChange).toHaveBeenCalledWith(currentValue);
         expect(onChange).toHaveBeenCalledTimes(1);
       },
@@ -276,26 +276,24 @@ describe.each(propList)(
     it.runIf(hasRequiredProps && currentIndex === undefined)(
       "starts with the first tile as the current if currentIndex is undefined",
       () => {
-        const classRegex = /current/i;
         const currentLabel = itemArr[0].label;
         const currentValue = itemArr[0].value;
         const targetElement = screen.queryByText(currentLabel);
         expect(targetElement).toBeInTheDocument();
-        expect(targetElement).toHaveClass(classRegex);
+        expect(targetElement).toHaveClass(currentClassRegex);
         expect(onChange).toHaveBeenCalledWith(currentValue);
         expect(onChange).toHaveBeenCalledTimes(1);
       },
     );
 
     it.runIf(hasRequiredProps && !isDisable)(
-      "sets the clicked tile as current ",
+      "sets the clicked tile as current",
       () => {
         const setExpectations = ({ label, value }) => {
-          const classRegex = /current/i;
           const targetElement = screen.queryByText(label);
           fireEvent.click(targetElement);
           expect(targetElement).toBeInTheDocument();
-          expect(targetElement).toHaveClass(classRegex);
+          expect(targetElement).toHaveClass(currentClassRegex);
           expect(onChange).toHaveBeenLastCalledWith(value);
         };
         /* The list is defined this way so its possible to test a jump from the last tile to the first time by clicking if there ir some tiles in between */
@@ -310,52 +308,64 @@ describe.each(propList)(
     it.runIf(hasRequiredProps && !isDisable)(
       "selects the current tile`s next sibling if exists on nextTile button click",
       () => {
-        const loopCount = itemArr.length - boundedCurrentIndex;
+        const list = itemArr.filter((item, index) => {
+          return index >= boundedCurrentIndex;
+        });
         const token = /nextTileButton/i;
         const button = findElementByClass(
           screen.queryAllByRole("button"),
           token,
         );
-        for (let i = 0; i <= loopCount; i++) {
+        const expectedCalls = list.length;
+
+        const setExpectations = ({ value }, index, arr) => {
+          const lastIndex = arr.length - 1;
           const currentElement = getCurrentElement();
-          const nextCurrentElement = currentElement.nextElementSibling
-            ? currentElement.nextElementSibling
-            : currentElement;
-          const nextCurrentValue =
-            itemArr[Number(nextCurrentElement.getAttribute("data-index"))]
-              .value;
           fireEvent.click(button);
+          const nextCurrentElement =
+            index === lastIndex
+              ? currentElement
+              : currentElement.nextElementSibling;
+          const nextValue = index === lastIndex ? value : arr[index + 1].value;
           expect(getCurrentElement()).toBe(nextCurrentElement);
-          if (currentElement !== nextCurrentValue) {
-            expect(onChange).toHaveBeenCalledWith(nextCurrentValue);
-          }
-        }
+          expect(onChange).toHaveBeenLastCalledWith(nextValue);
+        };
+
+        list.forEach(setExpectations);
+        expect(onChange).toHaveBeenCalledTimes(expectedCalls);
       },
     );
 
     it.runIf(hasRequiredProps && !isDisable)(
       "selects the current tile`s previous sibling if exists on previousTile button click",
       () => {
-        const loopCount = boundedCurrentIndex + 1;
+        const list = itemArr
+          .filter((item, index) => {
+            return index <= boundedCurrentIndex;
+          })
+          .reverse();
         const token = /previousTileButton/i;
         const button = findElementByClass(
           screen.queryAllByRole("button"),
           token,
         );
-        for (let i = 0; i <= loopCount; i++) {
+        const expectedCalls = list.length;
+
+        const setExpectations = ({ value }, index, arr) => {
+          const lastIndex = arr.length - 1;
           const currentElement = getCurrentElement();
-          const nextCurrentElement = currentElement.previousSibling
-            ? currentElement.previousSibling
-            : currentElement;
-          const nextCurrentValue =
-            itemArr[Number(nextCurrentElement.getAttribute("data-index"))]
-              .value;
           fireEvent.click(button);
+          const nextCurrentElement =
+            index === lastIndex
+              ? currentElement
+              : currentElement.previousSibling;
+          const nextValue = index === lastIndex ? value : arr[index + 1].value;
           expect(getCurrentElement()).toBe(nextCurrentElement);
-          if (currentElement !== nextCurrentValue) {
-            expect(onChange).toHaveBeenCalledWith(nextCurrentValue);
-          }
-        }
+          expect(onChange).toHaveBeenLastCalledWith(nextValue);
+        };
+
+        list.forEach(setExpectations);
+        expect(onChange).toHaveBeenCalledTimes(expectedCalls);
       },
     );
 
