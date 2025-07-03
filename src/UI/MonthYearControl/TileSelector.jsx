@@ -140,19 +140,6 @@ function TileSelector({
       threshold: 0.95,
     };
 
-    const getElementByIndex = (index) => {
-      const filter = (item) => getIndex(item) === index;
-      return getElementBy(filter);
-    };
-
-    const getBoundedIndex = (index) => {
-      return index < MIN_TILE_INDEX
-        ? MIN_TILE_INDEX
-        : index > MAX_TILE_INDEX
-          ? MAX_TILE_INDEX
-          : index;
-    };
-
     const callback = (entries) => {
       entries.forEach(({ target, isIntersecting }) => {
         isIntersecting
@@ -166,20 +153,35 @@ function TileSelector({
       observer.observe(item),
     );
 
+    return () => observer.disconnect();
+  }, [tileMarginMultiplier, visibleTiles]);
+
+  useEffect(() => {
+    const getElementByIndex = (index) => {
+      const filter = (item) => getIndex(item) === index;
+      return getElementBy(filter);
+    };
+
+    const getBoundedIndex = (index) => {
+      return index < MIN_TILE_INDEX
+        ? MIN_TILE_INDEX
+        : index > MAX_TILE_INDEX
+          ? MAX_TILE_INDEX
+          : index;
+    };
+
+    const forceScrollTo = (target) => {
+      target.scrollIntoView({ behavior: "smooth", block: "center" });
+      if (!intersectedTile.current) {
+        tileContainerRef.current.dispatchEvent(new CustomEvent("scroll"));
+      }
+    };
+
     const targetElement = intersectedTile.current
       ? intersectedTile.current
       : getElementByIndex(getBoundedIndex(currentIndex));
-    scrollTo(targetElement);
-
-    return () => observer.disconnect();
-  }, [
-    tileMarginMultiplier,
-    visibleTiles,
-    scrollTo,
-    currentIndex,
-    MAX_TILE_INDEX,
-    onChange,
-  ]);
+    forceScrollTo(targetElement);
+  }, [MAX_TILE_INDEX, currentIndex]);
 
   useOnUpdate(() => {
     const currentElement = getCurrentElement();
