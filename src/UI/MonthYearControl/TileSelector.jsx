@@ -2,7 +2,6 @@ import NavigationButton from "./NavigationButton";
 import styles from "./TileSelector.module.css";
 import { reduceToClassName } from "../../utils";
 import { useCallback, useEffect, useRef } from "react";
-import useOnUpdate from "../../hooks/useOnUpdate";
 
 /**
  * A callback that runs if the value change and is valid
@@ -111,28 +110,6 @@ function TileSelector({
   useEffect(() => {
     let timeOut;
     const scrollEndTime = 150;
-    const target = tileContainerRef.current;
-
-    const setCurrentTile = (element) => {
-      const index = getIndex(element);
-      element.classList.add(styles.current);
-      onChange(itemArr[index].value);
-    };
-
-    const onScroll = () => {
-      if (timeOut) clearTimeout(timeOut);
-      if (isDisable) return;
-      timeOut = setTimeout(() => {
-        setCurrentTile(intersectedTile.current);
-      }, scrollEndTime);
-    };
-
-    target.addEventListener("scroll", onScroll);
-
-    return () => target.removeEventListener("scroll", onScroll);
-  }, [isDisable, itemArr, onChange]);
-
-  useEffect(() => {
     const margin = ` -${(tileMarginMultiplier * 100) / visibleTiles}%`;
     const options = {
       root: tileContainerRef.current,
@@ -140,12 +117,26 @@ function TileSelector({
       threshold: 0.95,
     };
 
+    const setCurrentTile = (element) => {
+      const index = getIndex(element);
+      element.classList.add(styles.current);
+      onChange(itemArr[index].value);
+    };
+
     const callback = (entries) => {
-      entries.forEach(({ target, isIntersecting }) => {
-        isIntersecting
-          ? (intersectedTile.current = target)
-          : target.classList.remove(styles.current);
-      });
+      const setState = ({ target, isIntersecting }) => {
+        if (isIntersecting) {
+          if (isDisable) return;
+          timeOut = setTimeout(() => {
+            intersectedTile.current = target;
+            setCurrentTile(intersectedTile.current);
+          }, scrollEndTime);
+        } else {
+          target.classList.remove(styles.current);
+        }
+      };
+      clearTimeout(timeOut);
+      entries.forEach(setState);
     };
 
     const observer = new IntersectionObserver(callback, options);
@@ -154,9 +145,11 @@ function TileSelector({
     );
 
     return () => observer.disconnect();
-  }, [tileMarginMultiplier, visibleTiles]);
+  }, [isDisable, itemArr, onChange, tileMarginMultiplier, visibleTiles]);
 
   useEffect(() => {
+    if (intersectedTile.current) return;
+
     const getElementByIndex = (index) => {
       const filter = (item) => getIndex(item) === index;
       return getElementBy(filter);
@@ -169,27 +162,8 @@ function TileSelector({
           ? MAX_TILE_INDEX
           : index;
     };
-
-    const forceScrollTo = (target) => {
-      target.scrollIntoView({ behavior: "smooth", block: "center" });
-      if (!intersectedTile.current) {
-        tileContainerRef.current.dispatchEvent(new CustomEvent("scroll"));
-      }
-    };
-
-    const targetElement = intersectedTile.current
-      ? intersectedTile.current
-      : getElementByIndex(getBoundedIndex(currentIndex));
-    forceScrollTo(targetElement);
-  }, [MAX_TILE_INDEX, currentIndex]);
-
-  useOnUpdate(() => {
-    const currentElement = getCurrentElement();
-    const currentIndex = currentElement ? getIndex(currentElement) : undefined;
-    if (!isDisable && typeof currentIndex === "number") {
-      onChange(itemArr[currentIndex].value);
-    }
-  }, [isDisable, itemArr, onChange, getCurrentElement]);
+    scrollTo(getElementByIndex(getBoundedIndex(currentIndex)));
+  }, [MAX_TILE_INDEX, currentIndex, scrollTo]);
 
   return (
     <div
