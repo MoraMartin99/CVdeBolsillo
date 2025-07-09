@@ -3,7 +3,7 @@ import useOnUpdate from "./useOnUpdate";
 import { useState } from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
 
-describe("useOnUpdate hook test suit", () => {
+describe("useOnUpdate hook test suite", () => {
   const effectMock = vi.fn(() => {});
 
   function TestButton() {
