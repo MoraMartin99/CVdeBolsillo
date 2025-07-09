@@ -35,14 +35,15 @@ import { useState } from "react";
 
 /**
  * The useOverlay hook lets you set a component as an overlay relative to the closest absolute ancestor
- * @param {Boolean} [initialValue = false] The initial visibility state of the component. truthy values sets the component as visible, falsy as the oposite
- * @param {position} [position = { x: "center", y: "bellow" }] Defines the position of the overlay relative to the closest absolute ancestor
+ * @param {Object} props The component properties
+ * @param {Boolean} [props.initialValue = false] The initial visibility state of the component. truthy values sets the component as visible, falsy as the oposite
+ * @param {position} [props.position = { x: "center", y: "bellow" }] Defines the position of the overlay relative to the closest absolute ancestor
  * @returns {resultArray}
  */
-function useOverlay(
+function useOverlay({
   initialValue = false,
   position = { x: "center", y: "bellow" },
-) {
+}) {
   const [isVisible, setIsVisible] = useState(Boolean(initialValue));
   let overlayStyle = { position: "absolute" };
   const CENTER = "center";

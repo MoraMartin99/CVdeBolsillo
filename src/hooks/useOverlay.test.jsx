@@ -6,10 +6,10 @@ const PARENT_SIZE = 100;
 const CONTAINER_SIZE = 50;
 
 const TestElement = ({ initialValue, position }) => {
-  const [isVisible, setIsVisible, overlayStyle] = useOverlay(
+  const [isVisible, setIsVisible, overlayStyle] = useOverlay({
     initialValue,
     position,
-  );
+  });
   return (
     <>
       <button onClick={() => setIsVisible(!isVisible)}></button>
