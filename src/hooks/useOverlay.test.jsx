@@ -6,13 +6,13 @@ const PARENT_SIZE = 100;
 const CONTAINER_SIZE = 50;
 
 const TestElement = ({ initialValue, position }) => {
-  const [isOpen, setIsOpen, containerStyle] = useOverlay(
+  const [isVisible, setIsVisible, overlayStyle] = useOverlay(
     initialValue,
     position,
   );
   return (
     <>
-      <button onClick={() => setIsOpen(!isOpen)}></button>
+      <button onClick={() => setIsVisible(!isVisible)}></button>
       <div
         data-testid="parent"
         style={{
@@ -25,7 +25,7 @@ const TestElement = ({ initialValue, position }) => {
           style={{
             width: `${CONTAINER_SIZE}px`,
             height: `${CONTAINER_SIZE}px`,
-            ...containerStyle,
+            ...overlayStyle,
           }}
           data-testid="target"
         ></div>

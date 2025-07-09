@@ -22,14 +22,14 @@ import { useState } from "react";
  */
 
 /**
- * @typedef {Object} containerStyle A style object for the target container that defines the inline css properties required for the overlay behavior.
+ * @typedef {Object} overlayStyle A style object for the target element that defines the inline css properties required for the overlay behavior.
  */
 
 /**
  * @typedef {Array} resultArray The return value of the hook
- * @property {Boolean} isOpen A state variable that represents if true that the component is visible, if false the oposite
- * @property {setIsOpen} setIsOpen The setter of the state variable
- * @property {containerStyle} containerStyle The inline css properties object
+ * @property {Boolean} isVisible A state variable that represents if true that the component is visible, if false the oposite
+ * @property {setIsVisible} setIsVisible The setter of the state variable
+ * @property {overlayStyle} overlayStyle The inline css properties object for the target element
  */
 
 /**
@@ -42,18 +42,18 @@ function useOverlay(
   initialValue = false,
   position = { x: "center", y: "bellow" },
 ) {
-  const [isOpen, setIsOpen] = useState(Boolean(initialValue));
-  let containerStyle = { position: "absolute" };
+  const [isVisible, setIsVisible] = useState(Boolean(initialValue));
+  let overlayStyle = { position: "absolute" };
   const CENTER = "center";
   const LEFT = "left";
   const RIGHT = "right";
   const ABOVE = "above";
   const BELLOW = "bellow";
 
-  if (!isOpen) containerStyle = { ...containerStyle, display: "none" };
+  if (!isVisible) overlayStyle = { ...overlayStyle, display: "none" };
   if (position === CENTER) {
-    containerStyle = {
-      ...containerStyle,
+    overlayStyle = {
+      ...overlayStyle,
       top: "50%",
       left: "50%",
       transform: "translate(-50%, -50%)",
@@ -86,14 +86,14 @@ function useOverlay(
         transform: "translateY(100%)",
       },
     };
-    containerStyle = {
-      ...containerStyle,
+    overlayStyle = {
+      ...overlayStyle,
       ...xProperties[x],
       ...yProperties[y],
     };
   }
 
-  return [isOpen, (value) => setIsOpen(Boolean(value)), containerStyle];
+  return [isVisible, (value) => setIsVisible(Boolean(value)), overlayStyle];
 }
 
 export default useOverlay;
