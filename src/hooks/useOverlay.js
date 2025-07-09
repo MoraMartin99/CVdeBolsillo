@@ -40,10 +40,7 @@ import { useState } from "react";
  * @param {position} [props.position = { x: "center", y: "bellow" }] Defines the position of the overlay relative to the closest absolute ancestor
  * @returns {resultArray}
  */
-function useOverlay({
-  initialValue = false,
-  position = { x: "center", y: "bellow" },
-}) {
+function useOverlay({ initialValue = false, position: initialPosition }) {
   const [isVisible, setIsVisible] = useState(Boolean(initialValue));
   let overlayStyle = { position: "absolute" };
   const CENTER = "center";
@@ -51,6 +48,8 @@ function useOverlay({
   const RIGHT = "right";
   const ABOVE = "above";
   const BELLOW = "bellow";
+  const defaultPosition = { x: "center", y: "bellow" };
+  const position = { ...defaultPosition, ...initialPosition };
 
   if (!isVisible) overlayStyle = { ...overlayStyle, display: "none" };
   if (position === CENTER) {
