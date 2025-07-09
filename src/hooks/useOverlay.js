@@ -9,15 +9,16 @@ import { useState } from "react";
  */
 
 /**
- * @typedef {"left"|"center"|"right"} xPosition A keyword that represents the valid positions for the horizontal axis
+ * @typedef {"left"|"center"|"right"} xPosition A keyword that represents a valid positions for the horizontal axis
  */
 
 /**
- * @typedef {"above"|"center"|"bellow"} yPosition A keyword that represents the valid positions for the vertical axis
+ * @typedef {"above"|"center"|"bellow"} yPosition A keyword that represents a valid positions for the vertical axis
  */
 
 /**
- * @callback setIsOpen A function that coerced its parameter to a boolean that sets the visibility state
+ *  A function that coerced its parameter to a boolean that sets the visibility state
+ * @callback setIsVisible
  * @param {*} value
  */
 
