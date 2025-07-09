@@ -87,11 +87,20 @@ function useOverlay({ initialValue = false, position: initialPosition }) {
         transform: "translateY(100%)",
       },
     };
-    overlayStyle = {
-      ...overlayStyle,
-      ...xProperties[x],
-      ...yProperties[y],
+
+    const mergeStyles = (list) => {
+      const allEntries = list.flatMap((item) => Object.entries(item));
+      const filterTransforms = ([key]) => key === "transform";
+      const reduceTransforms = (total, [key, value]) => {
+        return [key, `${total[1]} ${value}`];
+      };
+      const transformEntry = allEntries
+        .filter(filterTransforms)
+        .reduce(reduceTransforms);
+      return Object.fromEntries([...allEntries, transformEntry]);
     };
+
+    overlayStyle = mergeStyles([overlayStyle, xProperties[x], yProperties[y]]);
   }
 
   return [isVisible, (value) => setIsVisible(Boolean(value)), overlayStyle];
