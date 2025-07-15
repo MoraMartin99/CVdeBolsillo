@@ -1,6 +1,5 @@
 import BaseButton from "../BaseButton/BaseButton";
 import css from "./FormButton.module.css";
-import { reduceToClassName } from "../../utils";
 /**@module FormButton */
 
 /**
@@ -35,7 +34,6 @@ function FormButton({
   isDisable = false,
   style: initialStyle = {},
 }) {
-  console.log(reduceToClassName([css.main, ...classArr]));
   return (
     <BaseButton
       isDisable={isDisable}
