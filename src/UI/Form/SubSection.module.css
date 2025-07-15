@@ -1,0 +1,4 @@
+.main {
+  --mainWidth: 240px;
+  --BGColor: var(--primary1200color);
+}
