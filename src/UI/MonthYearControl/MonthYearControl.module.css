@@ -1,0 +1,120 @@
+.main {
+  --BGColor: var(--secondary1500color);
+  --borderColor: var(--secondary1000color);
+  --closeButtonColor: var(--secondary600color);
+  --closeButtonColorHover: var(--secondary500color);
+  --checkboxBGColor: #ffffff;
+  --checkboxLabelColor: var(--secondary1100color);
+  --checkboxLabelColorHover: var(--secondary1000color);
+  --checkboxLabelColorChecked: var(--secondary500color);
+  --checkboxLabelFontSize: 0.875rem;
+  --checkboxGap: 7.5px;
+  --checkboxInputSize: 18px;
+  --checkboxInputBorderWidth: 1px;
+  --checkboxInputBorderColor: var(--secondary1300color);
+  --checkboxInputBorderColorHover: var(--secondary1000color);
+  --checkboxInputIconBGColor: var(--secondary500color);
+  --checkboxInputIconSize: calc(100% * (14 / 18));
+  --rowGap1: 7px;
+  --rowGap2: 15px;
+  --columnGap: 25px;
+  --paddingBlock: 7px;
+  --paddingInLine: 10px;
+  --borderWidth: 1px;
+  --minWidth: 163px;
+  padding: var(--paddingBlock) var(--paddingInLine);
+  border: var(--borderWidth) var(--borderColor) solid;
+  background-color: var(--BGColor);
+  display: grid;
+  grid-template-rows: auto var(--rowGap1) auto var(--rowGap2) auto;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-areas:
+    "closeButton closeButton"
+    ". ."
+    "leftSelector rightSelector"
+    ". ."
+    "checkBox checkBox";
+  justify-items: center;
+  column-gap: var(--columnGap);
+  min-width: var(--minWidth);
+}
+
+.closeButton {
+  grid-area: closeButton;
+  justify-self: end;
+}
+
+.selector:first-of-type {
+  grid-area: leftSelector;
+  justify-self: end;
+}
+
+.selector:last-of-type {
+  grid-area: rightSelector;
+  justify-self: start;
+}
+
+.checkBox {
+  grid-area: checkBox;
+  display: flex;
+  gap: var(--checkboxGap);
+  cursor: pointer;
+  align-items: center;
+}
+
+.checkBox span {
+  color: var(--checkboxLabelColor);
+  font-size: var(--checkboxLabelFontSize);
+  font-weight: 600;
+}
+
+.checkBox:hover input:not(:disabled) + span {
+  color: var(--checkboxLabelColorHover);
+}
+
+.checkBox input:checked + span {
+  color: var(--checkboxLabelColorChecked);
+}
+
+.checkBox input {
+  /* Reset starts here */
+  -webkit-appearance: none;
+  appearance: none;
+  background-color: #fff;
+  margin: 0;
+  /* Reset ends here */
+  width: var(--checkboxInputSize);
+  height: var(--checkboxInputSize);
+  border: var(--checkboxInputBorderWidth) var(--checkboxInputBorderColor) solid;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.checkBox:hover input:not(:disabled) {
+  border-color: var(--checkboxInputBorderColorHover);
+}
+
+.checkBox input::before {
+  display: block;
+  content: "";
+  clip-path: polygon(
+    41.667% 63.208%,
+    79.967% 24.908%,
+    85.858% 30.8%,
+    41.667% 75%,
+    15.15% 48.483%,
+    21.042% 42.592%,
+    41.667% 63.208%
+  );
+  width: var(--checkboxInputIconSize);
+  height: var(--checkboxInputIconSize);
+  background-color: var(--checkboxInputIconBGColor);
+  transform: scale(0);
+  transition: 120ms transform ease-in-out;
+}
+
+.checkBox input:checked:before {
+  transform: scale(1);
+}
