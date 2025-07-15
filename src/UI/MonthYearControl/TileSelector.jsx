@@ -27,7 +27,7 @@ import { useCallback, useEffect, useRef } from "react";
  * @param {number} [props.currentIndex = 0] The index of the current tile
  * @param {onChange} props.onChange A callback that runs if the value change and is valid and id isDisable prop changes from true to false
  * @param {boolean} [props.isDisable = false] If true sets the component as readonly, if false sets the opposite
- * @param {3|5} [visibleTiles = 5] The total number of tiles that are visible to the user
+ * @param {3|5} [props.visibleTiles = 5] The total number of tiles that are visible to the user
  */
 function TileSelector({
   label,
