@@ -1,0 +1,48 @@
+.container {
+  width: var(--width, 100%);
+  height: var(--height, 100%);
+  background-color: var(--BGColor, inherit);
+  padding-inline: var(--paddingLeft) var(--paddingRight);
+  color: var(--color, inherit);
+  cursor: pointer;
+}
+
+.button {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  grid-template-rows: 1fr;
+  grid-template-areas: "mainIcon text visibilityIcon";
+  justify-items: start;
+  align-items: center;
+  column-gap: var(--gap);
+}
+
+.button:hover {
+  background-color: var(--BGColorHover);
+}
+
+.text {
+  grid-area: text;
+  font-size: var(--fontSize);
+  font-weight: 600;
+  line-height: 1;
+}
+
+.mainIcon {
+  grid-area: mainIcon;
+  width: var(--mainIconSize);
+  height: var(--mainIconSize);
+}
+
+.visibilityIcon {
+  grid-area: visibilityIcon;
+  width: var(--visibilityIcon);
+  height: var(--visibilityIcon);
+  transition: transform var(--transitionTime, 0.15s) linear;
+}
+
+.expanded {
+  transform: rotate(-90deg);
+}
