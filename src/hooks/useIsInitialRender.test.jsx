@@ -14,7 +14,7 @@ function TestButton() {
   return <button onClick={onClick}>{count}</button>;
 }
 
-describe("useIsInitialRender hook test suit", () => {
+describe("useIsInitialRender hook test suite", () => {
   beforeEach(() => {
     onRenderMock.mockReset();
     render(<TestButton></TestButton>);
