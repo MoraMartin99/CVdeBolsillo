@@ -3,13 +3,34 @@ import { useState } from "react";
 /**@module  useFormModel*/
 
 /**
- * The data required to build a form element
- * @typedef {object} data
+ * The data required to build a form element model from a template function
+ * @typedef {object} templateData
+ * @property {string} childrenId A number that identifies the data within its siblings
  */
 
 /**
- * An ordered list that contains the data required to build a collection of form element
- * @typedef {Array<data>} modelList
+ * An ordered list of the templateData
+ * @typedef {Array<templateData>} templateDataList
+ */
+
+/**
+ * An ordered list that defines the actions that can be performed by the component
+ * @typedef {Array<templateData>} actionsList
+ */
+
+/**
+ * The data required to build a form element
+ * @typedef {Array<templateData>} formElementModel
+ */
+
+/**
+ * An ordered list that contains the data required to build a form element
+ * @typedef {Array<formElementModel>} formElementModelList
+ */
+
+/**
+ * An ordered list that contains the data required to build the form elements that performs actions in the component
+ * @typedef {formElementModelList} actionsModelList
  */
 
 /**
@@ -32,7 +53,7 @@ import { useState } from "react";
  */
 
 /**
- * @typedef {Array<modelList|addItem|removeItem>} resultArray The return value of the hook
+ * @typedef {Array<contentModelList|actionsModelList|addItem|removeItem>} resultArray The return value of the hook
  */
 
 /**
@@ -41,12 +62,20 @@ import { useState } from "react";
  * @param {object} settings The settings
  * @param {Object<templateFunction>} settings.templates The collection of function that can be used to create new entries in the modelList
  * @param {modelList} settings.initialModelList An ordered list used as the initial base model
+ * @param {actionsList} settings.actionsList An ordered list that contains the actions that can be performed by the component
  * @returns {resultArray}
  */
-function useFormModel({ templates, initialModelList }) {
-  const [modelList, setModelList] = useState(initialModelList);
+function useFormModel({
+  templates,
+  actionsList = [],
+}) {
 
-  const setOnChange = (data) => {
+  const buildModel = (settings) => {
+    const { templateId } = settings;
+    const templateModel = templates[templateId](settings);
+    return templateModel;
+  };
+
     const onChange = (data) => {
       const [id, value] = Object.entries(data);
 
@@ -66,6 +95,10 @@ function useFormModel({ templates, initialModelList }) {
     const data = setOnChange(templates[templateId](id));
     const newModelList = [...modelList, data];
     setModelList(newModelList);
+  const actionsMapper = (data, index) => {
+    const childrenId = index + 1;
+    const settings = { ...data, childrenId };
+    return buildModel(settings);
   };
 
   const removeItem = (id) => {
@@ -74,7 +107,9 @@ function useFormModel({ templates, initialModelList }) {
     setModelList(newModelList);
   };
 
-  return [modelList.map(setOnChange), addItem, removeItem];
+  const actionsModelList = actionsList.map(actionsMapper);
+
+  return [contentModelList, actionsModelList, addItem, removeItem];
 }
 
 export default useFormModel;
