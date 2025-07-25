@@ -58,7 +58,7 @@ import { useState } from "react";
  */
 
 /**
- * The removeItem function lets you remove an item from the modelList
+ * The removeItem function lets you remove an item from the contentList
  * @callback removeItem
  * @param {string} id The id of the form element
  */
@@ -82,6 +82,11 @@ function useFormModel({
   actionsList = [],
 }) {
   const [contentList, setContentList] = useState(initialContentList);
+
+  const getContentModelIndexById = (id) => {
+    const finder = ({ id: targetId }) => targetId === id;
+    return contentModelList.findIndex(finder);
+  };
 
   const buildModel = (settings) => {
     const { templateId } = settings;
@@ -119,9 +124,9 @@ function useFormModel({
   const addItem = (data) => setContentList([...contentList, data]);
 
   const removeItem = (id) => {
-    const filterOutItem = ({ id: targetId }) => targetId !== id;
-    const newModelList = modelList.filter(filterOutItem);
-    setModelList(newModelList);
+    const index = getContentModelIndexById(id);
+    const filterOutItem = (_, itemIndex) => itemIndex !== index;
+    setContentList(contentList.filter(filterOutItem));
   };
 
   const contentModelList = contentList.map(contentMapper);
