@@ -45,17 +45,23 @@ describe("useFormModel hook test suite", () => {
     await act(async () => addItem(templateId));
     const { modelList } = getLastCall();
     const lastItem = modelList[modelList.length - 1];
+    const expectedLength = initialList.length + 1;
     expect(lastItem).toEqual(expect.objectContaining(expectedItem));
     expect(lastItem).toHaveProperty("onChange");
+    expect(finalList).toHaveLength(expectedLength);
   });
 
   it("removes from the modelList the desire item", async () => {
     render(<TestElement {...{ initialModelList }}></TestElement>);
     const targetData = initialModelList[0];
     const { removeItem } = getLastCall();
+    const expectedLength = initialList.length - 1;
     await act(async () => removeItem(targetData.id));
     const { modelList } = getLastCall();
     expect(modelList).not.toEqual(expect.arrayContaining([targetData]));
+    expect(finalList).toHaveLength(expectedLength);
+  });
+
   it("updates on contentModelList manipulation the id to match the index position", async () => {
     render(<TestElement {...{ templates, contentList }}></TestElement>);
     const newItemsList = [
