@@ -41,9 +41,9 @@ import { useState } from "react";
  */
 
 /**
- * The addItem function lets you expand the modelList with an item based on a template
+ * The addItem function lets you add items to the end of the contentList
  * @callback addItem
- * @param {string} templateId
+ * @param {templateData} data The data required to expand the contentList
  */
 
 /**
@@ -90,16 +90,13 @@ function useFormModel({
     return { ...data, onChange };
   };
 
-  const addItem = (templateId) => {
-    const id = modelList.length + 1;
-    const data = setOnChange(templates[templateId](id));
-    const newModelList = [...modelList, data];
-    setModelList(newModelList);
   const actionsMapper = (data, index) => {
     const childrenId = index + 1;
     const settings = { ...data, childrenId };
     return buildModel(settings);
   };
+
+  const addItem = (data) => setContentList([...contentList, data]);
 
   const removeItem = (id) => {
     const filterOutItem = ({ id: targetId }) => targetId !== id;
