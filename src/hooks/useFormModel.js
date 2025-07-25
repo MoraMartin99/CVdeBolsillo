@@ -14,6 +14,11 @@ import { useState } from "react";
  */
 
 /**
+ * An ordered list that defines the form elements of the component
+ * @typedef {Array<templateData>} contentList
+ */
+
+/**
  * An ordered list that defines the actions that can be performed by the component
  * @typedef {Array<templateData>} actionsList
  */
@@ -29,6 +34,11 @@ import { useState } from "react";
  */
 
 /**
+ * An ordered list that contains the data required to build the form elements that collects information
+ * @typedef {formElementModelList} contentModelList
+ */
+
+/**
  * An ordered list that contains the data required to build the form elements that performs actions in the component
  * @typedef {formElementModelList} actionsModelList
  */
@@ -36,8 +46,9 @@ import { useState } from "react";
 /**
  * A function that return the data required to build a form element
  * @callback templateFunction
- * @param {number} numberId A number that identifies the form element and is use in some properties
- * @returns {data} The data required to build a form element
+ * @param {Object} settings The data required to build a form model
+ * @param {number} settings.childrenId A number that identifies the data within its siblings
+ * @returns {formElementModel} The data required to build a form element
  */
 
 /**
@@ -60,15 +71,17 @@ import { useState } from "react";
  * The useFormModel hook lets you set a component as a declarative form-like component, that means that, if paired with a form element factory, you can create
  * a form-like component based on a model, expand it, delete its elements
  * @param {object} settings The settings
- * @param {Object<templateFunction>} settings.templates The collection of function that can be used to create new entries in the modelList
- * @param {modelList} settings.initialModelList An ordered list used as the initial base model
+ * @param {Object<templateFunction>} settings.templates The collection of function that are use to create the form elements models
+ * @param {contentList} settings.contentList An ordered list used as the initial form structure of the form elements that collects information
  * @param {actionsList} settings.actionsList An ordered list that contains the actions that can be performed by the component
  * @returns {resultArray}
  */
 function useFormModel({
   templates,
+  contentList: initialContentList = [],
   actionsList = [],
 }) {
+  const [contentList, setContentList] = useState(initialContentList);
 
   const buildModel = (settings) => {
     const { templateId } = settings;
@@ -76,18 +89,25 @@ function useFormModel({
     return templateModel;
   };
 
+  const buildContentModel = (settings) => {
+    const templateModel = buildModel(settings);
     const onChange = (data) => {
-      const [id, value] = Object.entries(data);
+      const [[id, value]] = Object.entries(data);
+      const index = getContentModelIndexById(id);
 
-      const mapper = (data) => {
-        const { id: targetId } = data;
-        if (targetId === id) return { ...data, value };
+      const mapper = (data, itemIndex) => {
+        if (itemIndex === index) return { ...data, value };
+        return data;
       };
-
-      setModelList(modelList.map(mapper));
+      setContentList(contentList.map(mapper));
     };
+    return { ...templateModel, onChange };
+  };
 
-    return { ...data, onChange };
+  const contentMapper = (data, index) => {
+    const childrenId = index + 1;
+    const settings = { ...data, childrenId };
+    return buildContentModel(settings);
   };
 
   const actionsMapper = (data, index) => {
@@ -104,6 +124,7 @@ function useFormModel({
     setModelList(newModelList);
   };
 
+  const contentModelList = contentList.map(contentMapper);
   const actionsModelList = actionsList.map(actionsMapper);
 
   return [contentModelList, actionsModelList, addItem, removeItem];
