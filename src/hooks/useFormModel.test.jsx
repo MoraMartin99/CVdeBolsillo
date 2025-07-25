@@ -28,11 +28,30 @@ describe("useFormModel hook test suite", () => {
 
   it("return the modelList mapped with an onChange callback", () => {
     render(<TestElement {...{ initialModelList }}></TestElement>);
+  it("adds the value property to the contentModelList items using its onChange callback", () => {
+    render(<TestElement {...{ templates, contentList }}></TestElement>);
+    const expectedValue = "soy un nuevo valor";
+    const extractValues = ({ value }) => value;
+    const changeValues = ({ id }) => {
+      const { contentModelList } = getLastCall();
+      const { onChange } = contentModelList.find(
+        ({ id: targetId }) => targetId === id,
+      );
+      act(() => onChange({ [id]: expectedValue }));
+    };
+    const { contentModelList: initialList } = getLastCall();
+    const initialValueList = initialList.map(extractValues);
+    initialList.forEach(changeValues);
+    const { contentModelList: finalList } = getLastCall();
+    const finalValueList = finalList.map(extractValues);
+    initialValueList.forEach((item) => expect(item).not.toBe(expectedValue));
+    finalValueList.forEach((item) => expect(item).toBe(expectedValue));
+  });
+
     const setExpectations = (data, index) => {
       expect(data).toEqual(
         expect.objectContaining({ ...initialModelList[index] }),
       );
-      expect(data).toHaveProperty("onChange");
     };
     const { modelList } = getLastCall();
     modelList.forEach(setExpectations);
@@ -47,7 +66,6 @@ describe("useFormModel hook test suite", () => {
     const lastItem = modelList[modelList.length - 1];
     const expectedLength = initialList.length + 1;
     expect(lastItem).toEqual(expect.objectContaining(expectedItem));
-    expect(lastItem).toHaveProperty("onChange");
     expect(finalList).toHaveLength(expectedLength);
   });
 
