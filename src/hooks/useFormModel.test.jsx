@@ -4,30 +4,72 @@ import { render, act } from "@testing-library/react";
 
 const catcherMock = vi.fn(() => {});
 const getLastCall = () => catcherMock.mock.lastCall[0];
-const initialModelList = [{ id: "item1" }, { id: "item2", value: "test2" }];
-const template1 = (number) => {
-  return { id: `templateItem${number}`, value: "soy un template" };
+const formElementTemplateId = "template1";
+const actionButtonTemplateId = "template2";
+const contentList = [
+  { templateId: formElementTemplateId },
+  { templateId: formElementTemplateId, value: "test2" },
+];
+const actionsList = [
+  { templateId: actionButtonTemplateId },
+  {
+    templateId: actionButtonTemplateId,
+    value: "reescribí esta propiedad",
+    extra: "soy un extra",
+  },
+];
+const baseTemplate1 = "formElement";
+const baseTemplate2 = "actionElement";
+const template1 = (data) => {
+  const { childrenId } = data;
+  return {
+    id: `${baseTemplate1}${childrenId}`,
+    value: "soy un template 1",
+    type: "some random form element",
+    ...data,
+  };
 };
-const templates = { template1 };
-const templateId = "template1";
+const template2 = (data) => {
+  const { childrenId } = data;
+  return {
+    id: `${baseTemplate2}${childrenId}`,
+    value: "soy un template 2",
+    type: "some random button",
+    ...data,
+  };
+};
+const templates = { template1, template2 };
 
-const TestElement = ({ templates, initialModelList }) => {
-  const [modelList, addItem, removeItem] = useFormModel({
-    initialModelList,
-    templates,
-  });
-  catcherMock({ modelList, addItem, removeItem });
+const TestElement = ({ templates, contentList, actionsList }) => {
+  const [contentModelList, actionsModelList, addItem, removeItem] =
+    useFormModel({
+      templates,
+      contentList,
+      actionsList,
+    });
+  catcherMock({ contentModelList, actionsModelList, addItem, removeItem });
 
   return <div></div>;
 };
 
 describe("useFormModel hook test suite", () => {
-  beforeEach(() => {
-    vi.resetAllMocks();
+  beforeEach(() => vi.resetAllMocks());
+
+  it("returns the contentModelList", () => {
+    render(<TestElement {...{ templates, contentList }}></TestElement>);
+    const setExpectations = (data, index) => {
+      const childrenId = index + 1;
+      expect(data).toEqual(
+        expect.objectContaining({
+          ...template1({ childrenId }),
+          ...contentList[index],
+        }),
+      );
+    };
+    const { contentModelList } = getLastCall();
+    contentModelList.forEach(setExpectations);
   });
 
-  it("return the modelList mapped with an onChange callback", () => {
-    render(<TestElement {...{ initialModelList }}></TestElement>);
   it("adds the value property to the contentModelList items using its onChange callback", () => {
     render(<TestElement {...{ templates, contentList }}></TestElement>);
     const expectedValue = "soy un nuevo valor";
@@ -48,35 +90,47 @@ describe("useFormModel hook test suite", () => {
     finalValueList.forEach((item) => expect(item).toBe(expectedValue));
   });
 
+  it("returns the actionsModelList", () => {
+    render(<TestElement {...{ templates, actionsList }}></TestElement>);
     const setExpectations = (data, index) => {
+      const childrenId = index + 1;
       expect(data).toEqual(
-        expect.objectContaining({ ...initialModelList[index] }),
+        expect.objectContaining({
+          ...template2({ childrenId }),
+          ...actionsList[index],
+        }),
       );
     };
-    const { modelList } = getLastCall();
-    modelList.forEach(setExpectations);
+    const { actionsModelList } = getLastCall();
+    actionsModelList.forEach(setExpectations);
   });
 
-  it("adds to the end of modelList the expected item based on a template", async () => {
-    render(<TestElement {...{ templates, initialModelList }}></TestElement>);
-    const expectedItem = templates[templateId](initialModelList.length + 1);
-    const { addItem } = getLastCall();
-    await act(async () => addItem(templateId));
-    const { modelList } = getLastCall();
-    const lastItem = modelList[modelList.length - 1];
+  it("adds to the end of contentModelList the expected item based on a template", async () => {
+    render(<TestElement {...{ templates, contentList }}></TestElement>);
+    const extra = "some extra property";
+    const expectedItem = templates[formElementTemplateId]({
+      childrenId: contentList.length + 1,
+      extra,
+    });
+    const { addItem, contentModelList: initialList } = getLastCall();
     const expectedLength = initialList.length + 1;
+    await act(async () =>
+      addItem({ templateId: formElementTemplateId, extra }),
+    );
+    const { contentModelList: finalList } = getLastCall();
+    const lastItem = finalList[finalList.length - 1];
     expect(lastItem).toEqual(expect.objectContaining(expectedItem));
     expect(finalList).toHaveLength(expectedLength);
   });
 
-  it("removes from the modelList the desire item", async () => {
-    render(<TestElement {...{ initialModelList }}></TestElement>);
-    const targetData = initialModelList[0];
-    const { removeItem } = getLastCall();
+  it("removes from the contentModelList the desire item", async () => {
+    render(<TestElement {...{ templates, contentList }}></TestElement>);
+    const { contentModelList: initialList, removeItem } = getLastCall();
+    const targetData = initialList[0];
     const expectedLength = initialList.length - 1;
     await act(async () => removeItem(targetData.id));
-    const { modelList } = getLastCall();
-    expect(modelList).not.toEqual(expect.arrayContaining([targetData]));
+    const { contentModelList: finalList } = getLastCall();
+    expect(finalList).not.toEqual(expect.arrayContaining([targetData]));
     expect(finalList).toHaveLength(expectedLength);
   });
 
