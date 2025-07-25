@@ -56,5 +56,28 @@ describe("useFormModel hook test suite", () => {
     await act(async () => removeItem(targetData.id));
     const { modelList } = getLastCall();
     expect(modelList).not.toEqual(expect.arrayContaining([targetData]));
+  it("updates on contentModelList manipulation the id to match the index position", async () => {
+    render(<TestElement {...{ templates, contentList }}></TestElement>);
+    const newItemsList = [
+      { templateId: formElementTemplateId, note: "me agregaron primero" },
+      { templateId: formElementTemplateId, note: "me agregaron segundo" },
+    ];
+    const setExpectation = ({ id }, index) => {
+      const expectedId = `${baseTemplate1}${index + 1}`;
+      expect(id).toBe(expectedId);
+    };
+    const addItemsToModel = async (item) => {
+      const { addItem } = getLastCall();
+      await act(async () => addItem(item));
+    };
+    const { contentModelList: initialList } = getLastCall();
+    initialList.forEach(setExpectation);
+    newItemsList.forEach(addItemsToModel);
+    const { contentModelList: expandedList, removeItem } = getLastCall();
+    const targetId = expandedList[1].id;
+    expandedList.forEach(setExpectation);
+    await act(async () => removeItem(targetId));
+    const { contentModelList: reducedList } = getLastCall();
+    reducedList.forEach(setExpectation);
   });
 });
