@@ -120,13 +120,14 @@ describe("useFormModel hook test suite", () => {
 
   it("removes from the contentModelList the desire item", async () => {
     render(<TestElement {...{ templates, contentList }}></TestElement>);
-    const targetData = initialList[0];
     const { contentModelList: initialList } = getLastCall();
     const { id: targetId, remover, removeMessage } = initialList[0];
     const expectedLength = initialList.length - 1;
     await act(async () => remover());
     const { contentModelList: finalList } = getLastCall();
-    expect(finalList).not.toEqual(expect.arrayContaining([targetData]));
+    expect(finalList).not.toEqual(
+      expect.arrayContaining([{ id: targetId, removeMessage }]),
+    );
     expect(finalList).toHaveLength(expectedLength);
   });
 
