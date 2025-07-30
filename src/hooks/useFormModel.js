@@ -52,19 +52,12 @@ import { useState } from "react";
  */
 
 /**
- * The addItem function lets you add items to the end of the contentList
- * @callback addItem
- * @param {templateData} data The data required to expand the contentList
+ * A function that removes the current element from contentList of the closest ancestor that uses the useFormModel hook
+ * @callback remover
  */
 
 /**
- * The removeItem function lets you remove an item from the contentList
- * @callback removeItem
- * @param {string} id The id of the form element
- */
-
-/**
- * @typedef {Array<contentModelList|actionsModelList|addItem|removeItem>} resultArray The return value of the hook
+ * @typedef {Array<contentModelList|actionsModelList>} resultArray The return value of the hook
  */
 
 /**
@@ -74,12 +67,14 @@ import { useState } from "react";
  * @param {Object<templateFunction>} settings.templates The collection of function that are use to create the form elements models
  * @param {contentList} settings.contentList An ordered list used as the initial form structure of the form elements that collects information
  * @param {actionsList} settings.actionsList An ordered list that contains the actions that can be performed by the component
+ * @param {remover} settings.remover A callback to remove the current element
  * @returns {resultArray}
  */
 function useFormModel({
   templates,
   contentList: initialContentList = [],
   actionsList = [],
+  remover,
 }) {
   const [contentList, setContentList] = useState(initialContentList);
 
@@ -88,14 +83,10 @@ function useFormModel({
     return contentModelList.findIndex(finder);
   };
 
-  const buildModel = (settings) => {
+  const buildContentModel = (settings) => {
     const { templateId } = settings;
     const templateModel = templates[templateId](settings);
-    return templateModel;
-  };
-
-  const buildContentModel = (settings) => {
-    const templateModel = buildModel(settings);
+    const { id: modelId } = templateModel;
     const onChange = (data) => {
       const [[id, value]] = Object.entries(data);
       const index = getContentModelIndexById(id);
@@ -106,7 +97,18 @@ function useFormModel({
       };
       setContentList(contentList.map(mapper));
     };
-    return { ...templateModel, onChange };
+    return { ...templateModel, onChange, remover: () => removeItem(modelId) };
+  };
+
+  const buildActionsModel = (settings) => {
+    const { childrenId, templateId: actionTemplate } = settings;
+    const templateModel = templates[actionTemplate]({ childrenId });
+    const { action, templateId } = templateModel;
+    const actions = {
+      addItem: () => addItem({ templateId }),
+      removeItem: () => remover(),
+    };
+    return { ...templateModel, onClick: actions[action] };
   };
 
   const contentMapper = (data, index) => {
@@ -118,7 +120,7 @@ function useFormModel({
   const actionsMapper = (data, index) => {
     const childrenId = index + 1;
     const settings = { ...data, childrenId };
-    return buildModel(settings);
+    return buildActionsModel(settings);
   };
 
   const addItem = (data) => setContentList([...contentList, data]);
@@ -132,7 +134,7 @@ function useFormModel({
   const contentModelList = contentList.map(contentMapper);
   const actionsModelList = actionsList.map(actionsMapper);
 
-  return [contentModelList, actionsModelList, addItem, removeItem];
+  return [contentModelList, actionsModelList];
 }
 
 export default useFormModel;

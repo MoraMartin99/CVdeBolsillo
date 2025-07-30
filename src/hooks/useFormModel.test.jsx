@@ -4,50 +4,47 @@ import { render, act } from "@testing-library/react";
 
 const catcherMock = vi.fn(() => {});
 const getLastCall = () => catcherMock.mock.lastCall[0];
-const formElementTemplateId = "template1";
-const actionButtonTemplateId = "template2";
+const formElementTemplateId = "formElement";
+const actionButtonTemplateId = "actionButton";
 const contentList = [
-  { templateId: formElementTemplateId },
+  { templateId: formElementTemplateId, removeMessage: "remove me" },
   { templateId: formElementTemplateId, value: "test2" },
 ];
 const actionsList = [
-  { templateId: actionButtonTemplateId },
   {
     templateId: actionButtonTemplateId,
-    value: "reescribí esta propiedad",
-    extra: "soy un extra",
+    action: "addItem",
   },
 ];
-const baseTemplate1 = "formElement";
-const baseTemplate2 = "actionElement";
-const template1 = (data) => {
-  const { childrenId } = data;
-  return {
-    id: `${baseTemplate1}${childrenId}`,
-    value: "soy un template 1",
-    type: "some random form element",
-    ...data,
-  };
+const templates = {
+  [formElementTemplateId]: (data) => {
+    const { childrenId } = data;
+    return {
+      id: `${formElementTemplateId}${childrenId}`,
+      value: "soy un template 1",
+      type: "some random form element",
+      ...data,
+    };
+  },
+  [actionButtonTemplateId]: (data) => {
+    const { childrenId } = data;
+    return {
+      templateId: formElementTemplateId,
+      id: `${actionButtonTemplateId}${childrenId}`,
+      type: "some random button",
+      action: "addItem",
+      ...data,
+    };
+  },
 };
-const template2 = (data) => {
-  const { childrenId } = data;
-  return {
-    id: `${baseTemplate2}${childrenId}`,
-    value: "soy un template 2",
-    type: "some random button",
-    ...data,
-  };
-};
-const templates = { template1, template2 };
 
 const TestElement = ({ templates, contentList, actionsList }) => {
-  const [contentModelList, actionsModelList, addItem, removeItem] =
-    useFormModel({
-      templates,
-      contentList,
-      actionsList,
-    });
-  catcherMock({ contentModelList, actionsModelList, addItem, removeItem });
+  const [contentModelList, actionsModelList] = useFormModel({
+    templates,
+    contentList,
+    actionsList,
+  });
+  catcherMock({ contentModelList, actionsModelList });
 
   return <div></div>;
 };
@@ -59,12 +56,11 @@ describe("useFormModel hook test suite", () => {
     render(<TestElement {...{ templates, contentList }}></TestElement>);
     const setExpectations = (data, index) => {
       const childrenId = index + 1;
-      expect(data).toEqual(
-        expect.objectContaining({
-          ...template1({ childrenId }),
-          ...contentList[index],
-        }),
-      );
+      const expectedModel = {
+        ...templates[formElementTemplateId]({ childrenId }),
+        ...contentList[index],
+      };
+      expect(data).toEqual(expect.objectContaining(expectedModel));
     };
     const { contentModelList } = getLastCall();
     contentModelList.forEach(setExpectations);
@@ -106,55 +102,56 @@ describe("useFormModel hook test suite", () => {
   });
 
   it("adds to the end of contentModelList the expected item based on a template", async () => {
-    render(<TestElement {...{ templates, contentList }}></TestElement>);
-    const extra = "some extra property";
-    const expectedItem = templates[formElementTemplateId]({
-      childrenId: contentList.length + 1,
-      extra,
-    });
-    const { addItem, contentModelList: initialList } = getLastCall();
-    const expectedLength = initialList.length + 1;
-    await act(async () =>
-      addItem({ templateId: formElementTemplateId, extra }),
+    render(
+      <TestElement {...{ templates, actionsList, contentList }}></TestElement>,
     );
-    const { contentModelList: finalList } = getLastCall();
-    const lastItem = finalList[finalList.length - 1];
-    expect(lastItem).toEqual(expect.objectContaining(expectedItem));
-    expect(finalList).toHaveLength(expectedLength);
+    const expectedLength = contentList.length + 1;
+    const childrenId = contentList.length + 1;
+    const expectedModel = templates[formElementTemplateId]({
+      childrenId,
+    });
+    const {
+      actionsModelList: [{ onClick: addItem }],
+    } = getLastCall();
+    await act(async () => addItem());
+    const { contentModelList } = getLastCall();
+    const lastItem = contentModelList[contentModelList.length - 1];
+    expect(lastItem).toEqual(expect.objectContaining(expectedModel));
+    expect(contentModelList).toHaveLength(expectedLength);
   });
 
   it("removes from the contentModelList the desire item", async () => {
     render(<TestElement {...{ templates, contentList }}></TestElement>);
-    const { contentModelList: initialList, removeItem } = getLastCall();
     const targetData = initialList[0];
+    const { contentModelList: initialList } = getLastCall();
+    const { id: targetId, remover, removeMessage } = initialList[0];
     const expectedLength = initialList.length - 1;
-    await act(async () => removeItem(targetData.id));
+    await act(async () => remover());
     const { contentModelList: finalList } = getLastCall();
     expect(finalList).not.toEqual(expect.arrayContaining([targetData]));
     expect(finalList).toHaveLength(expectedLength);
   });
 
   it("updates on contentModelList manipulation the id to match the index position", async () => {
-    render(<TestElement {...{ templates, contentList }}></TestElement>);
-    const newItemsList = [
-      { templateId: formElementTemplateId, note: "me agregaron primero" },
-      { templateId: formElementTemplateId, note: "me agregaron segundo" },
-    ];
+    render(
+      <TestElement {...{ templates, contentList, actionsList }}></TestElement>,
+    );
     const setExpectation = ({ id }, index) => {
-      const expectedId = `${baseTemplate1}${index + 1}`;
+      const expectedId = `${formElementTemplateId}${index + 1}`;
       expect(id).toBe(expectedId);
-    };
-    const addItemsToModel = async (item) => {
-      const { addItem } = getLastCall();
-      await act(async () => addItem(item));
     };
     const { contentModelList: initialList } = getLastCall();
     initialList.forEach(setExpectation);
-    newItemsList.forEach(addItemsToModel);
-    const { contentModelList: expandedList, removeItem } = getLastCall();
-    const targetId = expandedList[1].id;
+    for (let i = 1; i <= 2; i++) {
+      const {
+        actionsModelList: [{ onClick: addItem }],
+      } = getLastCall();
+      await act(async () => addItem());
+    }
+    const { contentModelList: expandedList } = getLastCall();
+    const { remover } = expandedList[0];
     expandedList.forEach(setExpectation);
-    await act(async () => removeItem(targetId));
+    await act(async () => remover());
     const { contentModelList: reducedList } = getLastCall();
     reducedList.forEach(setExpectation);
   });
