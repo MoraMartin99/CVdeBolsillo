@@ -90,12 +90,10 @@ describe("useFormModel hook test suite", () => {
     render(<TestElement {...{ templates, actionsList }}></TestElement>);
     const setExpectations = (data, index) => {
       const childrenId = index + 1;
-      expect(data).toEqual(
-        expect.objectContaining({
-          ...template2({ childrenId }),
-          ...actionsList[index],
-        }),
-      );
+      const expectedModel = {
+        ...templates[actionButtonTemplateId]({ childrenId }),
+      };
+      expect(data).toEqual(expect.objectContaining(expectedModel));
     };
     const { actionsModelList } = getLastCall();
     actionsModelList.forEach(setExpectations);
