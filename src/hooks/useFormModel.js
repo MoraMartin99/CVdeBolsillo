@@ -16,11 +16,13 @@ import { useState } from "react";
 /**
  * An ordered list that defines the form elements of the component
  * @typedef {Array<templateData>} contentList
+ * An id of a templateFunction
+ * @typedef {string} templateId
  */
 
 /**
  * An ordered list that defines the actions that can be performed by the component
- * @typedef {Array<templateData>} actionsList
+ * @typedef {Array<templateId>} actionsList
  */
 
 /**
@@ -117,9 +119,9 @@ function useFormModel({
     return buildContentModel(settings);
   };
 
-  const actionsMapper = (data, index) => {
+  const actionsMapper = (templateId, index) => {
     const childrenId = index + 1;
-    const settings = { ...data, childrenId };
+    const settings = { templateId, childrenId };
     return buildActionsModel(settings);
   };
 

@@ -10,12 +10,7 @@ const contentList = [
   { templateId: formElementTemplateId, removeMessage: "remove me" },
   { templateId: formElementTemplateId, value: "test2" },
 ];
-const actionsList = [
-  {
-    templateId: actionButtonTemplateId,
-    action: "addItem",
-  },
-];
+const actionsList = [actionButtonTemplateId];
 const templates = {
   [formElementTemplateId]: (data) => {
     const { childrenId } = data;
