@@ -9,13 +9,11 @@ import { useState } from "react";
  */
 
 /**
- * An ordered list of the templateData
- * @typedef {Array<templateData>} templateDataList
+ * An ordered list that defines the form elements of the component
+ * @typedef {Array<templateData>} contentList
  */
 
 /**
- * An ordered list that defines the form elements of the component
- * @typedef {Array<templateData>} contentList
  * An id of a templateFunction
  * @typedef {string} templateId
  */
