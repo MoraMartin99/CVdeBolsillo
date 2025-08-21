@@ -109,6 +109,14 @@ describe("utils test suite", () => {
       testSubjects.forEach(setExpectation);
     });
 
+    it("returns an empty array if target is not found", () => {
+      const testSubjects = [
+        [1, [2, 3, 4, 5], []],
+        [undefined, [2, 3, 4, [{}, [], [5, 6, 7]]], []],
+      ];
+      testSubjects.forEach(setExpectation);
+    });
+
     it("works with arrays as a target", () => {
       const testSubjects = [
         [

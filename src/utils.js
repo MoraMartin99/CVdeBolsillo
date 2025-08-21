@@ -51,6 +51,8 @@ const toPascalCase = (text) => {
  * findSteps(1, [0, ["a", "b", 1], 2]) // returns [1, 2]
  * @example <caption>Returns an empty array if list = []:</caption>
  * findSteps(1, []) // returns []
+ * @example <caption>returns an empty array if target is not found:</caption>
+ * findSteps(1, [2, 3, 4, 5]) // returns []
  * @example <caption>Works with arrays as a target:</caption>
  * findSteps([3, 2], [3, 2, [1, 2], [{}, [3, 2]]]) // returns [3, 1]
  * @returns {Array<number>} An array of indexes if the target is found or an empty array if the list is empty or the target is not found
