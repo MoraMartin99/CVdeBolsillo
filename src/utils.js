@@ -1,4 +1,3 @@
-import { isEqual } from "lodash";
 /**
  * @module utils
  */
@@ -39,46 +38,5 @@ const toPascalCase = (text) => {
   return words.map(mapper).join("");
 };
 
-/**
- * Returns a list of ordered indexes required to access the first item that is equal to a target within a list. The search is recursive and uses [lodash isEqual function]{@link https://lodash.com/docs/4.17.15#isEqual}
- * to do a deep comparison
- * @param {*} target The value to find within the list
- * @param {Array} list A list to be searched on
- * @example <caption>Works with one-dimensional arrays:</caption>
- * findSteps("b", ["a", "b", "c"]) // returns [1]
- * findSteps({}, [0, {}, {}],) // returns [1]
- * @example <caption>Works with multi-dimensional arrays:</caption>
- * findSteps(1, [0, ["a", "b", 1], 2]) // returns [1, 2]
- * @example <caption>Returns an empty array if list = []:</caption>
- * findSteps(1, []) // returns []
- * @example <caption>returns an empty array if target is not found:</caption>
- * findSteps(1, [2, 3, 4, 5]) // returns []
- * @example <caption>Works with arrays as a target:</caption>
- * findSteps([3, 2], [3, 2, [1, 2], [{}, [3, 2]]]) // returns [3, 1]
- * @returns {Array<number>} An array of indexes if the target is found or an empty array if the list is empty or the target is not found
- */
-const findSteps = (target, list) => {
-  const finder = (target, list) => {
-    let result = [];
-    const itEndsWithTargetValue = () => {
-      const { value: lastValue } = result[result.length - 1];
-      return isEqual(lastValue, target);
-    };
-    for (const [index, value] of list.entries()) {
-      result = [{ index, value }];
-      if (itEndsWithTargetValue()) break;
-      if (Array.isArray(value)) {
-        result = [...result, ...finder(target, value)];
-        if (itEndsWithTargetValue()) break;
-      }
-      result = [];
-    }
-
-    return result;
-  };
-
-  return finder(target, list).map(({ index }) => index);
-};
-
-export { reduceToClassName, toPascalCase, findSteps };
-export default { reduceToClassName, toPascalCase, findSteps };
+export { reduceToClassName, toPascalCase };
+export default { reduceToClassName, toPascalCase };
