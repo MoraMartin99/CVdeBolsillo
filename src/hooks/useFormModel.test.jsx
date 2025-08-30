@@ -1,152 +1,135 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import useFormModel from "./useFormModel";
 import { render, act } from "@testing-library/react";
 
 const catcherMock = vi.fn(() => {});
+
 const getLastCall = () => catcherMock.mock.lastCall[0];
-const formElementTemplateId = "formElement";
-const actionButtonTemplateId = "actionButton";
-const contentList = [
-  { templateId: formElementTemplateId, removeMessage: "remove me" },
-  { templateId: formElementTemplateId, value: "test2" },
-];
-const actionsList = [actionButtonTemplateId];
+
 const templates = {
-  [formElementTemplateId]: (data) => {
-    const { childrenId } = data;
-    return {
-      id: `${formElementTemplateId}${childrenId}`,
-      value: "soy un template 1",
-      type: "some random form element",
-      ...data,
-    };
+  section: {
+    templateId: "section",
+    actions: ["removeItem", "addNumber"],
+    value: [{ templateId: "text" }, { templateId: "number" }],
   },
-  [actionButtonTemplateId]: (data) => {
-    const { childrenId } = data;
-    return {
-      templateId: formElementTemplateId,
-      id: `${actionButtonTemplateId}${childrenId}`,
-      type: "some random button",
-      action: "addItem",
-      ...data,
-    };
-  },
+  text: { templateId: "text", value: "soy un texto" },
+  number: { templateId: "number" },
+  addNumber: { templateId: "addNumber", action: "addItem", targetId: "number" },
+  removeItem: { templateId: "removeItem", action: "removeItem" },
 };
 
-const TestElement = ({ templates, contentList, actionsList }) => {
-  const [contentModelList, actionsModelList] = useFormModel({
-    templates,
-    contentList,
-    actionsList,
-  });
-  catcherMock({ contentModelList, actionsModelList });
+const actions = ["addNumber"];
 
-  return <div></div>;
-};
+const newValue = 7;
+const changedValue = "soy un valor sobrescrito";
 
-describe("useFormModel hook test suite", () => {
-  beforeEach(() => vi.resetAllMocks());
+const content = [
+  { templateId: "section" },
+  { templateId: "number", value: newValue },
+  { templateId: "text", value: changedValue },
+];
 
-  it("returns the contentModelList", () => {
-    render(<TestElement {...{ templates, contentList }}></TestElement>);
-    const setExpectations = (data, index) => {
-      const childrenId = index + 1;
-      const expectedModel = {
-        ...templates[formElementTemplateId]({ childrenId }),
-        ...contentList[index],
+describe("useFormModel hook", () => {
+  beforeEach(async () => {
+    vi.doMock("../utils.js", async (importOriginal) => {
+      const mod = await importOriginal();
+      return {
+        ...mod,
+        toPascalCase: vi.fn((text) => text),
       };
-      expect(data).toEqual(expect.objectContaining(expectedModel));
-    };
-    const { contentModelList } = getLastCall();
-    contentModelList.forEach(setExpectations);
-  });
-
-  it("adds the value property to the contentModelList items using its onChange callback", () => {
-    render(<TestElement {...{ templates, contentList }}></TestElement>);
-    const expectedValue = "soy un nuevo valor";
-    const extractValues = ({ value }) => value;
-    const changeValues = ({ id }) => {
-      const { contentModelList } = getLastCall();
-      const { onChange } = contentModelList.find(
-        ({ id: targetId }) => targetId === id,
-      );
-      act(() => onChange({ [id]: expectedValue }));
-    };
-    const { contentModelList: initialList } = getLastCall();
-    const initialValueList = initialList.map(extractValues);
-    initialList.forEach(changeValues);
-    const { contentModelList: finalList } = getLastCall();
-    const finalValueList = finalList.map(extractValues);
-    initialValueList.forEach((item) => expect(item).not.toBe(expectedValue));
-    finalValueList.forEach((item) => expect(item).toBe(expectedValue));
-  });
-
-  it("returns the actionsModelList", () => {
-    render(<TestElement {...{ templates, actionsList }}></TestElement>);
-    const setExpectations = (data, index) => {
-      const childrenId = index + 1;
-      const expectedModel = {
-        ...templates[actionButtonTemplateId]({ childrenId }),
-      };
-      expect(data).toEqual(expect.objectContaining(expectedModel));
-    };
-    const { actionsModelList } = getLastCall();
-    actionsModelList.forEach(setExpectations);
-  });
-
-  it("adds to the end of contentModelList the expected item based on a template", async () => {
-    render(
-      <TestElement {...{ templates, actionsList, contentList }}></TestElement>,
-    );
-    const expectedLength = contentList.length + 1;
-    const childrenId = contentList.length + 1;
-    const expectedModel = templates[formElementTemplateId]({
-      childrenId,
     });
-    const {
-      actionsModelList: [{ onClick: addItem }],
-    } = getLastCall();
-    await act(async () => addItem());
-    const { contentModelList } = getLastCall();
-    const lastItem = contentModelList[contentModelList.length - 1];
-    expect(lastItem).toEqual(expect.objectContaining(expectedModel));
-    expect(contentModelList).toHaveLength(expectedLength);
-  });
+    vi.resetAllMocks();
+    let useFormModel = (await import("./useFormModel")).default;
+    const TestElement = ({ templates, content, actions }) => {
+      const [contentModel, actionsModel] = useFormModel({
+        templates,
+        content,
+        actions,
+      });
+      catcherMock({ contentModel, actionsModel });
 
-  it("removes from the contentModelList the desire item", async () => {
-    render(<TestElement {...{ templates, contentList }}></TestElement>);
-    const { contentModelList: initialList } = getLastCall();
-    const { id: targetId, remover, removeMessage } = initialList[0];
-    const expectedLength = initialList.length - 1;
-    await act(async () => remover());
-    const { contentModelList: finalList } = getLastCall();
-    expect(finalList).not.toEqual(
-      expect.arrayContaining([{ id: targetId, removeMessage }]),
-    );
-    expect(finalList).toHaveLength(expectedLength);
-  });
-
-  it("updates on contentModelList manipulation the id to match the index position", async () => {
-    render(
-      <TestElement {...{ templates, contentList, actionsList }}></TestElement>,
-    );
-    const setExpectation = ({ id }, index) => {
-      const expectedId = `${formElementTemplateId}${index + 1}`;
-      expect(id).toBe(expectedId);
+      return <div></div>;
     };
-    const { contentModelList: initialList } = getLastCall();
-    initialList.forEach(setExpectation);
-    for (let i = 1; i <= 2; i++) {
-      const {
-        actionsModelList: [{ onClick: addItem }],
-      } = getLastCall();
-      await act(async () => addItem());
-    }
-    const { contentModelList: expandedList } = getLastCall();
-    const { remover } = expandedList[0];
-    expandedList.forEach(setExpectation);
-    await act(async () => remover());
-    const { contentModelList: reducedList } = getLastCall();
-    reducedList.forEach(setExpectation);
+    render(<TestElement {...{ templates, actions, content }}></TestElement>);
+  });
+
+  describe("returns the corresponding models", () => {
+    it("contentModel items hierarchy are based on the content", () => {
+      const modelBuilder = ({ templateId, value: contentValue }) => {
+        const { value: defaultValue } = templates[templateId];
+        const currentValue = contentValue ? contentValue : defaultValue;
+        const value = Array.isArray(currentValue)
+          ? currentValue.map(modelBuilder)
+          : currentValue;
+        return { templateId, value };
+      };
+      const modelSimplifier = ({ templateId, value: defaultValue }) => {
+        const value = Array.isArray(defaultValue)
+          ? defaultValue.map(modelSimplifier)
+          : defaultValue;
+        return { templateId, value };
+      };
+      const expectedValue = content.map(modelBuilder);
+      const value = getLastCall().contentModel.map(modelSimplifier);
+      expect(value).toEqual(expectedValue);
+    });
+
+    it("actionsModel items hierarchy are based on the actions", () => {
+      const modelSimplifier = ({ templateId }) => templateId;
+      const value = getLastCall().actionsModel.map(modelSimplifier);
+      expect(value).toEqual(actions);
+    });
+
+    it("contentItems can overwrite and extends its base template", () => {
+      const contentModel = getLastCall().contentModel;
+      const expectedValues = [newValue, changedValue];
+      const setExpectations = (value) => {
+        const valueTester = ({ value: modelValue }) => modelValue === value;
+        expect(contentModel.some(valueTester)).toBeTruthy();
+      };
+      expectedValues.forEach(setExpectations);
+    });
+
+    it("models items ids are condition by the ancestor tree and the position within its siblings", () => {
+      const modelList = Object.values(getLastCall());
+      const setExpectations = ({ templateId, id, parentId, value }, index) => {
+        const expectedId = `${parentId ? parentId : ""}${templateId}${index + 1}`;
+        const setter = (item, index) => {
+          setExpectations({ ...item, parentId: id }, index);
+        };
+        if (Array.isArray(value)) value.forEach(setter);
+        expect(id).toBe(expectedId);
+      };
+      modelList.forEach((model) => model.forEach(setExpectations));
+    });
+  });
+
+  it("adds items to the contentModel", () => {
+    const { onClick: execute } = getLastCall().actionsModel[0];
+    const expectedId = "number";
+    const initialModel = getLastCall().contentModel;
+    const { templateId: initialId } = initialModel[initialModel.length - 1];
+    expect(initialId).not.toBe(expectedId);
+    act(() => execute());
+    const finalModel = getLastCall().contentModel;
+    const { templateId: finalId } = finalModel[finalModel.length - 1];
+    expect(finalId).toBe(expectedId);
+  });
+
+  it("removes items from the contentModel", () => {
+    const { onClick: execute } = getLastCall().contentModel[0].actions[0];
+    const expectedItem = getLastCall().contentModel[0];
+    expect(expectedItem).toBeTruthy();
+    act(() => execute());
+    const contentModel = getLastCall().contentModel;
+    expect(contentModel).not.toContainEqual(expectedItem);
+  });
+
+  it("modifies the values in the contentModel", () => {
+    const { onChange, id, value: initialValue } = getLastCall().contentModel[2];
+    const expectedValue = 100;
+    expect(initialValue).not.toBe(expectedValue);
+    act(() => onChange({ [id]: expectedValue }));
+    const { value: finalValue } = getLastCall().contentModel[2];
+    expect(finalValue).toBe(expectedValue);
   });
 });

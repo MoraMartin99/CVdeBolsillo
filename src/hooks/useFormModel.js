@@ -1,140 +1,269 @@
 import { useState } from "react";
+import { toPascalCase } from "../utils";
 
-/**@module  useFormModel*/
-
-/**
- * The data required to build a form element model from a template function
- * @typedef {object} templateData
- * @property {string} childrenId A number that identifies the data within its siblings
- */
+/** @module useFormModel */
 
 /**
- * An ordered list that defines the form elements of the component
- * @typedef {Array<templateData>} contentList
- */
-
-/**
- * An id of a templateFunction
+ * An id of a templateModel
  * @typedef {string} templateId
  */
 
 /**
- * An ordered list that defines the actions that can be performed by the component
- * @typedef {Array<templateId>} actionsList
+ * An ordered list that defines which form action elements must be built
+ * @typedef {Array<templateId>} actions
  */
 
 /**
- * The data required to build a form element
- * @typedef {Array<templateData>} formElementModel
+ * The data require to define the structure and some chacteristics of the contentModelItem
+ * @typedef {Object} contentItem
+ * @property {templateId} templateId An id of the target model
+ * @property {*|content} [value]
+ * @property {actions} [actions = []] If the element has actions like add items or remove the current element, must be declared here
  */
 
 /**
- * An ordered list that contains the data required to build a form element
- * @typedef {Array<formElementModel>} formElementModelList
+ * An ordered list that defined which form elements must be built
+ * @typedef {Array<contentItem>} content
  */
 
 /**
- * An ordered list that contains the data required to build the form elements that collects information
- * @typedef {formElementModelList} contentModelList
+ * A function that verify if a value is valid
+ * @callback validator
+ * @param {*} value
+ * @return {string} A text that represents the [errorMessage for the setCustomValidity method]{@link https://developer.mozilla.org/en-US/docs/Web/API/HTMLObjectElement/setCustomValidity}
  */
 
 /**
- * An ordered list that contains the data required to build the form elements that performs actions in the component
- * @typedef {formElementModelList} actionsModelList
+ * The data required to build an option for a radio field
+ * @typedef {Object} option
+ * @property {string} id
+ * @property {string} label A text that represents the option
+ * @property {string} [image] The path to an image that represents the option
+ *
  */
 
 /**
- * A function that return the data required to build a form element
- * @callback templateFunction
- * @param {Object} settings The data required to build a form model
- * @param {number} settings.childrenId A number that identifies the data within its siblings
- * @returns {formElementModel} The data required to build a form element
+ * The data required to build a form element model
+ * @typedef {Object} templateFormElementModel
+ * @property {templateId} templateId The id that identifies the template within its siblings
+ * @property {string} component The type of form element
+ * @property {string} [type] The type of component
+ * @property {string} [label] A text that represents the element and is display in a visible place of the element. In form and section elements is display as a tittle, in field elements as a label and in action elements as a text content
+ * @property {CurrentColorIcon} [Icon] The icon component that represents the form element
+ * @property {string} [tipMessage] A text that is display if the form element doesn't meet its  [constraint validation]{@link https://developer.mozilla.org/en-US/docs/Web/HTML/Guides/Constraint_validation}
+ * @property {validator} [validator] A function that verify if a value is valid. If defined, has preference over the default validity constraints
+ * @property {string} [minMarkLabel] The label of the minimum side of the spectrum of values  some field can have.
+ * @property {string} [maxMarkLabel] The label of the maximum side of the spectrum of values  some field can have.
+ * @property {string} [defaultActionLabel] The label for the default action of a field
+ * @property {string} [destructiveActionLabel] The label for the destructive action of a field
+ * @property {Array<option>} [optionList] A list with the values some fields can have. The first item is consider the default value
  */
 
 /**
- * A function that removes the current element from contentList of the closest ancestor that uses the useFormModel hook
- * @callback remover
+ * The data required to build an action element model
+ * @typedef {Object} templateActionModel
+ * @property {templateId} templateId The id that identifies the template within its siblings
+ * @property {string} component The type of form element
+ * @property {string} label
+ * @property {string} action
+ * @property {contentItem} [content]
+ * @property {CurrentColorIcon} [Icon]
  */
 
 /**
- * @typedef {Array<contentModelList|actionsModelList>} resultArray The return value of the hook
+ * @typedef {Object} templates
+ * @property {templateFormElementModel|templateActionModel} templateModel
  */
 
 /**
- * The useFormModel hook lets you set a component as a declarative form-like component, that means that, if paired with a form element factory, you can create
- * a form-like component based on a model, expand it, delete its elements
+ * @typedef {object}  formElementModel
+ */
+
+/**
+ * @typedef {object} actionElementModel
+ */
+
+/**
+ * @typedef {Array<formElementModel>} contentModel
+ */
+
+/**
+ * @typedef {Array<actionElementModel>} actionsModel
+ */
+
+/**
+ * The useFormModel hook provides a mechanism to create and modify a declarative form model 
  * @param {object} settings The settings
- * @param {Object<templateFunction>} settings.templates The collection of function that are use to create the form elements models
- * @param {contentList} settings.contentList An ordered list used as the initial form structure of the form elements that collects information
- * @param {actionsList} settings.actionsList An ordered list that contains the actions that can be performed by the component
- * @param {remover} settings.remover A callback to remove the current element
- * @returns {resultArray}
+ * @param {templates} settings.templates The collection of function that are use to create the form elements models
+ * @param {content} [settings.content = []] An ordered list used as the initial form structure of the form elements that collects information
+ * @param {actions} [settings.actions = []] An ordered list that contains the actions that can be performed by the component
+ * @example
+ * 
+ * const templates = {
+  section: {
+    templateId: "section",
+    actions: ["removeItem", "addNumber"],
+    value: [{ templateId: "text" }, { templateId: "number" }],
+  },
+  text: { templateId: "text", value: "soy un texto" },
+  number: { templateId: "number" },
+  addNumber: { templateId: "addNumber", action: "addItem", targetId: "number" },
+  removeItem: { templateId: "removeItem", action: "removeItem" },
+};
+
+const actions = ["addNumber"];
+
+const content = [
+  { templateId: "section" },
+  { templateId: "number" },
+  { templateId: "text" },
+];
+
+ * const TestElement = ({ templates, content, actions }) => {
+      const [contentModel, actionsModel] = useFormModel({
+        templates,
+        content,
+        actions,
+      });
+
+      return <div></div>;
+    };
+ * @returns {Array<contentModel, actionsModel>}
  */
 function useFormModel({
+  content: initialContent = [],
+  actions = [],
   templates,
-  contentList: initialContentList = [],
-  actionsList = [],
-  remover,
 }) {
-  const [contentList, setContentList] = useState(initialContentList);
+  const [content, setContent] = useState(initialContent);
 
-  const getContentModelIndexById = (id) => {
-    const finder = ({ id: targetId }) => targetId === id;
-    return contentModelList.findIndex(finder);
-  };
-
-  const buildContentModel = (settings) => {
-    const { templateId } = settings;
-    const templateModel = templates[templateId](settings);
-    const { id: modelId } = templateModel;
-    const onChange = (data) => {
-      const [[id, value]] = Object.entries(data);
-      const index = getContentModelIndexById(id);
-
-      const mapper = (data, itemIndex) => {
-        if (itemIndex === index) return { ...data, value };
-        return data;
+  const findSteps = (id, model) => {
+    const finder = (id, list) => {
+      let result = [];
+      const itEndsWithTarget = () => {
+        const { id: itemId } = result[result.length - 1];
+        return id === itemId;
       };
-      setContentList(contentList.map(mapper));
+      for (const [index, { value, id: itemId }] of list.entries()) {
+        result = [{ index, id: itemId }];
+        if (itEndsWithTarget()) break;
+        if (Array.isArray(value)) {
+          result.push(...finder(id, value));
+          if (itEndsWithTarget()) break;
+        }
+        result = [];
+      }
+
+      return result;
     };
-    return { ...templateModel, onChange, remover: () => removeItem(modelId) };
+    return finder(id, model).map(({ index }) => index);
   };
 
-  const buildActionsModel = (settings) => {
-    const { childrenId, templateId: actionTemplate } = settings;
-    const templateModel = templates[actionTemplate]({ childrenId });
-    const { action, templateId } = templateModel;
-    const actions = {
-      addItem: () => addItem({ templateId }),
-      removeItem: () => remover(),
+  const mutateContent = ({ id, mutator }) => {
+    const steps = findSteps(id, contentModel);
+    const containerSteps = steps.slice(0, -1);
+    const targetReducer = (container, item, index) => {
+      const finalContainer = !index ? container : container.value;
+      return finalContainer[item];
     };
-    return { ...templateModel, onClick: actions[action] };
+    const containerReducer = (container, item, index) => {
+      const finalContainer = !index ? container : container.value;
+      return finalContainer[item].value;
+    };
+    let newContent = structuredClone(content);
+    let target = steps.length
+      ? steps.reduce(targetReducer, newContent)
+      : undefined;
+    let container = containerSteps.reduce(containerReducer, newContent);
+    mutator(target, container);
+    setContent(newContent);
   };
 
-  const contentMapper = (data, index) => {
+  const addContentItem = ({ targetId, templateId }) => {
+    const newItem = { templateId };
+    const addContent = (target, container) => {
+      targetId ? target.value.push(newItem) : container.push(newItem);
+    };
+    mutateContent({ id: targetId, mutator: addContent });
+  };
+
+  const removeContentItem = (targetId) => {
+    const removeItem = (target, container) => {
+      const targetIndex = container.indexOf(target);
+      if (targetIndex >= 0) container.splice(targetIndex, 1);
+    };
+    mutateContent({ id: targetId, mutator: removeItem });
+  };
+
+  const onChange = (data) => {
+    const [[id, value]] = Object.entries(data);
+    const setValue = (item) => (item.value = value);
+    mutateContent({ id, mutator: setValue });
+  };
+
+  const createId = ({ parentId, templateId, childrenId }) => {
+    return parentId
+      ? `${parentId}${toPascalCase(templateId)}${childrenId}`
+      : `${templateId}${childrenId}`;
+  };
+
+  const actionsMapper = (item, index) => {
+    const templateId = typeof item === "string" ? item : item.templateId;
+    const templateModel = templates[templateId];
+    if (!templateModel) return;
+    const { action, targetId } = templateModel;
+    const parentId = typeof item === "string" ? undefined : item.parentId;
     const childrenId = index + 1;
-    const settings = { ...data, childrenId };
-    return buildContentModel(settings);
+    const id = createId({ childrenId, parentId, templateId });
+    const actionFunctions = {
+      addItem: () => addContentItem({ id: parentId, templateId: targetId }),
+      removeItem: () => removeContentItem(parentId),
+    };
+
+    return {
+      ...templateModel,
+      childrenId,
+      id,
+      onClick: actionFunctions[action],
+    };
   };
 
-  const actionsMapper = (templateId, index) => {
+  const contentMapper = (item, index) => {
+    if (typeof item !== "object") return item;
+    const { templateId, value: contentValue, parentId } = item;
+    const templateModel = templates[templateId];
+    if (!templateModel) return item;
+    const { value: defaultValue, actions: initialActions = [] } = templateModel;
+    const preferredValue =
+      contentValue === undefined ? defaultValue : contentValue;
     const childrenId = index + 1;
-    const settings = { templateId, childrenId };
-    return buildActionsModel(settings);
+    const id = createId({ childrenId, parentId, templateId });
+    const contentMapperAdapter = (item, index) => {
+      return contentMapper({ ...item, parentId: id }, index);
+    };
+    const actionsMapperAdapter = (templateId, index) => {
+      return actionsMapper({ templateId, parentId: id }, index);
+    };
+    const value = Array.isArray(preferredValue)
+      ? preferredValue.map(contentMapperAdapter)
+      : preferredValue;
+    const actions = initialActions.map(actionsMapperAdapter);
+
+    return {
+      ...templateModel,
+      id,
+      templateId,
+      childrenId,
+      value,
+      onChange,
+      actions,
+    };
   };
 
-  const addItem = (data) => setContentList([...contentList, data]);
+  const contentModel = content.map(contentMapper);
+  const actionsModel = actions.map(actionsMapper);
 
-  const removeItem = (id) => {
-    const index = getContentModelIndexById(id);
-    const filterOutItem = (_, itemIndex) => itemIndex !== index;
-    setContentList(contentList.filter(filterOutItem));
-  };
-
-  const contentModelList = contentList.map(contentMapper);
-  const actionsModelList = actionsList.map(actionsMapper);
-
-  return [contentModelList, actionsModelList];
+  return [contentModel, actionsModel];
 }
 
 export default useFormModel;
