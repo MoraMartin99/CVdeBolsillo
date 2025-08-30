@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { findSteps, toPascalCase } from "./utils";
+import { toPascalCase } from "./utils";
 
 describe("utils test suite", () => {
   describe("toPascalCase test suite", () => {
