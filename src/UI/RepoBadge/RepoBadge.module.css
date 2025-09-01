@@ -17,6 +17,7 @@
   color: inherit;
   font-size: var(--fontSize);
   font-weight: 700;
+  display: none;
 }
 
 .icon {
