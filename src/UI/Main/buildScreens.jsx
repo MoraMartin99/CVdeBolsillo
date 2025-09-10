@@ -57,7 +57,9 @@ function buildScreens({
       return <Preview {...{ data: userData, currentTemplateId }}></Preview>;
     }
   };
-  const buildContainer = (screens) => <Carrousel screens={screens}></Carrousel>;
+  const buildContainer = (screens, index) => {
+    return <Carrousel key={index} screens={screens}></Carrousel>;
+  };
   const grouper = (result, { label, data, id }, index, list) => {
     const filter = (item) => item.length;
     const isLastItem = index === list.length - 1;
