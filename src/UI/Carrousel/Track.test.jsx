@@ -5,20 +5,20 @@ import { render } from "@testing-library/react";
 const propList = [
   {},
   {
-    componentDataList: [
+    componentsData: [
       { component: <div></div>, id: 0 },
       { component: <p>hola</p>, id: 1 },
     ],
   },
   {
-    componentDataList: [
+    componentsData: [
       { component: <div></div>, id: 0 },
       { component: <p>adios</p>, id: 1 },
     ],
     currentIndex: 1,
   },
   {
-    componentDataList: [
+    componentsData: [
       { component: <div></div>, id: 0 },
       { component: <p>adios</p>, id: 1 },
     ],
@@ -30,12 +30,12 @@ const propList = [
 ];
 
 describe.each(propList)(
-  "Track component with props: {componentDataList: $componentDataList, currentIndex:$currentIndex}",
-  ({ componentDataList, currentIndex }) => {
+  "Track component with props: {componentsData: $componentsData, currentIndex:$currentIndex}",
+  ({ componentsData, currentIndex }) => {
     beforeEach(() => {
       render(
         <Track
-          componentDataList={componentDataList}
+          componentsData={componentsData}
           currentIndex={currentIndex}
         ></Track>,
       );
@@ -62,14 +62,14 @@ describe.each(propList)(
     );
 
     const isWithinRange =
-      Array.isArray(componentDataList) && Number.isInteger(currentIndex)
-        ? currentIndex <= componentDataList.length - 1
+      Array.isArray(componentsData) && Number.isInteger(currentIndex)
+        ? currentIndex <= componentsData.length - 1
           ? true
           : false
         : false;
 
     it.runIf(isWithinRange)(
-      "translates to the currentIndex position when is within componentDataList.length range",
+      "translates to the currentIndex position when is within componentsData.length range",
       () => {
         const targetClass = "track";
         const targetElement = document.querySelector(`.${targetClass}`);
@@ -82,7 +82,7 @@ describe.each(propList)(
       },
     );
 
-    it("remains translation within componentDataList components even with currentIndex outside of scope", () => {
+    it("remains translation within componentsData components even with currentIndex outside of scope", () => {
       const targetClass = "track";
       const targetElement = document.querySelector(`.${targetClass}`);
       const regex = /(?<=-)\d+(?=%)/;
@@ -90,8 +90,8 @@ describe.each(propList)(
         targetElement.style.getPropertyValue("transform").match(regex)[0],
       );
       const minExpectedValue = 0;
-      const maxExpectedValue = Array.isArray(componentDataList)
-        ? (componentDataList.length - 1) * 100
+      const maxExpectedValue = Array.isArray(componentsData)
+        ? (componentsData.length - 1) * 100
         : 0;
 
       expect(value).toBeLessThanOrEqual(maxExpectedValue);

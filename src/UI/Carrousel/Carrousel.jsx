@@ -56,7 +56,7 @@ function Carrousel({ screens = [] }) {
     return result;
   };
 
-  const [tabs, components] = screens.reduce(screenReducer, [[], []]);
+  const [tabs, componentData] = screens.reduce(screenReducer, [[], []]);
 
   return (
     <div
@@ -64,7 +64,7 @@ function Carrousel({ screens = [] }) {
       className={reduceToClassName([styles.Carrousel, "carrousel"])}
     >
       <nav className={styles.tabContainer}>{tabs}</nav>
-      <Track currentIndex={currentIndex} componentDataList={components}></Track>
+      <Track currentIndex={currentIndex} componentsData={componentData}></Track>
     </div>
   );
 }

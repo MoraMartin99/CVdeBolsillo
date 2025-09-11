@@ -10,16 +10,16 @@ import { reduceToClassName } from "../../utils";
  * The Track component is the element that contain the slots and manage the actual moves of the screens
  * @memberof module:Carrousel
  * @param {object} props The Track properties
- * @param {Array<componentData>} props.componentDataList The list of components data to display
+ * @param {Array<componentData>} props.componentsData The list of components data to display
  * @param {number} props.currentIndex The index of the screen that must be the current
  * @returns {JSX.Element}
  */
-function Track({ componentDataList = [], currentIndex = 0 }) {
+function Track({ componentsData = [], currentIndex = 0 }) {
   const restrainedIndex =
-    currentIndex <= 0 || componentDataList.length === 0
+    currentIndex <= 0 || componentsData.length === 0
       ? 0
-      : currentIndex >= componentDataList.length
-        ? componentDataList.length - 1
+      : currentIndex >= componentsData.length
+        ? componentsData.length - 1
         : currentIndex;
   const transform = `translateX(-${restrainedIndex * 100}%)`;
 
@@ -36,7 +36,7 @@ function Track({ componentDataList = [], currentIndex = 0 }) {
       style={{ transform }}
       className={reduceToClassName([styles.main, "track"])}
     >
-      {componentDataList.map(setWrapper)}
+      {componentsData.map(setWrapper)}
     </div>
   );
 }
