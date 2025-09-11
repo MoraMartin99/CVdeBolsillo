@@ -23,7 +23,16 @@ import { reduceToClassName } from "../../utils";
  * @param {settings} props.settings
  * @returns {JSX.Element} The entire app
  */
-function App({ settings: { name, repoLabel, repoUrl, RepoIcon, content } }) {
+function App({
+  settings: {
+    name,
+    repoLabel,
+    repoUrl,
+    RepoIcon,
+    content,
+    minDualPanelScreenWidth,
+  },
+}) {
   const className = reduceToClassName(["app", css.layout]);
 
   return (
@@ -34,7 +43,10 @@ function App({ settings: { name, repoLabel, repoUrl, RepoIcon, content } }) {
         repoUrl={repoUrl}
         RepoIcon={RepoIcon}
       ></Header>
-      <Main content={content}></Main>
+      <Main
+        content={content}
+        minDualPanelScreenWidth={minDualPanelScreenWidth}
+      ></Main>
     </div>
   );
 }
