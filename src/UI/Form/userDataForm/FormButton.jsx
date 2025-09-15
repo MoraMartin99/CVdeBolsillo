@@ -1,4 +1,4 @@
-import BaseButton from "../BaseButton/BaseButton";
+import BaseButton from "../../BaseButton/BaseButton";
 import css from "./FormButton.module.css";
 /**@module FormButton */
 
@@ -9,7 +9,7 @@ import css from "./FormButton.module.css";
  */
 
 /**
- * @typedef FormButtonProps
+ * @typedef {object} FormButtonProps The component properties
  * @property {object} props The component properties
  * @property {string} [props.children] The visible text of the Button
  * @property {Array<string>} [props.classArr = []] A list of CSS classes to apply to the Button
@@ -18,6 +18,7 @@ import css from "./FormButton.module.css";
  * @property {onClickCallback} props.onClick The function that runs on click events
  * @property {boolean} [props.isDisable = false] If true sets the disable attribute as true, if false sets the opposite
  * @property {Object} [props.style = {}] An object that sets the inline style
+ * @property {("primary"|"destructive")} [props.type = "primary"] The purpose of the Button. This property dictates some styles properties like the font color
  */
 
 /**
@@ -33,11 +34,13 @@ function FormButton({
   onClick,
   isDisable = false,
   style: initialStyle = {},
+  type = "primary",
 }) {
+  const typeClass = css[type];
   return (
     <BaseButton
       isDisable={isDisable}
-      classArr={[css.main, ...classArr]}
+      classArr={[css.base, typeClass ? typeClass : css.primary, ...classArr]}
       onClick={onClick}
       style={{ ...initialStyle }}
       Icon={Icon ? <Icon className={css.icon}></Icon> : undefined}

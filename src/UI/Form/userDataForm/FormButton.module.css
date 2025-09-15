@@ -1,9 +1,8 @@
-.main {
+.base {
   --height: 30px;
   --minWidth: 55px;
   --inlinePadding: 11px;
   --columnGap: 3px;
-  --color: var(--primary1200color);
   --BGColor: var(--primary300color);
   --BGColorHover: var(--primary400color);
   --fontSize: 0.688rem;
@@ -21,7 +20,15 @@
   cursor: pointer;
 }
 
-.main:hover {
+.primary {
+  --color: var(--primary1200color);
+}
+
+.destructive {
+  --color: var(--error900Color);
+}
+
+.base:hover {
   background-color: var(--BGColorHover);
 }
 
