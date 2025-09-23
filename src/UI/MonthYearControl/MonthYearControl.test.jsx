@@ -1,12 +1,4 @@
-import {
-  beforeEach,
-  describe,
-  expect,
-  it,
-  onTestFailed,
-  onTestFinished,
-  vi,
-} from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { screen, render, fireEvent, act } from "@testing-library/react";
 import GenericComponentMock from "../../mocks/GenericComponentMock";
 
@@ -56,8 +48,6 @@ describe("MonthYearControl component", () => {
     await act(async () => {
       monthSetter(expectedMonth);
     });
-    onTestFailed(() => console.log(GenericComponentMock.mock.calls));
-    onTestFinished(() => console.log(onChange.mock.calls));
     expect(onChange).toHaveBeenLastCalledWith(
       expect.objectContaining({ month: expectedMonth }),
     );
