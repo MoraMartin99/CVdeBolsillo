@@ -79,4 +79,14 @@ describe("useOverlay hook test suite", () => {
       }
     },
   );
+  it("hides the target element if a click event is registered outside the target element", () => {
+    render(<TestElement isVisible={true}></TestElement>);
+    const target = screen.queryByTestId(targetId);
+    const parent = screen.queryByTestId(parentId);
+
+    fireEvent.click(parent);
+
+    expectInvisibility(target);
+  });
+
 });

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 /**@module useOverlay*/
 
@@ -38,10 +38,23 @@ import { useState } from "react";
  * @param {Object} props The component properties
  * @param {Boolean} [props.initialValue = false] The initial visibility state of the component. truthy values sets the component as visible, falsy as the oposite
  * @param {position} [props.position = { x: "center", y: "bellow" }] Defines the position of the overlay relative to the closest absolute ancestor
+ * @param {object} settings.ref A [reference object]{@link https://react.dev/reference/react/useRef#useref} that points to the target element
  * @returns {resultArray}
  */
-function useOverlay({ initialValue = false, position: initialPosition }) {
+function useOverlay({
+  isVisible: initialValue = false,
+  position: initialPosition,
+  ref,
+}) {
   const [isVisible, setIsVisible] = useState(Boolean(initialValue));
+  useEffect(() => {
+    const onClick = ({ target }) => {
+      if (!ref.current.contains(target)) setIsVisible(false);
+    };
+    document.body.addEventListener("click", onClick);
+
+    return () => document.body.removeEventListener("click", onClick);
+  }, [ref]);
   let overlayStyle = { position: "absolute" };
   const CENTER = "center";
   const LEFT = "left";
