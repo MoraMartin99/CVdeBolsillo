@@ -3,17 +3,17 @@ import { useEffect, useState } from "react";
 /**@module useOverlay*/
 
 /**
- * @typedef {(Object|"center")} position Defines the position of the overlay relative to the closest absolute ancestor
+ * @typedef {(Object|"center")} position Defines the position of the overlay relative to the closest positioned ancestor
  * @property {xPosition} x Defines the position of the overlay relative to the horizontal axis
- * @property {yPosition} y DEfines the position of the overlay relative to the vertical axis
+ * @property {yPosition} y Defines the position of the overlay relative to the vertical axis
  */
 
 /**
- * @typedef {"left"|"center"|"right"} xPosition A keyword that represents a valid positions for the horizontal axis
+ * @typedef {"left"|"center"|"right"} xPosition A keyword that represents a valid position for the horizontal axis
  */
 
 /**
- * @typedef {"above"|"center"|"bellow"} yPosition A keyword that represents a valid positions for the vertical axis
+ * @typedef {"above"|"center"|"bellow"} yPosition A keyword that represents a valid position for the vertical axis
  */
 
 /**
@@ -34,11 +34,36 @@ import { useEffect, useState } from "react";
  */
 
 /**
- * The useOverlay hook lets you set a component as an overlay relative to the closest absolute ancestor
- * @param {Object} props The component properties
- * @param {Boolean} [props.initialValue = false] The initial visibility state of the component. truthy values sets the component as visible, falsy as the oposite
- * @param {position} [props.position = { x: "center", y: "bellow" }] Defines the position of the overlay relative to the closest absolute ancestor
+ * The useOverlay hook lets you set a component as an overlay relative to the closest positioned ancestor
+ * @param {Object} settings
+ * @param {Boolean} [settings.isVisible = false] The initial visibility state of the component. truthy values sets the component as visible, falsy as the oposite
+ * @param {position} [settings.position = { x: "center", y: "bellow" }] Defines the position of the overlay relative to the closest positioned ancestor
  * @param {object} settings.ref A [reference object]{@link https://react.dev/reference/react/useRef#useref} that points to the target element
+ * @example
+ * const TestElement = ({ isVisible, position }) => {
+   const targetRef = useRef(null);
+   const [isVisible, setIsVisible, overlayStyle] = useOverlay({
+     isVisible,
+     position,
+     ref: targetRef,
+   });
+   return (
+     <div
+       data-testid={parentId}
+       style={{
+         position: "relative",
+       }}
+     >
+       <div
+         style={{
+           ...overlayStyle,
+         }}
+         data-testid={targetId}
+         ref={targetRef}
+       ></div>
+     </div>
+   );
+ }
  * @returns {resultArray}
  */
 function useOverlay({
