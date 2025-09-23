@@ -68,7 +68,7 @@ import { useEffect, useState } from "react";
  */
 function useOverlay({
   isVisible: initialValue = false,
-  position: initialPosition,
+  position: initialPosition = {},
   ref,
 }) {
   const [isVisible, setIsVisible] = useState(Boolean(initialValue));
