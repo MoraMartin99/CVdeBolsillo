@@ -64,7 +64,7 @@ describe("buildScreens", () => {
       [screen3, PreviewMock],
     ];
     const settings = {
-      content: subjects.map(([screen]) => screen),
+      screens: subjects.map(([screen]) => screen),
       onChange: onChangeMock,
       data: userData,
     };
@@ -88,7 +88,7 @@ describe("buildScreens", () => {
 
   it("returns the components inside 1 container if hasIndependentLastPanel is falsy", () => {
     const settings = {
-      content: [screen1, screen2],
+      screens: [screen1, screen2],
       onChange: onChangeMock,
       data: userData,
       hasIndependentLastPanel: false,
@@ -99,7 +99,7 @@ describe("buildScreens", () => {
 
   it("returns the component inside 1 container if theres only 1 component and hasIndependentLastPanel is truthy", () => {
     const settings = {
-      content: [screen1],
+      screens: [screen1],
       onChange: onChangeMock,
       data: userData,
       hasIndependentLastPanel: true,
@@ -110,7 +110,7 @@ describe("buildScreens", () => {
 
   it("returns the components inside 2 containers if hasIndependentLastPanel is truthy", () => {
     const settings = {
-      content: [screen1, screen2, screen3],
+      screens: [screen1, screen2, screen3],
       onChange: onChangeMock,
       data: userData,
       hasIndependentLastPanel: true,

@@ -29,7 +29,7 @@ function App({
     repoLabel,
     repoUrl,
     RepoIcon,
-    content,
+    screens,
     minDualPanelScreenWidth,
   },
 }) {
@@ -44,7 +44,7 @@ function App({
         RepoIcon={RepoIcon}
       ></Header>
       <Main
-        content={content}
+        screens={screens}
         minDualPanelScreenWidth={minDualPanelScreenWidth}
       ></Main>
     </div>

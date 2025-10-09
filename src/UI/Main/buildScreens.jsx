@@ -25,7 +25,7 @@ import Preview from "../Preview/Preview";
  * @returns {Array<JSX.Element>|Array<JSX.Element, JSX.Element>} An array with 2 Carrousel components if hasIndependentLastPanel is truthy or 1 if it's falsy
  */
 function buildScreens({
-  content,
+  screens,
   onChange,
   hasIndependentLastPanel,
   data: userData,
@@ -68,7 +68,7 @@ function buildScreens({
     if (isLastItem) return result.filter(filter);
     return result;
   };
-  const groups = content.reduce(grouper, [[], []]);
+  const groups = screens.reduce(grouper, [[], []]);
   return groups.map(buildContainer);
 }
 

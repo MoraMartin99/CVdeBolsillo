@@ -8,11 +8,11 @@ import { useState } from "react";
 /**
  * The Main component build the main screens
  * @param {object} props The component's properties
- * @param {Array<object>} props.content A list containing the data required to build the screens
+ * @param {Array<object>} props.screens A list containing the data required to build the screens
  * @param {number} [props.minDualPanelScreenWidth = 700] The minimum screen width at which it  renders the screens within 2 panels
  * @returns {JSX.Element}
  */
-function Main({ content, minDualPanelScreenWidth = 700 }) {
+function Main({ screens, minDualPanelScreenWidth = 700 }) {
   const [data, setData] = useState({});
   const screenSize = useScreenSize();
   const hasIndependentLastPanel = screenSize >= minDualPanelScreenWidth;
@@ -22,7 +22,8 @@ function Main({ content, minDualPanelScreenWidth = 700 }) {
 
   return (
     <main className={css.layout}>
-      {buildScreens({ content, data, onChange, hasIndependentLastPanel })}
+      {buildScreens({ screens, data, onChange, hasIndependentLastPanel })}
+      {<ConfirmationMenu></ConfirmationMenu>}
     </main>
   );
 }
