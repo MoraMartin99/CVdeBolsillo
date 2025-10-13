@@ -2,24 +2,32 @@ import UserFormsManager from "../Form/userDataForm/FormsManager";
 import TemplateForm from "../Form/templateForm/TemplateForm";
 import Preview from "../Preview/Preview";
 
-/**@memberof module:Mai */
-
 /**
  * A functions to report changes from the screen to the parent
+ * @memberof module:Main
  * @callback onChange
+ */
+
+/** The data required to build a screen
+ * @memberof module:Main
+ * @typedef {object} screenData
+ * @property {string} label The name of the screen
+ * @property {object} data The data required to build the screen component
+ * @property {string} id The screen identifier
  */
 
 /**
  *  The data required to build the screens
+ * @memberof module:Main
  * @typedef {object} settings
- * @property {Array<object>} content A list containing the data required to build the screens
+ * @property {Array<screenData>} screensData A list containing the data required to build the screens
  * @property {onChange} onChange A function passed to the screens that reports value's changes to the parent
- * @property {Boolean} hasIndependentLastPanel if false the function packs all the screens in one container, if true the function packs the last screen in one container and the rest in another
- * @property {object} data The data recollected from the forms
+ * @property {object} userData The data recollected from the forms
  */
 
 /**
- * The buildScreens factory creates the main screens
+ * The buildScreens factory builds the main screens
+ * @memberof module:Main
  * @param {settings} settings
  * @returns {Array<JSX.Element>|Array<JSX.Element, JSX.Element>} An array with 2 Carrousel components if hasIndependentLastPanel is truthy or 1 if it's falsy
  */
