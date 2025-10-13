@@ -1,6 +1,7 @@
 import css from "./Main.module.css";
 import useScreenSize from "../../hooks/useScreenSize";
 import buildScreens from "./buildScreens";
+import Carrousel from "../Carrousel/Carrousel";
 import { useState } from "react";
 
 /**@module Main */
@@ -12,18 +13,25 @@ import { useState } from "react";
  * @param {number} [props.minDualPanelScreenWidth = 700] The minimum screen width at which it  renders the screens within 2 panels
  * @returns {JSX.Element}
  */
-function Main({ screens, minDualPanelScreenWidth = 700 }) {
+function Main({ screens: screensData, minDualPanelScreenWidth = 700 }) {
   const [data, setData] = useState({});
   const screenSize = useScreenSize();
   const hasIndependentLastPanel = screenSize >= minDualPanelScreenWidth;
   const onChange = (newData) => {
     setData({ ...structuredClone(data), ...newData });
   };
+  const screens = buildScreens({ screensData, userData: data, onChange });
 
   return (
     <main className={css.layout}>
-      {buildScreens({ screens, data, onChange, hasIndependentLastPanel })}
-      {<ConfirmationMenu></ConfirmationMenu>}
+      {hasIndependentLastPanel ? (
+        <>
+          <Carrousel screens={screens.slice(0, screens.length - 1)}></Carrousel>
+          <Carrousel screens={screens.slice(-1)} l></Carrousel>
+        </>
+      ) : (
+        <Carrousel screens={screens}></Carrousel>
+      )}
     </main>
   );
 }

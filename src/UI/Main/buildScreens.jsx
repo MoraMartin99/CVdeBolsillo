@@ -1,4 +1,3 @@
-import Carrousel from "../Carrousel/Carrousel";
 import UserFormsManager from "../Form/userDataForm/FormsManager";
 import TemplateForm from "../Form/templateForm/TemplateForm";
 import Preview from "../Preview/Preview";
@@ -24,52 +23,27 @@ import Preview from "../Preview/Preview";
  * @param {settings} settings
  * @returns {Array<JSX.Element>|Array<JSX.Element, JSX.Element>} An array with 2 Carrousel components if hasIndependentLastPanel is truthy or 1 if it's falsy
  */
-function buildScreens({
-  screens,
-  onChange,
-  hasIndependentLastPanel,
-  data: userData,
-}) {
-  const buildComponent = ({
-    component,
-    data,
-    exampleContent,
-    templates,
-    id,
-    currentTemplateId,
-  }) => {
-    const COMPONENT_1 = "UserFormsManager";
-    const COMPONENT_2 = "TemplateForm";
-    const COMPONENT_3 = "Preview";
-    if (component === COMPONENT_1) {
-      return (
-        <UserFormsManager
-          {...{ data, exampleContent, onChange }}
-        ></UserFormsManager>
-      );
-    } else if (component === COMPONENT_2) {
-      return (
-        <TemplateForm
-          {...{ templates, id, currentTemplateId, onChange }}
-        ></TemplateForm>
-      );
-    } else if (component === COMPONENT_3) {
-      return <Preview {...{ data: userData, currentTemplateId }}></Preview>;
+function buildScreens({ screensData, userData, onChange }) {
+  const COMPONENT_1 = "UserFormsManager";
+  const COMPONENT_2 = "TemplateForm";
+  const COMPONENT_3 = "Preview";
+
+  const buildComponent = (data) => {
+    const { component: componentId } = data;
+    switch (componentId) {
+      case COMPONENT_1:
+        return <UserFormsManager {...{ ...data, onChange }}></UserFormsManager>;
+      case COMPONENT_2:
+        return <TemplateForm {...{ ...data, onChange }}></TemplateForm>;
+      case COMPONENT_3:
+        return <Preview {...{ ...data, userData }}></Preview>;
     }
   };
-  const buildContainer = (screens, index) => {
-    return <Carrousel key={index} screens={screens}></Carrousel>;
+
+  const buildScreen = ({ label, data, id }) => {
+    return { label, component: buildComponent(data), id };
   };
-  const grouper = (result, { label, data, id }, index, list) => {
-    const filter = (item) => item.length;
-    const isLastItem = index === list.length - 1;
-    const slot = hasIndependentLastPanel && isLastItem ? result[1] : result[0];
-    slot.push({ label, component: buildComponent(data), id });
-    if (isLastItem) return result.filter(filter);
-    return result;
-  };
-  const groups = screens.reduce(grouper, [[], []]);
-  return groups.map(buildContainer);
+  return screensData.map(buildScreen);
 }
 
 export default buildScreens;
