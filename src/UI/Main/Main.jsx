@@ -2,7 +2,7 @@ import css from "./Main.module.css";
 import useScreenSize from "../../hooks/useScreenSize";
 import buildScreens from "./buildScreens";
 import Carrousel from "../Carrousel/Carrousel";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 /**@module Main */
 
@@ -17,9 +17,9 @@ function Main({ screens: screensData, minDualPanelScreenWidth = 700 }) {
   const [data, setData] = useState({});
   const screenSize = useScreenSize();
   const hasIndependentLastPanel = screenSize >= minDualPanelScreenWidth;
-  const onChange = (newData) => {
-    setData({ ...structuredClone(data), ...newData });
-  };
+  const onChange = useCallback((newData) => {
+    setData((data) => ({ ...structuredClone(data), ...newData }));
+  }, []);
   const screens = buildScreens({ screensData, userData: data, onChange });
 
   return (
