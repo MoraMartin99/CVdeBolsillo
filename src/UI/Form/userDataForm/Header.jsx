@@ -34,7 +34,7 @@ function Header({
       onClick={onClick}
       data-testid="header"
     >
-      <button className={css.button}>
+      <button type="button" className={css.button}>
         {Icon ? <Icon className={css.mainIcon}></Icon> : null}
         <span>{children}</span>
         {

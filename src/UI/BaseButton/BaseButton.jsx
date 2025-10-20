@@ -17,6 +17,7 @@ import css from "./BaseButton.module.css";
  * @param {onClickCallback} props.onClick The function that runs on click events
  * @param {boolean} [props.isDisable = false] If true sets the disable attribute as true, if false sets the opposite
  * @param {Object} [props.style = {}] An object that sets the inline style
+ * @param {"submit"|"reset"|"button"} [props.type = "button"] The [type attribute]{@link https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/button#attributes}
  * @returns {JSX.Element}
  */
 function BaseButton({
@@ -27,6 +28,7 @@ function BaseButton({
   onClick,
   isDisable = false,
   style: initialStyle = {},
+  type = "button",
 }) {
   const iconPositionClass =
     iconPosition.toLowerCase() === "right" ? css.right : "";
@@ -37,6 +39,7 @@ function BaseButton({
       className={reduceToClassName([iconPositionClass, css.main, ...classArr])}
       onClick={onClick}
       style={{ ...initialStyle }}
+      type={type}
     >
       {Icon}
       {children}

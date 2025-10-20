@@ -18,7 +18,7 @@ import css from "./FormButton.module.css";
  * @property {onClickCallback} props.onClick The function that runs on click events
  * @property {boolean} [props.isDisable = false] If true sets the disable attribute as true, if false sets the opposite
  * @property {Object} [props.style = {}] An object that sets the inline style
- * @property {("primary"|"destructive")} [props.type = "primary"] The purpose of the Button. This property dictates some styles properties like the font color
+ * @property {("primary"|"destructive")} [props.variant = "primary"] The purpose of the Button. This property dictates some styles properties like the font color
  */
 
 /**
@@ -34,13 +34,12 @@ function FormButton({
   onClick,
   isDisable = false,
   style: initialStyle = {},
-  type = "primary",
+  variant = "primary",
 }) {
-  const typeClass = css[type];
   return (
     <BaseButton
       isDisable={isDisable}
-      classArr={[css.base, typeClass ? typeClass : css.primary, ...classArr]}
+      classArr={[css.base, css[variant], ...classArr]}
       onClick={onClick}
       style={{ ...initialStyle }}
       Icon={Icon ? <Icon className={css.icon}></Icon> : undefined}
