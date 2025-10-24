@@ -1,0 +1,29 @@
+.base {
+  --height: 30px;
+  --minWidth: 55px;
+  --inlinePadding: 11px;
+  --columnGap: 3px;
+  --fontSize: 0.688rem;
+  --iconSize: 10px;
+  min-width: var(--minWidth);
+  height: var(--height);
+  padding-inline: var(--inlinePadding);
+  justify-content: center;
+  align-items: center;
+  column-gap: var(--columnGap);
+  color: var(--color);
+  background-color: var(--BGColor);
+  font-size: var(--fontSize);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.base:hover {
+  background-color: var(--BGColorHover);
+}
+
+.icon {
+  color: inherit;
+  width: var(--iconSize);
+  height: var(--iconSize);
+}

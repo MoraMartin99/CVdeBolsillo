@@ -1,0 +1,71 @@
+.main {
+  --mainWidth: 256px;
+  --mainMinHeight: 170px;
+  --mainInlinePadding: 5px;
+  --mainGap: 20px;
+  --mainBGColor: var(--secondary1500color);
+  --mainBackdropColor: var(--overlayBackdrop);
+  --messageFontSize: 0.875rem;
+  --messageColor: var(--secondary400color);
+  --tipFontSize: 0.75rem;
+  --tipColor: var(--secondary500color);
+  --tipIconSize: 10px;
+  --tipGap: 3px;
+  --buttonContainerGap: 15px;
+  --buttonBGColor: var(--secondary300color);
+  --buttonBGColorHover: var(--secondary400color);
+  --buttonColor: var(--secondary1500color);
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.main::backdrop {
+  background-color: var(--mainBackdropColor);
+}
+
+.mainContainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mainGap);
+  align-items: center;
+  justify-content: center;
+  width: var(--mainWidth);
+  min-height: var(--mainMinHeight);
+  background-color: var(--mainBGColor);
+  padding-inline: var(--mainInlinePadding);
+}
+
+.message {
+  font-size: var(--messageFontSize);
+  font-weight: 600;
+  color: var(--messageColor);
+}
+
+.tip {
+  font-size: var(--tipFontSize);
+  font-weight: 400;
+  color: var(--tipColor);
+  display: grid;
+  grid-template-rows: 1fr;
+  grid-template-columns: max-content 1fr;
+  gap: var(--tipGap);
+  align-items: start;
+}
+
+.tipIcon {
+  font-size: inherit;
+  margin-top: calc((1em - var(--tipIconSize)) / 2);
+  color: inherit;
+  width: var(--tipIconSize);
+  height: var(--tipIconSize);
+}
+
+.buttonContainer {
+  --BGColor: var(--buttonBGColor);
+  --BGColorHover: var(--buttonBGColorHover);
+  --color: var(--buttonColor);
+  display: flex;
+  gap: var(--buttonContainerGap);
+}
