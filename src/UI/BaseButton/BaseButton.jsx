@@ -3,7 +3,7 @@ import css from "./BaseButton.module.css";
 /**@module BaseButton */
 
 /**
- * This callbacks runs on click events
+ * A callback that runs on click events
  * @callback onClickCallback
  */
 
