@@ -17,6 +17,7 @@
   justify-items: start;
   align-items: center;
   column-gap: var(--gap);
+  cursor: pointer;
 }
 
 .button:hover {
