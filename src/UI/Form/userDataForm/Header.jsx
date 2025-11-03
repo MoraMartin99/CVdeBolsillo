@@ -36,7 +36,7 @@ function Header({
     >
       <button type="button" className={css.button}>
         {Icon ? <Icon className={css.mainIcon}></Icon> : null}
-        <span>{children}</span>
+        <span className={css.text}>{children}</span>
         {
           <VisibilityIcon
             data-testid="visibilityIcon"
