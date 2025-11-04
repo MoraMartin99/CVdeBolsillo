@@ -1,6 +1,4 @@
 .container {
-  width: var(--width, 100%);
-  height: var(--height, 100%);
   --fontSize: 0.844rem;
   --paddingLeft: 20px;
   --paddingRight: 5px;
@@ -15,8 +13,9 @@
 }
 
 .button {
-  width: 100%;
-  height: 100%;
+  background-color: inherit;
+  width: var(--width, 100%);
+  height: var(--height);
   display: grid;
   grid-template-columns: auto 1fr auto;
   grid-template-rows: 1fr;
