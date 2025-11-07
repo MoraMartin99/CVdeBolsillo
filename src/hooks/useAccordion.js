@@ -67,13 +67,13 @@ const useAccordion = (initialValue = false) => {
   let parentStyle = {
     display: "grid",
     gridTemplateColumns: "1fr",
-    gridTemplateRows: "auto 0fr",
+    gridTemplateRows: "min-content 0fr",
     transition: "grid-template-rows var(--transitionTime, 0.15s) linear",
   };
   const contentStyle = { overflow: "hidden" };
 
   if (isExpanded) {
-    parentStyle = { ...parentStyle, gridTemplateRows: "auto 1fr" };
+    parentStyle = { ...parentStyle, gridTemplateRows: "min-content 1fr" };
   }
   return [
     isExpanded,

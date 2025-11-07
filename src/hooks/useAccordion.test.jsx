@@ -1,13 +1,15 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import useAccordion from "./useAccordion";
 import { describe, expect, it } from "vitest";
 
+const parentId = "parent";
+const headerId = "header";
 const TestElement = ({ initialValue }) => {
   const [isExpanded, setIsExpanded, parentStyle, contentStyle] =
     useAccordion(initialValue);
   const onClick = () => setIsExpanded(!isExpanded);
   return (
-    <div style={parentStyle} data-testid="parent">
+    <div style={parentStyle} data-testid={parentId}>
       <header
         style={{
           width: "130px",
@@ -15,6 +17,7 @@ const TestElement = ({ initialValue }) => {
           backgroundColor: "LightSalmon",
         }}
         onClick={onClick}
+        data-testid={headerId}
       ></header>
       <main
         style={{
@@ -22,6 +25,7 @@ const TestElement = ({ initialValue }) => {
           backgroundColor: "YellowGreen",
           ...contentStyle,
         }}
+        data-testid="container"
       >
         <h1 style={{ fontSize: "12px" }}>Esto es un test</h1>
         <div
@@ -32,25 +36,31 @@ const TestElement = ({ initialValue }) => {
   );
 };
 
-describe("useAccordion hook test suite", () => {
-  const hiddenStyle = { gridTemplateRows: "auto 0fr" };
-  const visibleStyle = { gridTemplateRows: "auto 1fr" };
+const collapseValues = [undefined, false];
+const hiddenStyle = { gridTemplateRows: "min-content 0fr" };
+const visibleStyle = { gridTemplateRows: "min-content 1fr" };
 
-  it("sets the target component as collapsed if initialValue is undefined", () => {
-    render(<TestElement></TestElement>);
-    const targetElement = screen.queryByTestId("parent");
-    expect(targetElement).toHaveStyle(hiddenStyle);
-  });
+describe("useAccordion", () => {
+  it.each(collapseValues)(
+    "collapse the target container if initialValue is %s",
+    (initialValue) => {
+      render(<TestElement {...{ initialValue }}></TestElement>);
+      const targetElement = screen.queryByTestId(parentId);
+      expect(targetElement).toHaveStyle(hiddenStyle);
+    },
+  );
 
-  it("sets the target component as collapsed if initialValue is falsy", () => {
-    render(<TestElement initialValue={false}></TestElement>);
-    const targetElement = screen.queryByTestId("parent");
-    expect(targetElement).toHaveStyle(hiddenStyle);
-  });
-
-  it("sets the target component as expanded if initialValue is truthy", () => {
-    render(<TestElement initialValue={true}></TestElement>);
-    const targetElement = screen.queryByTestId("parent");
+  it("expand the target container if initialValue is truthy", () => {
+    render(<TestElement {...{ initialValue: true }}></TestElement>);
+    const targetElement = screen.queryByTestId(parentId);
     expect(targetElement).toHaveStyle(visibleStyle);
+  });
+
+  it("sets the visibility of target container using setIsExpanded", () => {
+    render(<TestElement {...{ initialValue: true }}></TestElement>);
+    const header = screen.queryByTestId(headerId);
+    fireEvent.click(header);
+    const targetElement = screen.queryByTestId(parentId);
+    expect(targetElement).toHaveStyle(hiddenStyle);
   });
 });
