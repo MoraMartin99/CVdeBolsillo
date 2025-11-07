@@ -27,7 +27,7 @@ function Main({ screens: screensData, minDualPanelScreenWidth = 700 }) {
       {hasIndependentLastPanel ? (
         <>
           <Carrousel screens={screens.slice(0, screens.length - 1)}></Carrousel>
-          <Carrousel screens={screens.slice(-1)} l></Carrousel>
+          <Carrousel screens={screens.slice(-1)}></Carrousel>
         </>
       ) : (
         <Carrousel screens={screens}></Carrousel>
