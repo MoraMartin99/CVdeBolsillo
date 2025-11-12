@@ -22,6 +22,13 @@
         a: { a1: [1, 2, 3] },
         b: [{}, { myKey: 100, isRed: false }, true, null],
       };
+  @example <caption>ignores invalid modelItems:</caption>
+  const model = [
+        { id: "a", value: [{ id: "a1", value: "soy un valor" }] },
+        { id: "b", value: true, isInvalid: true },
+      ];
+  extractValuesFromModel(model)
+  // returns { a: { a1: "soy un valor" } }
  * @returns {object}
  */
 function extractValuesFromModel(model) {
@@ -35,8 +42,8 @@ function extractValuesFromModel(model) {
     return list.every(isModelItem);
   };
 
-  const reducer = (result, { id, value: defaultValue }) => {
-    if (id == null) return result;
+  const reducer = (result, { id, value: defaultValue, isInvalid }) => {
+    if (id == null || isInvalid) return result;
     const value = isModel(defaultValue)
       ? extractValuesFromModel(defaultValue)
       : defaultValue;

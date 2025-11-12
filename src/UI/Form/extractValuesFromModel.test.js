@@ -34,5 +34,14 @@ describe("extractValuesFromModel", () => {
       };
       setExpectation(model, expectedValues);
     });
+
+    it("ignores invalid modelItems", () => {
+      const model = [
+        { id: "a", value: [{ id: "a1", value: "soy un valor" }] },
+        { id: "b", value: true, isInvalid: true },
+      ];
+      const expectedValues = { a: { a1: "soy un valor" } };
+      setExpectation(model, expectedValues);
+    });
   });
 });
