@@ -56,7 +56,7 @@ const simplifyModel = ({ templateId, value: defaultValue }) => {
   return { templateId, value };
 };
 
-describe("useFormModel hook", () => {
+describe("useFormModel", () => {
   beforeEach(async () => {
     vi.doMock("../utils.js", async (importOriginal) => {
       const mod = await importOriginal();
@@ -114,7 +114,7 @@ describe("useFormModel hook", () => {
     });
   });
 
-  describe("changes its model", () => {
+  describe("generates a new model by setting its parameters", () => {
     const parameters = [
       {},
       { content: [{ templateId: "formC" }] },
