@@ -77,9 +77,11 @@ function useFormModel(content = [], templates = {}) {
   };
 
   function onChange(data) {
-    const [[id, value]] = Object.entries(data);
-    const setValue = (item) => (item.value = value);
-    mutateModel(id, setValue);
+    const { id } = data;
+    const setData = (item) => {
+      for (const key in data) item[key] = data[key];
+    };
+    mutateModel(id, setData);
   }
 
   function createId({ parentId, templateId, childrenId }) {

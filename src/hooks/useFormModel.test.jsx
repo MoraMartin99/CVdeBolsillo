@@ -166,13 +166,13 @@ describe("useFormModel hook", () => {
     expect(finalItem).toHaveLength(0);
   });
 
-  it("modifies the value property of the items", () => {
-    const { model: initialModel } = getLastCall();
-    const { value: initialValue, onChange, id } = initialModel[3].value[0];
-    const newValue = 105;
-    act(() => onChange({ [id]: newValue }));
-    const { value: finalValue } = getLastCall().model[3].value[0];
-    expect(initialValue).not.toBe(finalValue);
-    expect(finalValue).toBe(newValue);
+  it("sets properties inside item using onChange", () => {
+    const initialItem = getLastCall().model[3];
+    const { onChange, id } = initialItem;
+    const properties = { value: 105, newKey1: "hola", newMethod: () => {}, id };
+    act(() => onChange(properties));
+    const finalItem = getLastCall().model[3];
+    expect(initialItem).not.toEqual(expect.objectContaining(properties));
+    expect(finalItem).toEqual(expect.objectContaining(properties));
   });
 });
