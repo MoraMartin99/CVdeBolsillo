@@ -142,8 +142,6 @@ function useFormModel(content = [], templates = {}) {
   };
 
   const mutateModel = (id, mutator) => {
-    const newModel = cloneDeep(model);
-
     const getReferences = (id, list) => {
       for (const target of list) {
         if (typeof target !== "object") continue;
@@ -155,10 +153,15 @@ function useFormModel(content = [], templates = {}) {
       }
     };
 
-    const [target, container] = getReferences(id, newModel);
+    const mutateState = (model) => {
+      const newModel = cloneDeep(model);
+      const [target, container] = getReferences(id, newModel);
 
-    mutator(target, container);
-    setModel(newModel);
+      mutator(target, container);
+      return newModel;
+    };
+
+    setModel(mutateState);
   };
 
   return [model, replaceModel];
