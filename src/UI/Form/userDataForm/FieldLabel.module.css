@@ -1,0 +1,9 @@
+.main {
+  --fontSize: 0.75rem;
+  --fontWeight: 600;
+  --color: var(--primary400color);
+
+  font-size: var(--fontSize);
+  font-weight: var(--fontWeight);
+  color: var(--color);
+}
