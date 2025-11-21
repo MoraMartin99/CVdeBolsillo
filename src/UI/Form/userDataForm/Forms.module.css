@@ -1,6 +1,5 @@
 .main {
   --BGColor: var(--primary1100color);
-  --width: 260px;
   --color: var(--primary400color);
   --contentGap: 20px;
   --elementContainerGap: 10px;
