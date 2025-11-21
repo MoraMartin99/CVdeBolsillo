@@ -1,4 +1,5 @@
 .container {
+  --color: var(--primary400color);
   --fontSize: 0.844rem;
   --paddingLeft: 20px;
   --paddingRight: 5px;
@@ -8,7 +9,7 @@
   --visibilityIcon: 20px;
   background-color: var(--BGColor, inherit);
   padding-inline: var(--paddingLeft) var(--paddingRight);
-  color: var(--color, inherit);
+  color: var(--color);
   cursor: pointer;
 }
 
