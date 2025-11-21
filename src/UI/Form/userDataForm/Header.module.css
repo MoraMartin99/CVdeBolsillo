@@ -7,7 +7,6 @@
   --gap: 5px;
   --mainIconSize: 14px;
   --visibilityIcon: 20px;
-  background-color: var(--BGColor, inherit);
   padding-inline: var(--paddingLeft) var(--paddingRight);
   color: var(--color);
   cursor: pointer;
