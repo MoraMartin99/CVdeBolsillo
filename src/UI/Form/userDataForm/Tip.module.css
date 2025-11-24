@@ -1,0 +1,18 @@
+.main {
+  --color: var(--primary500color);
+  --fontSize: 0.625rem;
+  --gap: 1.5px;
+
+  display: flex;
+  align-items: center;
+  color: var(--color);
+  font-size: var(--fontSize);
+  font-style: italic;
+  font-weight: 400;
+  gap: var(--gap);
+  visibility: hidden;
+}
+
+.isVisible {
+  visibility: initial;
+}
