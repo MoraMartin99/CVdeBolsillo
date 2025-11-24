@@ -1,0 +1,47 @@
+.main {
+  --height: 25px;
+  --fontSize: 0.688rem;
+  --color: var(--primary500color);
+  --backgroundColor: var(--primary1400color);
+  --borderSize: 1px;
+  --borderColor: var(--primary800color);
+  --inlinePadding: 10px;
+  --placeholderColor: var(--primary1000color);
+  --focusBorderColor: var(--primary500color);
+  --invalidColor: var(--error500Color);
+  --invalidBorderColor: var(--error800Color);
+  --invalidPlaceholderColor: var(--error900Color);
+  --invalidFocusBorderColor: var(--error500Color);
+
+  width: var(--width);
+  height: var(--height);
+  font-size: var(--fontSize);
+  font-weight: 500;
+  color: var(--color);
+  background-color: var(--backgroundColor);
+  border: var(--borderSize) solid var(--borderColor);
+  padding-inline: var(--inlinePadding);
+}
+
+.main::placeholder {
+  color: var(--placeholderColor);
+  font-weight: 400;
+}
+
+.main:focus {
+  border-color: var(--focusBorderColor);
+  outline: none;
+}
+
+.main:invalid {
+  color: var(--invalidColor);
+  border-color: var(--invalidBorderColor);
+}
+
+.main:invalid::placeholder {
+  color: var(--invalidPlaceholderColor);
+}
+
+.main:invalid:focus {
+  border-color: var(--invalidFocusBorderColor);
+}
