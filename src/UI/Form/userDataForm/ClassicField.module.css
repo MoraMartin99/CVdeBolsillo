@@ -1,0 +1,21 @@
+.main {
+  --leftPadding: 5px;
+  --gap: 5px;
+  --inputWidth: 220px;
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+}
+
+.label {
+  padding-left: var(--leftPadding);
+}
+
+.input {
+  --width: var(--inputWidth);
+}
+
+.tip {
+  padding-left: var(--leftPadding);
+}
