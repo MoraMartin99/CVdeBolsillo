@@ -168,9 +168,9 @@ describe("useFormModel", () => {
 
   it("sets properties inside item using onChange", () => {
     const initialItem = getLastCall().model[3];
-    const { onChange, id } = initialItem;
+    const { submitData, id } = initialItem;
     const properties = { value: 105, newKey1: "hola", newMethod: () => {}, id };
-    act(() => onChange(properties));
+    act(() => submitData(properties));
     const finalItem = getLastCall().model[3];
     expect(initialItem).not.toEqual(expect.objectContaining(properties));
     expect(finalItem).toEqual(expect.objectContaining(properties));

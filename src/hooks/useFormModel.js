@@ -76,7 +76,7 @@ function useFormModel(content = [], templates = {}) {
     mutateModel(targetId, removeItem);
   };
 
-  function onChange(data) {
+  function submitData(data) {
     const { id } = data;
     const setData = (item) => {
       for (const key in data) item[key] = data[key];
@@ -127,7 +127,7 @@ function useFormModel(content = [], templates = {}) {
         templateId,
         childrenId,
         value,
-        onChange,
+        submitData,
         actions,
         onClick: actionFunctions[action],
       };
