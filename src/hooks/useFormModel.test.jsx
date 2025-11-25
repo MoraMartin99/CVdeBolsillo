@@ -166,7 +166,7 @@ describe("useFormModel", () => {
     expect(finalItem).toHaveLength(0);
   });
 
-  it("sets properties inside item using onChange", () => {
+  it("sets properties inside items", () => {
     const initialItem = getLastCall().model[3];
     const { submitData, id } = initialItem;
     const properties = { value: 105, newKey1: "hola", newMethod: () => {}, id };
