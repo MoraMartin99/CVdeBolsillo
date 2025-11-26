@@ -1,11 +1,9 @@
 .main {
-  --leftPadding: 5px;
-  --gap: 5px;
   --inputWidth: 220px;
 
   display: flex;
   flex-direction: column;
-  gap: var(--gap);
+  gap: var(--rowGap);
 }
 
 .label {

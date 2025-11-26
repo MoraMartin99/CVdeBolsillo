@@ -1,3 +1,4 @@
+import baseCSS from "./field.module.css";
 import css from "./ClassicField.module.css";
 import FieldLabel from "./FieldLabel";
 import FieldInput from "./FieldInput";
@@ -51,7 +52,7 @@ function ClassicField({
   };
 
   return (
-    <div className={reduceToClassName([...classArr, css.main])}>
+    <div className={reduceToClassName([...classArr, baseCSS.main, css.main])}>
       <FieldLabel classArr={[css.label]} htmlFor={id}>
         {label}
       </FieldLabel>
