@@ -1,3 +1,10 @@
+/**@module validators */
+
+/**
+ * The containsText function validates that a string contains at least 1 letter
+ * @param {string} value
+ * @returns {boolean} true if value contains at least 1 letter , false if value its not a string or doesn't contain a letter
+ */
 const containsText = (value) => {
   if (typeof value !== "string") return false;
   const regex = /[a-z]/i;
