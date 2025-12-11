@@ -1,0 +1,22 @@
+.main {
+  --size: 100px;
+  --placeholderHeigh: 88px;
+  --borderSize: 1.5px;
+  --borderColor: var(--primary300color);
+  --invalidBorderColor: var(--error500Color);
+
+  border: var(--borderSize) solid var(--borderColor);
+  border-radius: 50%;
+}
+
+.invalid {
+  border-color: var(--invalidBorderColor);
+}
+
+.image {
+  height: var(--size);
+}
+
+.placeHolder {
+  height: var(--placeholderHeight);
+}
