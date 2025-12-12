@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { containsText, isImagePath } from "./validators";
+import { containsText, isImagePath, hasSource } from "./validators";
 
 describe("validator", () => {
   describe("containsText", () => {
@@ -58,5 +58,33 @@ describe("validator", () => {
       "return true if the string contains a valid file extension at the end, value = '%s'",
       (value) => expect(isImagePath(value)).toBeTruthy(),
     );
+  });
+
+  describe("hasSource", () => {
+    const nonObjectValues = [1, "hola", null, false, () => {}, undefined];
+
+    it.each(nonObjectValues)(
+      `returns false if value is not an object, value = %s`,
+      (value) => expect(hasSource(value)).toBeFalsy(),
+    );
+
+    describe("if value is an object", () => {
+      const valuesWithoutSource = [{}, { someProp: true }];
+
+      it.each(valuesWithoutSource)(
+        "returns false if value.source is undefined, value = %s",
+        (value) => expect(hasSource(value)).toBeFalsy(),
+      );
+
+      it("returns false if value.source is a string with a length = 0", () => {
+        const value = { source: "" };
+        expect(hasSource(value)).toBeFalsy();
+      });
+
+      it("returns true if value.source is a string with a length > 0", () => {
+        const value = { source: "soy una cadena valida!" };
+        expect(hasSource(value)).toBeTruthy();
+      });
+    });
   });
 });

@@ -22,4 +22,15 @@ const isImagePath = (value) => {
   return regex.test(value);
 };
 
-export { containsText, isImagePath };
+/**
+ * The hasSource function validates that an object contains a valid source property
+ * @param {object} value
+ * @returns {Boolean} true if value is an object that contains a source property that is a string with a length > 0, false if not
+ */
+const hasSource = (value) => {
+  if (typeof value !== "object" || value === null) return false;
+  const { source } = value;
+  return Boolean(source) && typeof source === "string";
+};
+
+export { containsText, isImagePath, hasSource };
