@@ -1,0 +1,39 @@
+.main {
+  --columnGap: 10px;
+  --buttonContainerGap: 3px;
+
+  display: grid;
+  grid-template-columns: repeat(2, max-content);
+  grid-template-rows: repeat(3, max-content);
+  grid-template-areas:
+    "label label"
+    "imageMagnifier buttonContainer"
+    "tip tip";
+  place-items: center;
+  gap: var(--rowGap) var(--columnGap);
+}
+
+.fileInput {
+  display: none;
+}
+
+.label {
+  grid-area: label;
+}
+
+.imageMagnifier {
+  grid-area: imageMagnifier;
+}
+
+.buttonContainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--buttonContainerGap);
+  grid-area: buttonContainer;
+}
+
+.tip {
+  grid-area: tip;
+  justify-self: start;
+  padding-left: var(--leftPadding);
+}
