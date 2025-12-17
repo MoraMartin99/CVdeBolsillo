@@ -29,7 +29,7 @@ import { reduceToClassName } from "../../../utils";
  * @param {string} props.placeholder The [placeholder attribute]{@link https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input#placeholder}
  * @param {Array<string>} [props.classArr = []] A list of CSS classes to apply to the component
  * @param {string} props.tip A message to the user that clarifies the constraints that makes a value valid. It has to be set in order to use the Constraint Validation API
- * @param {validator} props.validator A function that runs on change events and evaluates if a value is valid or invalid
+ * @param {validator} [props.validator] A function that runs on change events and evaluates if a value is valid or invalid
  * @param {submitData} props.submitData A function that report data changes to the form model
  * @param {boolean} [props.isInvalid = false] if true sets the component as invalid, if false sets the component as valid.
  * @returns {JSX.Element}
@@ -44,11 +44,13 @@ function ClassicField({
   tip,
   validator,
   submitData,
-  isInvalid = false,
+  isInvalid: isInvalidProp = false,
 }) {
+  const isInvalid = (value) => (validator ? !validator(value) : false);
+
   const onChange = ({ target }) => {
     const value = target.value;
-    submitData({ id, isInvalid: !validator(value), value });
+    submitData({ id, isInvalid: isInvalid(value), value });
   };
 
   return (
@@ -63,10 +65,10 @@ function ClassicField({
         placeholder={placeholder}
         onChange={onChange}
         classArr={[css.input]}
-        isInvalid={isInvalid}
+        isInvalid={isInvalidProp}
         tip={tip}
       ></FieldInput>
-      <Tip classArr={[css.tip]} isVisible={isInvalid}>
+      <Tip classArr={[css.tip]} isVisible={isInvalidProp}>
         {tip}
       </Tip>
     </div>
