@@ -41,8 +41,8 @@ import ImageMagnifier from "../../ImageMagnifier/ImageMagnifier";
  * @param {string} props.label The field tittle
  * @param {value} props.value
  * @param {Array<string>} [props.classArr = []] A list of CSS classes to apply to the component
- * @param {string} props.tip A message to the user that clarifies the constraints that makes a value valid. It has to be set in order to use the Constraint Validation API
- * @param {validator} props.validator A function that runs on change events and evaluates if a value is valid or invalid
+ * @param {string} [props.tip] A message to the user that clarifies the constraints that makes a value valid. It has to be set in order to use the Constraint Validation API
+ * @param {validator} [props.validator] A function that runs on change events and evaluates if a value is valid or invalid
  * @param {submitData} props.submitData A function that report data changes to the form model
  * @param {boolean} [props.isInvalid = false] if true sets the component as invalid, if false sets the component as valid.
  * @param {string} props.primaryActionLabel The text of the button responsible of launch the file selector

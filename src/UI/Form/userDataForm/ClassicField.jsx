@@ -28,7 +28,7 @@ import { reduceToClassName } from "../../../utils";
  * @param {string} props.value The [value attribute]{@link https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input#value}
  * @param {string} props.placeholder The [placeholder attribute]{@link https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input#placeholder}
  * @param {Array<string>} [props.classArr = []] A list of CSS classes to apply to the component
- * @param {string} props.tip A message to the user that clarifies the constraints that makes a value valid. It has to be set in order to use the Constraint Validation API
+ * @param {string} [props.tip] A message to the user that clarifies the constraints that makes a value valid. It has to be set in order to use the Constraint Validation API
  * @param {validator} [props.validator] A function that runs on change events and evaluates if a value is valid or invalid
  * @param {submitData} props.submitData A function that report data changes to the form model
  * @param {boolean} [props.isInvalid = false] if true sets the component as invalid, if false sets the component as valid.
