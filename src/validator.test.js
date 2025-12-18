@@ -1,9 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { containsText, isImagePath, hasSource } from "./validators";
+const nonStringsValues = [undefined, 3, null, false, {}, () => {}];
+const nonObjectValues = [1, "hola", null, false, () => {}, undefined];
 
 describe("validator", () => {
   describe("containsText", () => {
-    const nonStringsValues = [undefined, 3, null, false];
     const hasNotLetterValues = ["", "1", "./*", "  1  *"];
     const hasLetterValues = ["a", "a1", " a 1  a"];
 
@@ -24,7 +25,6 @@ describe("validator", () => {
   });
 
   describe("isImagePath", () => {
-    const nonStringsValues = [undefined, 3, null, false];
     const hasExtensionButNotAtTheEndValues = [
       "/closeIcon.png.md",
       "/Documents/svgBook1.xlsx",
@@ -61,8 +61,6 @@ describe("validator", () => {
   });
 
   describe("hasSource", () => {
-    const nonObjectValues = [1, "hola", null, false, () => {}, undefined];
-
     it.each(nonObjectValues)(
       `returns false if value is not an object, value = %s`,
       (value) => expect(hasSource(value)).toBeFalsy(),
