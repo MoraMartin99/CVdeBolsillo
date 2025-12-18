@@ -33,4 +33,15 @@ const hasSource = (value) => {
   return Boolean(source) && typeof source === "string";
 };
 
-export { containsText, isImagePath, hasSource };
+/**
+ * isValidMail validates that a value is a valid mail
+ * @param {string} value
+ * @returns {boolean} true if value is a valid mail, false if not
+ */
+const isValidMail = (value) => {
+  if (typeof value !== "string") return false;
+  const regex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/i;
+  return regex.test(value);
+};
+
+export { containsText, isImagePath, hasSource, isValidMail };

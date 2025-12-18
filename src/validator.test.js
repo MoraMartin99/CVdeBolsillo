@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { containsText, isImagePath, hasSource } from "./validators";
+import {
+  containsText,
+  isImagePath,
+  hasSource,
+  isValidMail,
+} from "./validators";
+
 const nonStringsValues = [undefined, 3, null, false, {}, () => {}];
 const nonObjectValues = [1, "hola", null, false, () => {}, undefined];
 
@@ -83,6 +89,60 @@ describe("validator", () => {
         const value = { source: "soy una cadena valida!" };
         expect(hasSource(value)).toBeTruthy();
       });
+    });
+  });
+
+  describe("isValidMail", () => {
+    const multipleAtSignsCases = [
+      "example@@domain.com",
+      "@1@dom.es",
+      "a.@b.@c@dominio.us",
+    ];
+    const validCases = ["example@domain.com", "1@dom.es", "a.b.c@dominio.us"];
+    const invalidTopDomainCases = [
+      "example@domain.a",
+      "1@dom.1",
+      "a.b.c@dominio..",
+    ];
+
+    it.each(nonStringsValues)(
+      "returns false if value is not a string, value = %s",
+      (value) => expect(isValidMail(value)).toBeFalsy(),
+    );
+
+    it.each(validCases)(
+      "return true if value is a valid mail, value = '%s'",
+      (value) => {
+        expect(isValidMail(value)).toBeTruthy();
+      },
+    );
+
+    it.each(multipleAtSignsCases)(
+      "returns false if it contains more than 1 at (@) signs, value = '%s'",
+      (value) => {
+        expect(isValidMail(value)).toBeFalsy();
+      },
+    );
+
+    describe("local part", () => {
+      it("returns false if length === 0", () => {
+        const value = "@dominio.com";
+        expect(isValidMail(value)).toBeFalsy();
+      });
+    });
+
+    describe("domain part", () => {
+      it("returns false if length === 0", () => {
+        const value = "example@";
+        expect(isValidMail(value)).toBeFalsy();
+      });
+
+      it.each(invalidTopDomainCases)(
+        "returns false if it doesn't end in a valid top level domain, value = '%s'",
+        (value) => {
+          expect(isValidMail(value)).toBeFalsy();
+        },
+      );
     });
   });
 });
