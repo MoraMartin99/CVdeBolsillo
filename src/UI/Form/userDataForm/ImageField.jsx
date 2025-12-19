@@ -128,16 +128,11 @@ function ImageField({
         isInvalid={isInvalidProp}
       ></ImageMagnifier>
       <div className={css.buttonContainer}>
-        <FormButton
-          onClick={triggerFileInput}
-          classArr={[css.button]}
-          Icon={UploadToCloudIcon}
-        >
+        <FormButton onClick={triggerFileInput} Icon={UploadToCloudIcon}>
           {primaryActionLabel}
         </FormButton>
         <FormButton
           onClick={resetFileInput}
-          classArr={[css.button]}
           Icon={TrashIcon}
           variant="destructive"
         >
