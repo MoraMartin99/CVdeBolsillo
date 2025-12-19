@@ -21,7 +21,7 @@ function Tip({ children, isVisible = false, classArr = [] }) {
         isVisible ? css.isVisible : "",
       ])}
     >
-      {<WarningIcon></WarningIcon>}
+      <WarningIcon className={css.icon}></WarningIcon>
       {children}
     </span>
   );

@@ -2,15 +2,24 @@
   --color: var(--primary500color);
   --fontSize: 0.625rem;
   --gap: 1.5px;
+  --iconSize: 8px;
+  --iconTopMargin: calc((var(--fontSize) - var(--iconSize)) / 2);
 
   display: flex;
-  align-items: center;
   color: var(--color);
   font-size: var(--fontSize);
   font-style: italic;
   font-weight: 400;
   gap: var(--gap);
   visibility: hidden;
+  line-height: 1em;
+}
+
+.icon {
+  margin-top: var(--iconTopMargin);
+  width: var(--iconSize);
+  height: var(--iconSize);
+  flex-shrink: 0;
 }
 
 .isVisible {
