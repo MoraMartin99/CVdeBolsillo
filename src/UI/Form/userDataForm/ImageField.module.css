@@ -1,16 +1,15 @@
 .main {
-  --columnGap: 10px;
   --buttonContainerGap: 3px;
 
   display: grid;
-  grid-template-columns: repeat(2, max-content);
+  grid-template-columns: max-content 1fr max-content;
   grid-template-rows: repeat(3, max-content);
   grid-template-areas:
-    "label label"
-    "imageMagnifier buttonContainer"
-    "tip tip";
+    "label label label"
+    "imageMagnifier . buttonContainer"
+    "tip tip tip";
   place-items: center;
-  gap: var(--rowGap) var(--columnGap);
+  row-gap: var(--rowGap);
 }
 
 .fileInput {
