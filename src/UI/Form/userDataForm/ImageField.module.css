@@ -33,6 +33,7 @@
 }
 
 .tip {
+  --width: var(--contentWidth);
   grid-area: tip;
   justify-self: start;
   padding-left: var(--leftPadding);

@@ -1,6 +1,4 @@
 .main {
-  --inputWidth: 220px;
-
   display: flex;
   flex-direction: column;
   gap: var(--rowGap);
@@ -11,9 +9,10 @@
 }
 
 .input {
-  --width: var(--inputWidth);
+  --width: var(--contentWidth);
 }
 
 .tip {
+  --width: var(--contentWidth);
   padding-left: var(--leftPadding);
 }

@@ -5,6 +5,7 @@
   --iconSize: 8px;
   --iconTopMargin: calc((var(--fontSize) - var(--iconSize)) / 2);
 
+  width: var(--width);
   display: flex;
   color: var(--color);
   font-size: var(--fontSize);
