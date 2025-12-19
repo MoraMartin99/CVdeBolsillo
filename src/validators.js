@@ -17,9 +17,8 @@ const matchRegex = (value, regex) => {
  * @returns {boolean} true if value contains at least 1 letter , false if value its not a string or doesn't contain a letter
  */
 const containsText = (value) => {
-  if (typeof value !== "string") return false;
   const regex = /[a-z]/i;
-  return regex.test(value);
+  return matchRegex(value, regex);
 };
 
 /**
@@ -28,9 +27,8 @@ const containsText = (value) => {
  * @returns {boolean} true if the path points to a valid image, false if not
  */
 const isImagePath = (value) => {
-  if (typeof value !== "string") return false;
   const regex = /\.(png|svg|jpeg|webp|jpg|pjpeg|pjp)$/;
-  return regex.test(value);
+  return matchRegex(value, regex);
 };
 
 /**
@@ -50,9 +48,8 @@ const hasSource = (value) => {
  * @returns {boolean} true if value is a valid mail, false if not
  */
 const isValidMail = (value) => {
-  if (typeof value !== "string") return false;
   const regex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/i;
-  return regex.test(value);
+  return matchRegex(value, regex);
 };
 
 export { containsText, isImagePath, hasSource, isValidMail };

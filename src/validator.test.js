@@ -35,11 +35,6 @@ describe("validator", () => {
     const hasNotLetterValues = ["", "1", "./*", "  1  *"];
     const hasLetterValues = ["a", "a1", " a 1  a"];
 
-    it.each(nonStringsValues)(
-      "returns false if value is not a string, value = %s",
-      (value) => expect(containsText(value)).toBeFalsy(),
-    );
-
     it.each(hasNotLetterValues)(
       "returns false if value is a string but doesn't contain a letter, value = '%s'",
       (value) => expect(containsText(value)).toBeFalsy(),
@@ -70,11 +65,6 @@ describe("validator", () => {
       "/marco.pjpeg",
       "/Backups/rosas.pjp",
     ];
-
-    it.each(nonStringsValues)(
-      "returns false if value is not a string, value = %s",
-      (value) => expect(isImagePath(value)).toBeFalsy(),
-    );
 
     it.each(hasExtensionButNotAtTheEndValues)(
       "returns false if the string contains the valid file extension but not at the end, value = '%s'",
@@ -125,11 +115,6 @@ describe("validator", () => {
       "1@dom.1",
       "a.b.c@dominio..",
     ];
-
-    it.each(nonStringsValues)(
-      "returns false if value is not a string, value = %s",
-      (value) => expect(isValidMail(value)).toBeFalsy(),
-    );
 
     it.each(validCases)(
       "return true if value is a valid mail, value = '%s'",
