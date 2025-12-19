@@ -1,6 +1,17 @@
 /**@module validators */
 
 /**
+ * The matchRegex function test if a regular expression matches a string
+ * @param {string} value
+ * @param {RegExp} regex
+ * @returns true if value is an string and matches the regex, false if not
+ */
+const matchRegex = (value, regex) => {
+  if (typeof value !== "string") return false;
+  return regex.test(value);
+};
+
+/**
  * The containsText function validates that a string contains at least 1 letter
  * @param {string} value
  * @returns {boolean} true if value contains at least 1 letter , false if value its not a string or doesn't contain a letter

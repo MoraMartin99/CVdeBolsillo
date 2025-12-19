@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  matchRegex,
   containsText,
   isImagePath,
   hasSource,
@@ -10,6 +11,26 @@ const nonStringsValues = [undefined, 3, null, false, {}, () => {}];
 const nonObjectValues = [1, "hola", null, false, () => {}, undefined];
 
 describe("validator", () => {
+  describe("matchRegex", () => {
+    const cases = [
+      ["hola", /hola/, true],
+      ["adios", /123/, false],
+      ["Camarón que se duerme", /camar.n que se \w+/i, true],
+    ];
+
+    it.each(nonStringsValues)(
+      "returns false if value is not a string, value = %s",
+      (value) => expect(matchRegex(value, /\w+/)).toBeFalsy(),
+    );
+
+    it.each(cases)(
+      "returns the expected regex testing result, value = '%s', regex = %s, expectedResult = %s",
+      (value, regex, expectedResult) => {
+        expect(matchRegex(value, regex)).toBe(expectedResult);
+      },
+    );
+  });
+
   describe("containsText", () => {
     const hasNotLetterValues = ["", "1", "./*", "  1  *"];
     const hasLetterValues = ["a", "a1", " a 1  a"];
