@@ -52,4 +52,21 @@ const isValidMail = (value) => {
   return matchRegex(value, regex);
 };
 
-export { containsText, isImagePath, hasSource, isValidMail };
+/**
+ * The isValidTelNumber validates that a value is a valid phone number
+ * @param {string} value
+ * @returns {boolean} true if value is a valid phone number, false if not
+ */
+const isValidTelNumber = (value) => {
+  const regex = /^((\+[ ]?)?(\d{1,4}[ -]|\(\d{1,4}\)[ -]))?\d+([ -]\d+)*$/;
+  return matchRegex(value, regex);
+};
+
+export {
+  containsText,
+  isImagePath,
+  hasSource,
+  isValidMail,
+  matchRegex,
+  isValidTelNumber,
+};

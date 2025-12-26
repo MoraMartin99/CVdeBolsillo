@@ -5,6 +5,7 @@ import {
   isImagePath,
   hasSource,
   isValidMail,
+  isValidTelNumber,
 } from "./validators";
 
 const nonStringsValues = [undefined, 3, null, false, {}, () => {}];
@@ -147,6 +148,76 @@ describe("validator", () => {
         "returns false if it doesn't end in a valid top level domain, value = '%s'",
         (value) => {
           expect(isValidMail(value)).toBeFalsy();
+        },
+      );
+    });
+  });
+
+  describe("isValidTelNumber", () => {
+    it("returns false if contains letters", () => {
+      const value = "12345678a";
+      expect(isValidTelNumber(value)).toBeFalsy();
+    });
+
+    const paddingCases = [
+      [" 123", "start"],
+      ["123 ", "end"],
+    ];
+
+    it.each(paddingCases)(
+      "returns false if contains extra spaces at case = $1",
+      ({ value }) => expect(isValidTelNumber(value)).toBeFalsy(),
+    );
+
+    describe("country code", () => {
+      const validCases = [
+        "+505 123",
+        "+(1) 123",
+        "+ 42 123",
+        "+ (112) 125",
+        "123",
+        "999 123",
+      ];
+      const invalidCases = [
+        ["+12345 123", "code length > 4"],
+        ["+ (62 123", "only contains initial parenthesis"],
+        ["+52) 123", "only contains final parenthesis"],
+        ["+)52( 123", "misplace parenthesis"],
+      ];
+
+      it.each(validCases)("returns true on valid cases, value = $0", (value) =>
+        expect(isValidTelNumber(value)).toBeTruthy(),
+      );
+
+      it.each(invalidCases)(
+        "returns false on invalid cases, value = $0, case = $1",
+        (value) => expect(isValidTelNumber(value)).toBeFalsy(),
+      );
+    });
+
+    describe("number part", () => {
+      const validCases = [
+        "12345",
+        "+1 123 345",
+        "+ (45) 1-2-3 458",
+        "+505 88888888",
+      ];
+      const invalidCases = [
+        ["+505 123  456", "consecutive spaces"],
+        ["+ (2) 123--456", "consecutive hyphens"],
+      ];
+
+      it.each(validCases)(
+        "returns true on valid cases, value = $0",
+        (value) => {
+          expect(isValidTelNumber(value)).toBeTruthy();
+        },
+      );
+
+      it.each(invalidCases)(
+        "returns false on invalid cases, value = $0, case = $1",
+        (value) => {
+          expect(isValidTelNumber(value)).toBeFalsy();
         },
       );
     });
