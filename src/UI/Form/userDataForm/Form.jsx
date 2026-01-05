@@ -1,7 +1,5 @@
-import useAccordion from "../../../hooks/useAccordion";
-import Header from "./Header";
-import css from "./Forms.module.css";
 import { reduceToClassName } from "../../../utils";
+import Accordion from "./Accordion";
 
 /**@module  Form */
 
@@ -21,36 +19,18 @@ function Form({
   id,
   name,
   Icon,
-  isExpanded: isExpandedProp = false,
+  isExpanded = false,
   children,
   actions,
   classArr = [],
 }) {
-  const [isExpanded, setIsExpanded, parentStyle, contentStyle] =
-    useAccordion(isExpandedProp);
-  const toggleIsExpanded = () => setIsExpanded(!isExpanded);
+  const variant = "main";
 
   return (
-    <form
-      className={reduceToClassName([...classArr, css.main])}
-      id={id}
-      style={{ ...parentStyle }}
-      action=""
-    >
-      <Header
-        classArr={[css.header]}
-        isExpanded={isExpanded}
-        Icon={Icon}
-        onClick={toggleIsExpanded}
-      >
-        {name}
-      </Header>
-      <div className="collapsableContainer" style={{ ...contentStyle }}>
-        <div className={css.content}>
-          <div className={css.elementContainer}>{children}</div>
-          <div className={css.actionsContainer}>{actions}</div>
-        </div>
-      </div>
+    <form className={reduceToClassName([...classArr])} id={id} action="">
+      <Accordion {...{ name, Icon, isExpanded, actions, variant }}>
+        {children}
+      </Accordion>
     </form>
   );
 }
