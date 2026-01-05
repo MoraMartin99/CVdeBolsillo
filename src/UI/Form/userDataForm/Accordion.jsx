@@ -40,7 +40,12 @@ function Accordion({
       ])}
       style={{ ...parentStyle }}
     >
-      <Header isExpanded={isExpanded} Icon={Icon} onClick={toggleIsExpanded}>
+      <Header
+        isExpanded={isExpanded}
+        Icon={Icon}
+        onClick={toggleIsExpanded}
+        classArr={[css.header]}
+      >
         {name}
       </Header>
       <div className="collapsableContainer" style={{ ...contentStyle }}>

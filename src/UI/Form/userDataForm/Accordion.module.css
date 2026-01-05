@@ -3,25 +3,26 @@
   --elementContainerGap: 10px;
   --actionsContainerGap: 5px;
   --contentBlockPadding: 10px;
+  --headerWidth: 100%;
 
   background-color: var(--BGColor);
+  width: var(--width);
 }
 
 .main {
   --BGColor: var(--primary1100color);
-  --contentInlinePadding: 20px;
+  --width: 260px;
 }
 
 .child {
   --BGColor: var(--primary1200color);
-  --contentInlinePadding: 10px;
+  --width: 240px;
 }
 
 .content {
   display: flex;
   flex-direction: column;
   gap: var(--contentGap);
-  padding-inline: var(--contentInlinePadding);
   padding-block: var(--contentBlockPadding);
 }
 
@@ -29,6 +30,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--elementContainerGap);
+  align-items: center;
 }
 
 .actionsContainer {
@@ -36,4 +38,8 @@
   flex-direction: column;
   gap: var(--actionsContainerGap);
   align-items: center;
+}
+
+.header {
+  --width: var(--headerWidth);
 }
