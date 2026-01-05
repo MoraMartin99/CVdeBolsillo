@@ -1,42 +1,53 @@
-import { useState } from "react";
-import StateIcon from "../../assets/images/arrow.svg?react";
-import { reduceToClassName } from "../../utils";
-import styles from "./Accordion.module.css";
+import useAccordion from "../../../hooks/useAccordion";
+import Header from "./Header";
+import css from "./Accordion.module.css";
+import { reduceToClassName } from "../../../utils";
 
 /**@module Accordion */
 
 /**
- *The Accordion component lets you create a collapsible UI
- @property {Object} prop The Accordion prop
- * @property {string} prop.name The name and label of the Accordion
- * @property {CurrentColorIcon} prop.Icon The icon component that represents the Accordion
- * @property {Array<JSX.Element>} prop.children An ordered group of child components
- * @property {Array<string>} [prop.classArr = []]  A CSS classes list that style the parent element using custom properties like: --mainWidth, --minHeight, --BGColor, --color
+ * The Accordion component is a collapsible element that serves as the main structure for the [Form]{@link module:Form} and [Section]{@link module:Section} component
+ * @param {object} props The component properties
+ * @param {string} props.name The visible text of the header
+ * @param {CurrentColorIcon} props.Icon The icon component that represents the accordion and is visible in the header
+ * @param {boolean} [props.isExpanded = false] The visibility state of the content
+ * @param {JSX.Element} props.children The form elements intended to get or display information to the user
+ * @param {JSX.Element} props.actions The form elements intended to modify the structure or behavior of the accordion
+ * @param {"main"|"child"} [props.variant = "child"] The visual theme of the component
+ * @param {Array<string>} [props.classArr =[]] A list of CSS classes to apply to the component
  * @returns {JSX.Element}
  */
-function Accordion({ name, Icon, children, classArr = [] }) {
-  const [isOpen, setIsOpen] = useState(false);
-  const toggleExpansion = () => (isOpen ? setIsOpen(false) : setIsOpen(true));
-  const mainClassArr = [styles.main, "Accordion", ...classArr];
-  if (isOpen) mainClassArr.push(styles.expand);
+function Accordion({
+  name,
+  Icon,
+  isExpanded: isExpandedProp = false,
+  children,
+  actions,
+  variant = "child",
+  classArr = [],
+}) {
+  const [isExpanded, setIsExpanded, parentStyle, contentStyle] =
+    useAccordion(isExpandedProp);
+  const toggleIsExpanded = () => setIsExpanded(!isExpanded);
 
   return (
-    <div className={reduceToClassName(mainClassArr)}>
-      <header onClick={toggleExpansion}>
-        <button className={reduceToClassName([styles.headerButton])}>
-          {Icon ? (
-            <Icon
-              className={reduceToClassName(["customIcon", styles.customIcon])}
-            ></Icon>
-          ) : undefined}
-          {name}
-          <StateIcon
-            className={reduceToClassName(["StateIcon", styles.stateIcon])}
-          ></StateIcon>
-        </button>
-      </header>
-      <div className={reduceToClassName(["content", styles.content])}>
-        {children}
+    <div
+      className={reduceToClassName([
+        ...classArr,
+        css.base,
+        css[variant],
+        "section",
+      ])}
+      style={{ ...parentStyle }}
+    >
+      <Header isExpanded={isExpanded} Icon={Icon} onClick={toggleIsExpanded}>
+        {name}
+      </Header>
+      <div className="collapsableContainer" style={{ ...contentStyle }}>
+        <div className={css.content}>
+          <div className={css.elementContainer}>{children}</div>
+          <div className={css.actionsContainer}>{actions}</div>
+        </div>
       </div>
     </div>
   );
