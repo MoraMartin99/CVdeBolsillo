@@ -12,7 +12,7 @@ import { reduceToClassName } from "../../../utils";
  * @param {CurrentColorIcon} props.Icon The icon component that represents the accordion and is visible in the header
  * @param {boolean} [props.isExpanded = false] The visibility state of the content
  * @param {JSX.Element} props.children The form elements intended to get or display information to the user
- * @param {JSX.Element} props.actions The form elements intended to modify the structure or behavior of the accordion
+ * @param {JSX.Element} [props.actions = []] The form elements intended to modify the structure or behavior of the accordion
  * @param {"main"|"child"} [props.variant = "child"] The visual theme of the component
  * @param {Array<string>} [props.classArr =[]] A list of CSS classes to apply to the component
  * @returns {JSX.Element}
@@ -22,7 +22,7 @@ function Accordion({
   Icon,
   isExpanded: isExpandedProp = false,
   children,
-  actions,
+  actions = [],
   variant = "child",
   classArr = [],
 }) {
@@ -51,7 +51,9 @@ function Accordion({
       <div className="collapsableContainer" style={{ ...contentStyle }}>
         <div className={css.content}>
           <div className={css.elementContainer}>{children}</div>
-          <div className={css.actionsContainer}>{actions}</div>
+          {actions.length ? (
+            <div className={css.actionsContainer}>{actions}</div>
+          ) : undefined}
         </div>
       </div>
     </div>
