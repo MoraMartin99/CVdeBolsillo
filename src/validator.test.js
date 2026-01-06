@@ -6,6 +6,7 @@ import {
   hasSource,
   isValidMail,
   isValidTelNumber,
+  isValidURL,
 } from "./validators";
 
 const nonStringsValues = [undefined, 3, null, false, {}, () => {}];
@@ -221,5 +222,28 @@ describe("validator", () => {
         },
       );
     });
+  });
+
+  describe("isValidURL", () => {
+    const validURLs = [
+      "http://www.example.com/",
+      "https://developer.mozilla.org/en-US/search?q=URL",
+      "ftp://ftp.example.com/pub/file.txt ",
+      "mailto:user@example.com ",
+    ];
+    const invalidURLs = ["www.facebook.com", "htp://www.example.com/"];
+
+    it.each(nonStringsValues)(
+      "returns false if value is not a string, value = %s",
+      (value) => expect(isValidURL(value)).toBeFalsy(),
+    );
+
+    it.each(validURLs)("returns true on valid URLs, url = '%s'", (value) =>
+      expect(isValidURL(value)).toBeTruthy(),
+    );
+
+    it.each(invalidURLs)("returns false on invalid URLs, url = '%s'", (value) =>
+      expect(isValidMail(value)).toBeFalsy(),
+    );
   });
 });

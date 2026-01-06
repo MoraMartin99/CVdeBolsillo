@@ -62,6 +62,21 @@ const isValidTelNumber = (value) => {
   return matchRegex(value, regex);
 };
 
+/**
+ * The isValidURL validates that a value is a valid URL
+ * @param {string} value
+ * @returns {boolean} true if value is a valid URL, false if not
+ */
+const isValidURL = (value) => {
+  if (typeof value !== "string") return false;
+  try {
+    new URL(value);
+  } catch {
+    return false;
+  }
+  return true;
+};
+
 export {
   containsText,
   isImagePath,
@@ -69,4 +84,5 @@ export {
   isValidMail,
   matchRegex,
   isValidTelNumber,
+  isValidURL,
 };
