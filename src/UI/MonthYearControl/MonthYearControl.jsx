@@ -3,6 +3,7 @@ import TileSelector from "./TileSelector";
 import CloseButton from "./CloseButton";
 import { reduceToClassName } from "../../utils";
 import { useEffect, useState } from "react";
+import months from "../../months";
 /**
  * @module MonthYearControl
  */
@@ -59,22 +60,7 @@ function MonthYearControl({
   const isCurrently = Boolean(value.isCurrently);
   const { month, year } = value;
 
-  const monthList = [
-    { value: 1, label: "Ene", key: 1 },
-    { value: 2, label: "Feb", key: 2 },
-    { value: 3, label: "Mar", key: 3 },
-    { value: 4, label: "Abr", key: 4 },
-    { value: 5, label: "May", key: 5 },
-    { value: 6, label: "Jun", key: 6 },
-    { value: 7, label: "Jul", key: 7 },
-    { value: 8, label: "Ago", key: 8 },
-    { value: 9, label: "Sep", key: 9 },
-    { value: 10, label: "Oct", key: 10 },
-    { value: 11, label: "Nov", key: 11 },
-    { value: 12, label: "Dic", key: 12 },
-  ];
-
-  const yearList = Array.from(
+  const years = Array.from(
     { length: lastYear - firstYear + 1 },
     (_, index) => ({
       value: firstYear + index,
@@ -121,18 +107,18 @@ function MonthYearControl({
         onClick={onCloseButtonClick}
       ></CloseButton>
       <TileSelector
-        itemArr={monthList}
+        itemArr={months}
         isDisable={isDisable || isCurrently}
         onChange={monthSetter}
-        currentIndex={getIndexByValue(monthList, month)}
+        currentIndex={getIndexByValue(months, month)}
         label="Mes"
         classArr={[css.selector]}
       ></TileSelector>
       <TileSelector
-        itemArr={yearList}
+        itemArr={years}
         isDisable={isDisable || isCurrently}
         onChange={yearSetter}
-        currentIndex={getIndexByValue(yearList, year)}
+        currentIndex={getIndexByValue(years, year)}
         label="Año"
         classArr={[css.selector]}
       ></TileSelector>
