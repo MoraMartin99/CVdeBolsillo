@@ -8,6 +8,7 @@ const getBoundingClientRectSpy = vi.spyOn(
   HTMLDialogElement.prototype,
   "getBoundingClientRect",
 );
+const onOutsideClickMock = vi.fn(() => {});
 
 describe("Modal", () => {
   beforeEach(() => {
@@ -28,16 +29,38 @@ describe("Modal", () => {
     expect(target).toHaveAttribute("open", expectedVisibility);
   });
 
-  it("hides if a click is register outside the Modal if isOpen is truthy", () => {
-    getBoundingClientRectSpy.mockReturnValue({
-      left: 10,
-      right: 15,
-      top: 0,
-      bottom: 5,
+  describe("on clicks", () => {
+    const clickElement = ({
+      isOpen = true,
+      onOutsideClick = onOutsideClickMock,
+      clientX = 25,
+      clientY = 10,
+    } = {}) => {
+      getBoundingClientRectSpy.mockReturnValue({
+        left: 10,
+        right: 15,
+        top: 0,
+        bottom: 5,
+      });
+      render(<SUT isOpen={isOpen} onOutsideClick={onOutsideClick}></SUT>);
+      const target = screen.queryByRole("dialog");
+      fireEvent.click(target, { clientX, clientY });
+    };
+    describe("inside the modal", () => {
+      it("doesn't run onOutsideClick if its defined and isOpen is truthy", () => {
+        clickElement({
+          clientX: 11,
+          clientY: 1,
+        });
+        expect(onOutsideClickMock).toHaveBeenCalledTimes(0);
+      });
     });
-    render(<SUT isOpen={true}></SUT>);
-    const target = screen.queryByRole("dialog");
-    fireEvent.click(target, { clientX: 25, clientY: 10 });
-    expect(target).toHaveAttribute("open", "false");
+
+    describe("outside the modal", () => {
+      it("runs onOutsideClick if its define and isOpen is truthy", () => {
+        clickElement();
+        expect(onOutsideClickMock).toHaveBeenCalledOnce();
+      });
+    });
   });
 });

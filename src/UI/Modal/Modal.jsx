@@ -5,15 +5,22 @@ import css from "./Modal.module.css";
 /**@module Modal */
 
 /**
+ * A function that runs if a click is registered outside the modal. Useful to close the modal on outside click
+ * @callback onOutsideClick
+ * @param {*} value
+ */
+
+/**
  * The Modal component allows you to display an element as an overlay in the top layer of the app, preventing interaction with
  * other components and focusing the user interaction toward its descendants
  * @param {object} props The component properties
  * @param {boolean} [props.isOpen = false] The visibility state
  * @param {JSX.Element} props.children The content of the modal
  * @param {Array<string>} [props.classArr = []] A list of CSS classes to apply to the component
+ * @param {onOutsideClick} onOutsideClick
  * @returns {JSX.Element}
  */
-function Modal({ children, isOpen = false, classArr = [] }) {
+function Modal({ children, isOpen = false, classArr = [], onOutsideClick }) {
   const ref = useRef(null);
 
   useEffect(() => {
@@ -28,7 +35,7 @@ function Modal({ children, isOpen = false, classArr = [] }) {
           const { left, right, top, bottom } = modal.getBoundingClientRect();
           return x < left || x > right || y < top || y > bottom;
         };
-        if (isOutside({ clientX, clientY })) modal.close();
+        if (isOutside({ clientX, clientY }) && onOutsideClick) onOutsideClick();
       };
 
       modal.addEventListener("click", onClick);
@@ -40,7 +47,7 @@ function Modal({ children, isOpen = false, classArr = [] }) {
     }
 
     modal.close();
-  }, [isOpen]);
+  }, [isOpen, onOutsideClick]);
 
   return (
     <dialog ref={ref} className={reduceToClassName([...classArr, css.main])}>
