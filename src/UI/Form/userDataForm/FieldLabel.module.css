@@ -6,4 +6,5 @@
   font-size: var(--fontSize);
   font-weight: var(--fontWeight);
   color: var(--color);
+  cursor: pointer;
 }
