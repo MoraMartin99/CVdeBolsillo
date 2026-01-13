@@ -79,7 +79,7 @@ function MonthYearControl({
   const yearSetter = (year) => {
     if (value.year !== year) setValue(({ month }) => ({ month, year }));
   };
-  const onChangeEvent = (e) => {
+  const onInputChange = (e) => {
     const isChecked = Boolean(e.target.checked);
 
     if (isChecked) {
@@ -125,7 +125,7 @@ function MonthYearControl({
       {allowCurrentlyOption ? (
         <label className={css.checkBox}>
           <input
-            onChange={onChangeEvent}
+            onChange={onInputChange}
             type="checkbox"
             checked={isCurrently}
             disabled={isDisable}
