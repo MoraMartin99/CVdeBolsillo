@@ -4,11 +4,6 @@ import { fireEvent, render, screen } from "@testing-library/react";
 
 const onAcceptMock = vi.fn(() => {});
 const onCancelMock = vi.fn(() => {});
-const getBoundingClientRectSpy = vi.spyOn(
-  HTMLDialogElement.prototype,
-  "getBoundingClientRect",
-);
-const visibilities = [undefined, false, true];
 const renderComponent = ({
   isOpen,
   onAccept = onAcceptMock,
@@ -31,29 +26,6 @@ describe("ConfirmationModal", () => {
 
   afterEach(() => {
     vi.resetAllMocks();
-  });
-
-  it.each(visibilities)(
-    "changes its visibility based on isOpen = %s",
-    (isOpen) => {
-      renderComponent({ isOpen });
-      const target = screen.queryByRole("dialog");
-      const expectedVisibility = String(Boolean(isOpen));
-      expect(target).toHaveAttribute("open", expectedVisibility);
-    },
-  );
-
-  it("hides if a click is register outside the menu", () => {
-    getBoundingClientRectSpy.mockReturnValue({
-      left: 10,
-      right: 15,
-      top: 0,
-      bottom: 5,
-    });
-    renderComponent({ isOpen: true });
-    const target = screen.queryByRole("dialog");
-    fireEvent.click(target, { clientX: 25, clientY: 10 });
-    expect(onCancelMock).toHaveBeenCalledOnce();
   });
 
   it("runs onAccept on accept button's click events", () => {

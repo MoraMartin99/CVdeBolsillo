@@ -1,8 +1,8 @@
-import { useEffect, useRef } from "react";
 import ConfirmationButton from "./ConfirmationButton";
 import css from "./ConfirmationModal.module.css";
 import { reduceToClassName } from "../../utils";
 import WarningIcon from "../../assets/images/warning.svg?react";
+import Modal from "../Modal/Modal";
 
 /**@module ConfirmationModal*/
 
@@ -32,32 +32,13 @@ function ConfirmationModal({
   onCancel,
   classArr = [],
 }) {
-  const dialogRef = useRef(null);
-
-  useEffect(() => {
-    isOpen ? dialogRef.current.showModal() : dialogRef.current.close();
-  }, [isOpen]);
-
-  useEffect(() => {
-    const dialog = dialogRef.current;
-    const onClick = ({ clientX, clientY }) => {
-      const isOutside = ({ clientX: x, clientY: y }) => {
-        const { left, right, top, bottom } = dialog.getBoundingClientRect();
-        return x < left || x > right || y < top || y > bottom;
-      };
-      if (isOutside({ clientX, clientY })) onCancel();
-    };
-
-    dialog.addEventListener("click", onClick);
-    return () => dialog.removeEventListener("click", onClick);
-  }, [onCancel]);
-
   return (
-    <dialog
-      className={reduceToClassName([...classArr, css.main])}
-      ref={dialogRef}
+    <Modal
+      onOutsideClick={onCancel}
+      isOpen={isOpen}
+      classArr={reduceToClassName([...classArr])}
     >
-      <form className={css.mainContainer}>
+      <form className={css.main}>
         <h2 className={css.message}>{message}</h2>
         {tip ? (
           <p className={css.tip}>
@@ -72,7 +53,7 @@ function ConfirmationModal({
           <ConfirmationButton onClick={onAccept}>Aceptar</ConfirmationButton>
         </div>
       </form>
-    </dialog>
+    </Modal>
   );
 }
 
