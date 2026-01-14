@@ -47,7 +47,10 @@ import months from "../../months";
  */
 function MonthYearControl({
   classArr = [],
-  value: initialValue = { month: 1, year: new Date().getFullYear() },
+  value: { month: monthProp, year: yearProp, isCurrently: isCurrentlyProp } = {
+    month: 1,
+    year: new Date().getFullYear(),
+  },
   onChange,
   firstYear = new Date().getFullYear() - 60,
   lastYear = new Date().getFullYear(),
@@ -56,9 +59,9 @@ function MonthYearControl({
   onCloseButtonClick,
   style = {},
 }) {
-  const [value, setValue] = useState(initialValue);
-  const isCurrently = Boolean(value.isCurrently);
-  const { month, year } = value;
+  const [month, setMonth] = useState(monthProp);
+  const [year, setYear] = useState(yearProp);
+  const [isCurrently, setIsCurrently] = useState(Boolean(isCurrentlyProp));
 
   const years = Array.from(
     { length: lastYear - firstYear + 1 },
@@ -73,21 +76,39 @@ function MonthYearControl({
     return list.findIndex(({ value }) => value === item);
   };
 
-  const monthSetter = (month) => {
-    if (value.month !== month) setValue(({ year }) => ({ year, month }));
+  const onMonthChange = (month) => {
+    const stateSetter = (currentValue) => {
+      return currentValue === month ? currentValue : month;
+    };
+    setMonth(stateSetter);
   };
-  const yearSetter = (year) => {
-    if (value.year !== year) setValue(({ month }) => ({ month, year }));
+
+  const onYearChange = (year) => {
+    const stateSetter = (currentValue) => {
+      return currentValue === year ? currentValue : year;
+    };
+    setYear(stateSetter);
   };
+
+  const onIsCurrentlyChange = (isCurrently) => {
+    const stateSetter = (currentValue) => {
+      return currentValue === isCurrently ? currentValue : isCurrently;
+    };
+    setIsCurrently(stateSetter);
+  };
+
   const onInputChange = (e) => {
     const isChecked = Boolean(e.target.checked);
-
-    if (isChecked) {
-      setValue({ isCurrently: isChecked });
-    } else {
-      setValue(() => ({}));
-    }
+    onIsCurrentlyChange(isChecked);
   };
+
+  useEffect(() => {
+    if (isCurrently) {
+      onChange({ isCurrently });
+    } else {
+      onChange({ month, year });
+    }
+  }, [isCurrently, month, onChange, year]);
 
   useEffect(() => {
     const entries = Object.entries(value).filter(([, value]) => value != null);
@@ -109,7 +130,7 @@ function MonthYearControl({
       <TileSelector
         itemArr={months}
         isDisable={isDisable || isCurrently}
-        onChange={monthSetter}
+        onChange={onMonthChange}
         currentIndex={getIndexByValue(months, month)}
         label="Mes"
         classArr={[css.selector]}
@@ -117,7 +138,7 @@ function MonthYearControl({
       <TileSelector
         itemArr={years}
         isDisable={isDisable || isCurrently}
-        onChange={yearSetter}
+        onChange={onYearChange}
         currentIndex={getIndexByValue(years, year)}
         label="Año"
         classArr={[css.selector]}
