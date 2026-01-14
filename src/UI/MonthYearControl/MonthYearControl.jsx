@@ -110,12 +110,14 @@ function MonthYearControl({
     }
   }, [isCurrently, month, onChange, year]);
 
-  useEffect(() => {
-    const entries = Object.entries(value).filter(([, value]) => value != null);
-    const data = Object.fromEntries(entries);
-    if (!entries.length) return;
-    onChange(data);
-  }, [onChange, value]);
+  useEffect(() => onMonthChange(monthProp), [monthProp]);
+
+  useEffect(() => onYearChange(yearProp), [yearProp]);
+
+  useEffect(
+    () => onIsCurrentlyChange(Boolean(isCurrentlyProp)),
+    [isCurrentlyProp],
+  );
 
   return (
     <div
