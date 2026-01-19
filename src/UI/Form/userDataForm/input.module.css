@@ -5,7 +5,8 @@
   --backgroundColor: var(--primary1400color);
   --borderSize: 1px;
   --borderColor: var(--primary800color);
-  --inlinePadding: 10px;
+  --paddingStart: 10px;
+  --paddingEnd: var(--paddingStart);
   --placeholderColor: var(--primary1000color);
   --focusBorderColor: var(--primary500color);
   --invalidColor: var(--error500Color);
@@ -20,7 +21,7 @@
   color: var(--color);
   background-color: var(--backgroundColor);
   border: var(--borderSize) solid var(--borderColor);
-  padding-inline: var(--inlinePadding);
+  padding-inline: var(--paddingStart) var(--paddingEnd);
 }
 
 .main::placeholder {
