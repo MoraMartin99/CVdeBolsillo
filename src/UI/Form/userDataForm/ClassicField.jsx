@@ -1,7 +1,7 @@
 import baseCSS from "./field.module.css";
 import css from "./ClassicField.module.css";
 import FieldLabel from "./FieldLabel";
-import FieldInput from "./FieldInput";
+import ClassicInput from "./ClassicInput";
 import Tip from "./Tip";
 import { reduceToClassName } from "../../../utils";
 
@@ -58,7 +58,7 @@ function ClassicField({
       <FieldLabel classArr={[css.label]} htmlFor={id}>
         {label}
       </FieldLabel>
-      <FieldInput
+      <ClassicInput
         id={id}
         value={value}
         type={type}
@@ -67,7 +67,7 @@ function ClassicField({
         classArr={[css.input]}
         isInvalid={isInvalidProp}
         tip={tip}
-      ></FieldInput>
+      ></ClassicInput>
       <Tip classArr={[css.tip]} isVisible={isInvalidProp}>
         {tip}
       </Tip>

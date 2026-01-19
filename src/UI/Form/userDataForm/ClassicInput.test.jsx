@@ -1,20 +1,20 @@
 import { describe, expect, it } from "vitest";
-import FieldInput from "./FieldInput";
+import SUT from "./ClassicInput";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { useState } from "react";
 
 const TestComponent = () => {
   const [, setCount] = useState(0);
   return (
-    <FieldInput
+    <SUT
       onChange={() => setCount(1)}
       isInvalid={true}
       tip={"Es invalido"}
-    ></FieldInput>
+    ></SUT>
   );
 };
 
-describe("FieldInput", () => {
+describe("ClassicInput", () => {
   it("sets the validity only if the component had been focus out at least 1 time", () => {
     render(<TestComponent></TestComponent>);
     const target = screen.queryByRole("textbox");

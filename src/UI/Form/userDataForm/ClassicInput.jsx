@@ -1,8 +1,8 @@
 import { useEffect, useRef } from "react";
 import { reduceToClassName } from "../../../utils";
-import css from "./FieldInput.module.css";
+import css from "./ClassicInput.module.css";
 
-/**@module FieldInput */
+/**@module ClassicInput */
 
 /**
  *  A function that runs on change events
@@ -17,7 +17,7 @@ import css from "./FieldInput.module.css";
  */
 
 /**
- * The FieldInput component
+ * The ClassicInput component
  * @param {object} props The component properties
  * @param {Array<string>} [props.classArr = []] A list of CSS classes to apply to the component
  * @param {string} props.value The [value attribute]{@link https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input#value}
@@ -31,7 +31,7 @@ import css from "./FieldInput.module.css";
  * @param {string} props.tip A message to the user that clarifies the constraints that makes a value valid. It has to be set in order to use the Constraint Validation API
  * @returns {JSX.Element}
  */
-function FieldInput({
+function ClassicInput({
   classArr = [],
   value,
   type = "text",
@@ -76,4 +76,4 @@ function FieldInput({
   );
 }
 
-export default FieldInput;
+export default ClassicInput;
