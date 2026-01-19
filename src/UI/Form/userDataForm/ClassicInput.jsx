@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { reduceToClassName } from "../../../utils";
-import css from "./ClassicInput.module.css";
+import css from "./input.module.css";
 
 /**@module ClassicInput */
 
