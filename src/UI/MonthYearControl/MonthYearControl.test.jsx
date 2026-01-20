@@ -82,7 +82,7 @@ describe("MonthYearControl component", () => {
     expect(itemList).toHaveLength(12);
   });
 
-  it("renders some tiles for the years if firstYear and lastYear are undefined", () => {
+  it("renders some tiles for the years if startYear and finishYear are undefined", () => {
     const props = { onChange };
     render(<MonthYearControl {...props}></MonthYearControl>);
     const itemList = getGCMLastCallByLabel(yearTileSelectorLabel).itemArr;
@@ -123,44 +123,44 @@ describe("MonthYearControl component", () => {
     },
   );
 
-  it("render the corresponding amount of tiles if only firstYear is defined", () => {
-    const firstYear = 1995;
+  it("render the corresponding amount of tiles if only startYear is defined", () => {
+    const startYear = 1995;
     render(
       <MonthYearControl
         onChange={onChange}
-        firstYear={firstYear}
+        startYear={startYear}
       ></MonthYearControl>,
     );
-    const expectedLength = date.getFullYear() - firstYear + 1;
+    const expectedLength = date.getFullYear() - startYear + 1;
     const { itemArr } = getGCMLastCallByLabel(yearTileSelectorLabel);
     expect(itemArr).toHaveLength(expectedLength);
   });
 
-  it("render the corresponding amount of tiles if only lastYear is defined", () => {
-    const lastYear = 2005;
+  it("render the corresponding amount of tiles if only finishYear is defined", () => {
+    const finishYear = 2005;
     render(
       <MonthYearControl
         onChange={onChange}
-        lastYear={lastYear}
+        finishYear={finishYear}
       ></MonthYearControl>,
     );
     const expectedLength =
-      lastYear - (date.getFullYear() + firstYearModifier) + 1;
+      finishYear - (date.getFullYear() + firstYearModifier) + 1;
     const { itemArr } = getGCMLastCallByLabel(yearTileSelectorLabel);
     expect(itemArr).toHaveLength(expectedLength);
   });
 
-  it("renders the amount of tiles corresponding to the range between firstYear and lastYear", () => {
-    const lastYear = 2005;
-    const firstYear = 1995;
+  it("renders the amount of tiles corresponding to the range between startYear and finishYear", () => {
+    const finishYear = 2005;
+    const startYear = 1995;
     render(
       <MonthYearControl
         onChange={onChange}
-        lastYear={lastYear}
-        firstYear={firstYear}
+        finishYear={finishYear}
+        startYear={startYear}
       ></MonthYearControl>,
     );
-    const expectedLength = lastYear - firstYear + 1;
+    const expectedLength = finishYear - startYear + 1;
     const { itemArr } = getGCMLastCallByLabel(yearTileSelectorLabel);
     expect(itemArr).toHaveLength(expectedLength);
   });
