@@ -11,8 +11,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "doc": "jsdoc -c jsdoc.json",
-    "test": "vitest",
-    "test:browser": "vitest --config=vitest.browser.config.js"
+    "test": "vitest --browser.headless",
+    "test:browser": "vitest"
   },
   "dependencies": {
     "lodash": "^4.17.21",
