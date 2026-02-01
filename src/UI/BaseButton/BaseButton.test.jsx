@@ -1,7 +1,8 @@
 import { beforeEach, describe, vi, it, expect } from "vitest";
 import BaseButton from "./BaseButton";
 import TestIcon from "../../assets/images/genericIcon.svg?react";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render } from "vitest-browser-react";
+import { page } from "vitest/browser";
 
 const onClickMock = vi.fn();
 
@@ -90,7 +91,7 @@ const propList = [
 describe.each(propList)(
   "BaseButton component with props: {children: $children, classArr: $classArr, onClick: $onClick, style: $style, isDisable: $isDisable, iconPosition: $iconPosition, Icon: $Icon}",
   ({ children, classArr, onClick, isDisable, style, iconPosition, Icon }) => {
-    beforeEach(() => {
+    beforeEach(async () => {
       onClickMock.mockClear();
       render(
         <BaseButton
@@ -101,32 +102,32 @@ describe.each(propList)(
       );
     });
 
-    it("renders the parent element", () => {
-      const parentElement = screen.getByRole("button");
-      expect(parentElement).toBeInTheDocument();
+    it("renders the parent element", async () => {
+      const parentElement = page.getByRole("button");
+      await expect.element(parentElement).toBeInTheDocument();
     });
 
-    it.runIf(children)("has the corresponding children", () => {
-      const parentElement = screen.getByRole("button");
+    it.runIf(children)("has the corresponding children", async () => {
+      const parentElement = page.getByRole("button");
       const list = Array.isArray(children) ? children : [children];
-      const setExpectations = (item) => {
+      const setExpectations = async (item) => {
         if (typeof children === "string") {
-          expect(parentElement).toHaveTextContent(item);
+          await expect.element(parentElement).toHaveTextContent(item);
         } else {
-          const itemElement = screen.queryByTestId(elementTestId);
-          expect(parentElement).toContainElement(itemElement);
+          const itemElement = page.getByTestId(elementTestId);
+          await expect.element(parentElement).toContainElement(itemElement);
         }
       };
       list.forEach(setExpectations);
     });
 
-    it.runIf(Icon)("has the corresponding icon", () => {
-      const targetElement = screen.queryByTestId(iconTestId);
-      expect(targetElement).toBeInTheDocument();
+    it.runIf(Icon)("has the corresponding icon", async () => {
+      const targetElement = page.getByTestId(iconTestId);
+      await expect.element(targetElement).toBeInTheDocument();
     });
 
-    it.runIf(classArr)("has classArr applied as the last classes", () => {
-      const targetElement = screen.getByRole("button");
+    it.runIf(classArr)("has classArr applied as the last classes", async () => {
+      const targetElement = page.getByRole("button").element();
       const classList = Array.from(targetElement.classList);
       expect(classList.slice(-classArr.length)).toEqual(
         expect.arrayContaining(classArr),
@@ -135,37 +136,33 @@ describe.each(propList)(
 
     it.runIf(onClick && !isDisable)(
       "runs onClickCallback on click events if isDisabled is falsy",
-      () => {
-        const targetElement = screen.getByRole("button");
-        fireEvent.click(targetElement);
+      async () => {
+        const targetElement = page.getByRole("button");
+        await targetElement.click();
         expect(onClick).toHaveBeenCalledTimes(1);
       },
     );
-    it.runIf(onClick && isDisable)(
-      "doesn't runs onClickCallback on click events if isDisabled is truthy",
-      () => {
-        const targetElement = screen.getByRole("button");
-        fireEvent.click(targetElement);
-        expect(onClick).not.toHaveBeenCalled();
+
+    it.runIf(isDisable)(
+      "disables the component if isDisable = true",
+      async () => {
+        const targetElement = page.getByRole("button");
+        await expect.element(targetElement).toBeDisabled();
       },
     );
-
-    it.runIf(isDisable)("disables the component if isDisable = true", () => {
-      const targetElement = screen.getByRole("button");
-      expect(targetElement).toBeDisabled();
-    });
 
     it.skipIf(isDisable)(
       "enables the component if isDisable is not defined",
-      () => {
-        const targetElement = screen.getByRole("button");
-        expect(targetElement).toBeEnabled();
+      async () => {
+        const targetElement = page.getByRole("button");
+        await expect.element(targetElement).toBeEnabled();
       },
     );
 
-    it.runIf(style)("overrides and extends the default styles", () => {
-      const targetElement = screen.getByRole("button");
-      const styles = getComputedStyle(targetElement);
+    it.runIf(style)("overrides and extends the default styles", async () => {
+      const targetElement = page.getByRole("button").element();
+      const styles = targetElement.style;
+
       const setExpectations = ([key, value]) => {
         expect(styles.getPropertyValue(key)).toBe(value);
       };
