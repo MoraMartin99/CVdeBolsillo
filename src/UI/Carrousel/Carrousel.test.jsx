@@ -1,17 +1,9 @@
-import { fireEvent, render, screen } from "@testing-library/react";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
+import { render } from "vitest-browser-react";
+import { page } from "vitest/browser";
+import SUT from "./Carrousel";
 
 const carrouselId = "carrousel";
-const trackId = "track";
-const targetTabLabel = "targetLabel";
-
-const TabMock = vi.fn(({ label, value, onClickCallback }) => {
-  return <button onClick={() => onClickCallback(value)}>{label}</button>;
-});
-
-const TrackMock = vi.fn(({ currentIndex }) => {
-  return <div data-testid={trackId}>{currentIndex}</div>;
-});
 
 const screens = [
   {
@@ -19,33 +11,25 @@ const screens = [
     component: <div>component1</div>,
   },
   {
-    label: targetTabLabel,
+    label: "tab2",
     component: <div>component2</div>,
   },
 ].map((item) => ({ ...item, id: self.crypto.randomUUID() }));
 
-describe("Carrousel", async () => {
-  beforeEach(async () => {
-    vi.doMock("./Tab", () => ({ default: TabMock }));
-    vi.doMock("./Track", () => ({ default: TrackMock }));
-    const Carrousel = (await import("./Carrousel")).default;
-    render(<Carrousel screens={screens}></Carrousel>);
+describe("Carrousel", () => {
+  beforeEach(() => render(<SUT screens={screens}></SUT>));
+
+  it("renders", async () => {
+    const carrousel = page.getByTestId(carrouselId);
+    await expect.element(carrousel).toBeInTheDocument();
   });
 
-  afterEach(() => vi.resetAllMocks());
-
-  it("renders", () => {
-    const carrousel = screen.queryByTestId(carrouselId);
-    const track = screen.queryByTestId(trackId);
-    expect(carrousel).toBeInTheDocument();
-    expect(track).toHaveTextContent("0");
-  });
-
-  it("displays the corresponding screen on its corresponding tab's click", () => {
-    const targetTab = screen.queryByText(targetTabLabel);
-    const track = screen.queryByTestId(trackId);
-    expect(track).toHaveTextContent("0");
-    fireEvent.click(targetTab);
-    expect(track).toHaveTextContent("1");
+  it("displays the correct screen on tab's click events", async () => {
+    const steps = [...screens.slice(1), ...screens.slice(0, -1).toReversed()];
+    steps.forEach(async ({ label, component }) => {
+      const tab = page.getByText(label);
+      await tab.click();
+      expect.element(component).toBeVisible();
+    });
   });
 });
