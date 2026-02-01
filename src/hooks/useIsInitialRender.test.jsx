@@ -1,7 +1,8 @@
 import useIsInitialRender from "./useIsInitialRender";
 import { beforeEach, describe, vi, it, expect } from "vitest";
 import { useState } from "react";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render } from "vitest-browser-react";
+import { page } from "vitest/browser";
 
 const onRenderMock = vi.fn(() => {});
 
@@ -24,9 +25,9 @@ describe("useIsInitialRender hook test suite", () => {
     expect(onRenderMock).toHaveBeenCalledExactlyOnceWith(true);
   });
 
-  it("return false as the current value on re-renders", () => {
-    const targetElement = screen.queryByRole("button");
-    fireEvent.click(targetElement);
+  it("return false as the current value on re-renders", async () => {
+    const target = page.getByRole("button");
+    await target.click();
     expect(onRenderMock).toHaveBeenCalledTimes(2);
     expect(onRenderMock).toHaveBeenLastCalledWith(false);
   });
