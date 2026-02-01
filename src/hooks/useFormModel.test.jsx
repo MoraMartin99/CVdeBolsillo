@@ -1,5 +1,6 @@
 import { describe, it, beforeEach, vi, expect, afterEach } from "vitest";
-import { act, render } from "@testing-library/react";
+import { render } from "vitest-browser-react";
+import { act } from "react";
 
 const catcherMock = vi.fn(() => {});
 
