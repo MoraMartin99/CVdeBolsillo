@@ -1,11 +1,11 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import useScreenSize from "./useScreenSize";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render } from "vitest-browser-react";
+import { page } from "vitest/browser";
 
-const initialWidth = "777";
-const innerWidthSpy = vi
-  .spyOn(window, "innerWidth", "get")
-  .mockImplementation(() => initialWidth);
+const initialWidth = 1920;
+const finalWidth = 720;
+const height = 1080;
 
 const TestElement = () => {
   const size = useScreenSize();
@@ -13,20 +13,19 @@ const TestElement = () => {
 };
 
 describe("useScreenSize", () => {
-  beforeEach(() => render(<TestElement></TestElement>));
-
-  afterEach(() => vi.resetAllMocks());
-
-  it("returns the current windows size as its initial value", () => {
-    const target = screen.queryByText(initialWidth);
-    expect(target).toBeInTheDocument();
+  beforeEach(() => {
+    page.viewport(initialWidth, height);
+    render(<TestElement></TestElement>);
   });
 
-  it("returns the current windows size on resize events", () => {
-    const newWidth = "12";
-    innerWidthSpy.mockReturnValue(newWidth);
-    fireEvent.resize(window);
-    const target = screen.queryByText(newWidth);
-    expect(target).toBeInTheDocument();
+  it("returns the current windows size as its initial value", async () => {
+    const target = page.getByText(initialWidth);
+    await expect.element(target).toBeInTheDocument();
+  });
+
+  it("returns the current windows size on resize events", async () => {
+    page.viewport(finalWidth, height);
+    const target = page.getByText(finalWidth);
+    await expect.element(target).toBeInTheDocument();
   });
 });
