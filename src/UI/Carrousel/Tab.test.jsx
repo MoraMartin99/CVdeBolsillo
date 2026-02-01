@@ -1,6 +1,7 @@
 import { describe, expect, it, beforeEach, vi } from "vitest";
-import { fireEvent, render, screen } from "@testing-library/react";
 import Tab from "./Tab";
+import { render } from "vitest-browser-react";
+import { page } from "vitest/browser";
 
 let onClickCallback = vi.fn();
 
@@ -23,20 +24,23 @@ describe.each(propList)(
       ),
     );
 
-    it("renders the parent element", () => {
-      const targetElement = screen.getByRole("button");
-      expect(targetElement).toBeInTheDocument();
+    it("renders the parent element", async () => {
+      const target = page.getByRole("button");
+      await expect.element(target).toBeInTheDocument();
     });
 
-    it("has the correct label", () => {
-      const targetElement = screen.getByRole("button", { name: label });
-      expect(targetElement).toBeInTheDocument();
+    it("has the correct label", async () => {
+      const target = page.getByRole("button", { name: label });
+      await expect.element(target).toBeInTheDocument();
     });
 
-    it.skipIf(!onClickCallback)("runs onClickCallback on click event", () => {
-      const targetElement = screen.getByRole("button");
-      fireEvent.click(targetElement);
-      expect(onClickCallback).toHaveBeenCalled();
-    });
+    it.skipIf(!onClickCallback)(
+      "runs onClickCallback on click event",
+      async () => {
+        const target = page.getByRole("button");
+        await target.click();
+        expect(onClickCallback).toHaveBeenCalled();
+      },
+    );
   },
 );
