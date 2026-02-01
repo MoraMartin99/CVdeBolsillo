@@ -1,7 +1,8 @@
 import { beforeEach, describe, expect, vi, it } from "vitest";
 import useOnUpdate from "./useOnUpdate";
 import { useState } from "react";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render } from "vitest-browser-react";
+import { page } from "vitest/browser";
 
 describe("useOnUpdate hook test suite", () => {
   const effectMock = vi.fn(() => {});
@@ -33,9 +34,9 @@ describe("useOnUpdate hook test suite", () => {
     expect(effectMock).not.toHaveBeenCalled();
   });
 
-  it("runs the effect for every change in the dependency list after re-renders", () => {
-    const targetElement = screen.queryByRole("button");
-    for (let i = 1; i <= 11; i++) fireEvent.click(targetElement);
+  it("runs the effect for every change in the dependency list after re-renders", async () => {
+    const target = page.getByRole("button");
+    for (let i = 1; i <= 11; i++) await target.click();
     expect(effectMock).toHaveBeenCalledTimes(11);
   });
 });
