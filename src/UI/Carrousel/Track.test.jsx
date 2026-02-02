@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import Track from "./Track";
-import { render } from "@testing-library/react";
+import { render } from "vitest-browser-react";
+import { page } from "vitest/browser";
 
 const propList = [
   {},
@@ -41,22 +42,20 @@ describe.each(propList)(
       );
     });
 
-    it("renders the parent element", () => {
-      const targetClass = "track";
-      const targetElement = document.querySelector(`.${targetClass}`);
-      expect(targetElement).toBeInTheDocument();
+    it("renders the parent element", async () => {
+      const target = page.getByRole("group");
+      await expect.element(target).toBeInTheDocument();
     });
 
     it.runIf(typeof currentIndex === "undefined")(
       "starts in 0 index when currentIndex is not defined",
       () => {
-        const targetClass = "track";
-        const targetElement = document.querySelector(`.${targetClass}`);
+        const target = page.getByRole("group").element();
         const regex = /-*\d+(?=%)/;
-        const value = targetElement.style
+        const value = target.style
           .getPropertyValue("transform")
           .match(regex)[0];
-        const expectedValue = "-0";
+        const expectedValue = "0";
         expect(value === expectedValue).toBeTruthy();
       },
     );
@@ -71,10 +70,9 @@ describe.each(propList)(
     it.runIf(isWithinRange)(
       "translates to the currentIndex position when is within componentsData.length range",
       () => {
-        const targetClass = "track";
-        const targetElement = document.querySelector(`.${targetClass}`);
+        const target = page.getByRole("group").element();
         const regex = /-*\d+(?=%)/;
-        const value = targetElement.style
+        const value = target.style
           .getPropertyValue("transform")
           .match(regex)[0];
         const expectedValue = `-${currentIndex * 100}`;
@@ -83,11 +81,10 @@ describe.each(propList)(
     );
 
     it("remains translation within componentsData components even with currentIndex outside of scope", () => {
-      const targetClass = "track";
-      const targetElement = document.querySelector(`.${targetClass}`);
-      const regex = /(?<=-)\d+(?=%)/;
+      const target = page.getByRole("group").element();
+      const regex = /\d+(?=%)/;
       const value = Number(
-        targetElement.style.getPropertyValue("transform").match(regex)[0],
+        target.style.getPropertyValue("transform").match(regex)[0],
       );
       const minExpectedValue = 0;
       const maxExpectedValue = Array.isArray(componentsData)
