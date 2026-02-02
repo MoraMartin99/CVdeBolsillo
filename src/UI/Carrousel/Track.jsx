@@ -35,6 +35,7 @@ function Track({ componentsData = [], currentIndex = 0 }) {
     <div
       style={{ transform }}
       className={reduceToClassName([styles.main, "track"])}
+      role={"group"}
     >
       {componentsData.map(setWrapper)}
     </div>
