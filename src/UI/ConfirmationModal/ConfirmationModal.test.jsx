@@ -1,18 +1,10 @@
 import { beforeEach, describe, it, vi, afterEach, expect } from "vitest";
 import ConfirmationModal from "./ConfirmationModal";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render } from "vitest-browser-react";
+import { page } from "vitest/browser";
 
 const onAcceptMock = vi.fn(() => {});
 const onCancelMock = vi.fn(() => {});
-const renderComponent = ({
-  isOpen,
-  onAccept = onAcceptMock,
-  onCancel = onCancelMock,
-}) => {
-  render(
-    <ConfirmationModal {...{ isOpen, onAccept, onCancel }}></ConfirmationModal>,
-  );
-};
 
 describe("ConfirmationModal", () => {
   beforeEach(() => {
@@ -22,23 +14,28 @@ describe("ConfirmationModal", () => {
     HTMLDialogElement.prototype.close = vi.fn(function () {
       this.setAttribute("open", false);
     });
+    render(
+      <ConfirmationModal
+        isOpen={true}
+        onAccept={onAcceptMock}
+        onCancel={onCancelMock}
+      ></ConfirmationModal>,
+    );
   });
 
   afterEach(() => {
     vi.resetAllMocks();
   });
 
-  it("runs onAccept on accept button's click events", () => {
-    renderComponent({ isOpen: true });
-    const target = screen.queryByText("Aceptar");
-    fireEvent.click(target);
+  it("runs onAccept on accept button's click events", async () => {
+    const target = page.getByText("Aceptar");
+    await target.click();
     expect(onAcceptMock).toHaveBeenCalledOnce();
   });
 
-  it("runs onCancel on cancel button's click events", () => {
-    renderComponent({ isOpen: true });
-    const target = screen.queryByText("Cancelar");
-    fireEvent.click(target);
+  it("runs onCancel on cancel button's click events", async () => {
+    const target = page.getByText("Cancelar");
+    await target.click();
     expect(onCancelMock).toHaveBeenCalledOnce();
   });
 });
