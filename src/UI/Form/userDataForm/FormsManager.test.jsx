@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render } from "vitest-browser-react";
+import { page } from "vitest/browser";
 
 const defaultValue = "soy default value";
 const exampleValue = "soy un ejemplo";
@@ -9,8 +10,8 @@ const content = [{ templateId: "input" }];
 const exampleContent = [{ value: exampleValue, templateId }];
 const onChangeMock = vi.fn(() => {});
 const formFactoryStub = vi.fn((model = []) => {
-  const buildItem = ({ value, onChange, id }) => {
-    const setValue = ({ target: { value } }) => onChange({ [id]: value });
+  const buildItem = ({ value, submitData, id }) => {
+    const setValue = ({ target: { value } }) => submitData({ id, value });
     return (
       <input
         id={id}
@@ -23,31 +24,12 @@ const formFactoryStub = vi.fn((model = []) => {
   };
   return model.map(buildItem);
 });
-const acceptButtonId = "accept";
-const DialogMock = vi.fn(({ onAccept }) => {
-  return (
-    <div>
-      <button
-        data-testid={acceptButtonId}
-        onClick={onAccept}
-        type="button"
-      ></button>
-    </div>
-  );
-});
 
 describe("FormsManager", async () => {
   beforeEach(async () => {
-    const doubles = [
-      ["../formFactory", formFactoryStub],
-      ["../../ConfirmationModal/ConfirmationModal", DialogMock],
-    ];
-    const setDoubles = ([path, mock]) => {
-      vi.doMock(path, () => ({ default: mock }));
-    };
-    doubles.forEach(setDoubles);
+    vi.doMock(import("../formFactory"), () => ({ default: formFactoryStub }));
     const FormsManager = (await import("./FormsManager")).default;
-    render(
+    await render(
       <FormsManager
         {...{
           data: { content, templates },
@@ -60,42 +42,42 @@ describe("FormsManager", async () => {
 
   afterEach(() => vi.resetAllMocks());
 
-  it("loads the example", () => {
+  it("loads the example", async () => {
     const expectedValue = exampleValue;
-    const loadExampleButton = screen.queryByText("Cargar ejemplo");
-    const acceptButton = screen.queryByTestId(acceptButtonId);
-    fireEvent.click(loadExampleButton);
-    fireEvent.click(acceptButton);
-    const finalValue = screen.queryByRole("textbox").value;
+    const loadExampleButton = page.getByText("Cargar ejemplo");
+    const acceptButton = page.getByText("Aceptar");
+    await loadExampleButton.click();
+    await acceptButton.click();
+    const finalValue = page.getByRole("textbox").element().value;
     expect(finalValue).toEqual(expectedValue);
   });
 
-  it("resets the forms", () => {
+  it("resets the forms", async () => {
     const expectedValue = defaultValue;
     const newValue = "soy un valor modificado!";
-    const target = screen.queryByRole("textbox");
-    const resetButton = screen.queryByText("Limpiar formulario");
-    const acceptButton = screen.queryByTestId(acceptButtonId);
-    fireEvent.change(target, { target: { value: newValue } });
-    fireEvent.click(resetButton);
-    fireEvent.click(acceptButton);
-    const finalValue = screen.queryByRole("textbox").value;
+    const target = page.getByRole("textbox");
+    const resetButton = page.getByText("Limpiar formulario");
+    const acceptButton = page.getByText("Aceptar");
+    await target.fill(newValue);
+    await resetButton.click();
+    await acceptButton.click();
+    const finalValue = page.getByRole("textbox").element().value;
     expect(finalValue).toEqual(expectedValue);
   });
 
   describe("report model changes", () => {
     it("reports initial values", () => {
-      const id = screen.queryByRole("textbox").id;
+      const id = page.getByRole("textbox").element().id;
       const expectedValue = { [id]: defaultValue };
       expect(onChangeMock).toHaveBeenCalledExactlyOnceWith(expectedValue);
     });
 
-    it("reports modified values", () => {
+    it("reports modified values", async () => {
       const newValue = "soy un valor modificado!";
-      const target = screen.queryByRole("textbox");
-      const id = screen.queryByRole("textbox").id;
+      const target = page.getByRole("textbox");
+      const id = target.element().id;
       const expectedValue = { [id]: newValue };
-      fireEvent.change(target, { target: { value: newValue } });
+      await target.fill(newValue);
       expect(onChangeMock).toHaveBeenLastCalledWith(expectedValue);
     });
   });
