@@ -42,6 +42,7 @@ import ImageMagnifier from "../../ImageMagnifier/ImageMagnifier";
  * @param {value} props.value
  * @param {Array<string>} [props.classArr = []] A list of CSS classes to apply to the component
  * @param {string} [props.tip] A message to the user that clarifies the constraints that makes a value valid. It has to be set in order to use the Constraint Validation API
+ * @param {string} [props.alt = "imageField image"] The image [alt attribute]{@link https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/img#alt}
  * @param {validator} [props.validator] A function that runs on change events and evaluates if a value is valid or invalid
  * @param {submitData} props.submitData A function that report data changes to the form model
  * @param {boolean} [props.isInvalid = false] if true sets the component as invalid, if false sets the component as valid.
@@ -55,6 +56,7 @@ function ImageField({
   value = {},
   classArr = [],
   tip,
+  alt = "imageField image",
   validator,
   submitData,
   isInvalid: isInvalidProp = false,
@@ -126,6 +128,7 @@ function ImageField({
         positionY={positionY}
         scale={scale}
         isInvalid={isInvalidProp}
+        alt={alt}
       ></ImageMagnifier>
       <div className={css.buttonContainer}>
         <FormButton onClick={triggerFileInput} Icon={UploadToCloudIcon}>
