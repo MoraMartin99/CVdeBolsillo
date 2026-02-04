@@ -1,11 +1,14 @@
 import { describe, vi, it, expect } from "vitest";
 import Header from "./Header";
-import { fireEvent, render, screen } from "@testing-library/react";
 import { useState } from "react";
+import { render } from "vitest-browser-react";
+import { page } from "vitest/browser";
 
 const onClickMock = vi.fn(() => {});
 const mainIconId = "mainIcon";
 const buttonId = "testButton";
+const headerId = "header";
+const visibilityIconId = "visibilityIcon";
 const MainIconMock = vi.fn(() => {
   return <svg data-testid={mainIconId}></svg>;
 });
@@ -21,56 +24,56 @@ const TestContainer = () => {
 };
 
 describe("Header component", () => {
-  it("renders the parent element", () => {
+  it("renders the parent element", async () => {
     render(<Header></Header>);
-    const targetElement = screen.queryByTestId("header");
-    expect(targetElement).toBeInTheDocument();
+    const target = page.getByTestId(headerId);
+    await expect.element(target).toBeInTheDocument();
   });
 
-  it("displays the corresponding children", () => {
+  it("displays the corresponding children", async () => {
     const children = "soy un test";
     render(<Header>{children}</Header>);
-    const targetElement = screen.queryByText(children);
-    expect(targetElement).toBeInTheDocument();
+    const target = page.getByText(children);
+    await expect.element(target).toBeInTheDocument();
   });
 
-  it("display the corresponding Icon", () => {
+  it("display the corresponding Icon", async () => {
     render(<Header Icon={MainIconMock}></Header>);
-    const targetElement = screen.queryByTestId(mainIconId);
-    expect(targetElement).toBeInTheDocument();
+    const target = page.getByTestId(mainIconId);
+    await expect.element(target).toBeInTheDocument();
   });
 
-  it("sets the inline style if the style prop is defined", () => {
+  it("sets the inline style if the style prop is defined", async () => {
     const style = { "--test1": "1px", width: "10px" };
     render(<Header style={style}></Header>);
-    const targetElement = screen.queryByTestId("header");
-    expect(targetElement).toHaveStyle(style);
+    const target = page.getByTestId(headerId);
+    await expect.element(target).toHaveStyle(style);
   });
 
-  it("has classArr applied as the last classes", () => {
+  it("has classArr applied as the last classes", async () => {
     const classArr = ["test1", "test2"];
-    render(<Header classArr={classArr}></Header>);
-    const targetElement = screen.queryByTestId("header");
-    const classList = Array.from(targetElement.classList);
+    await render(<Header classArr={classArr}></Header>);
+    const targetElement = page.getByTestId(headerId).element();
+    const classList = [...targetElement.classList];
     expect(classList.slice(-classArr.length)).toEqual(
       expect.arrayContaining(classArr),
     );
   });
 
-  it("rotates the visibility icon if isExpanded is truthy", () => {
+  it("rotates the visibility icon if isExpanded is truthy", async () => {
     render(<TestContainer></TestContainer>);
-    const button = screen.queryByTestId(buttonId);
-    const targetElement = screen.queryByTestId("visibilityIcon");
+    const button = page.getByTestId(buttonId);
+    const target = page.getByTestId(visibilityIconId);
     const expectedClass = /expanded/i;
-    expect(targetElement).not.toHaveClass(expectedClass);
-    fireEvent.click(button);
-    expect(targetElement).toHaveClass(expectedClass);
+    await expect.element(target).not.toHaveClass(expectedClass);
+    await button.click();
+    await expect.element(target).toHaveClass(expectedClass);
   });
 
-  it("runs onClick on click events", () => {
+  it("runs onClick on click events", async () => {
     render(<Header onClick={onClickMock}></Header>);
-    const targetElement = screen.queryByTestId("header");
-    fireEvent.click(targetElement);
+    const target = page.getByTestId(headerId);
+    await target.click();
     expect(onClickMock).toHaveBeenCalledOnce();
   });
 });
