@@ -1,13 +1,48 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import ImageField from "./ImageField";
-import { fireEvent, render, screen } from "@testing-library/react";
-import resizeObserverMock from "../../../mocks/resizeObserverMock";
+import { render } from "vitest-browser-react";
+import { page } from "vitest/browser";
+import png from "./test/1.png";
+import svg from "./test/2.svg";
+import jpg from "./test/3.jpg";
+import webp from "./test/4.webp";
+import pdf from "./test/1.pdf";
+import { describe, it, vi, expect, afterEach } from "vitest";
 
 const primaryActionLabel = "Cargar";
 const destructiveActionLabel = "Remover";
-const inputTestId = "fileInput";
-const onClickMock = vi.fn(() => {});
 const submitDataMock = vi.fn(() => {});
+const alt = "test image";
+const inputTestId = "fileInput";
+const id = "imageField";
+
+const validImageCases = [
+  { path: png, type: "png" },
+  { path: svg, type: "svg" },
+  { path: jpg, type: "jpeg" },
+  { path: webp, type: "webp" },
+];
+
+class SubmitCall {
+  constructor() {
+    this.id = id;
+    this.isInvalid = false;
+    this.value = null;
+  }
+}
+
+class SuccessfulCall extends SubmitCall {
+  constructor({ source, scale, positionX, positionY }) {
+    super();
+    this.value = { source, scale, positionX, positionY };
+  }
+}
+
+class FailedCall extends SubmitCall {
+  constructor() {
+    super();
+    this.value = {};
+  }
+}
 
 const renderSubject = (value) => {
   render(
@@ -17,90 +52,125 @@ const renderSubject = (value) => {
         destructiveActionLabel,
         submitData: submitDataMock,
         value,
+        alt,
+        id,
       }}
     ></ImageField>,
   );
 };
 
-describe("ImageField", () => {
-  beforeEach(() => vi.stubGlobal("ResizeObserver", resizeObserverMock));
+const getImage = () => page.getByAltText(alt);
 
+describe("ImageField", () => {
   afterEach(() => vi.resetAllMocks());
 
-  it("opens the file dialog on load button`s click", () => {
+  it("it displays a placeholder image if it has no image source", async () => {
     renderSubject();
-    const input = screen.queryByTestId(inputTestId);
-    const button = screen.queryByText(primaryActionLabel);
-    input.addEventListener("click", onClickMock);
-
-    fireEvent.click(button);
-
-    expect(onClickMock).toHaveBeenCalledOnce();
+    const img = getImage();
+    await expect.element(img).toHaveAttribute("src");
   });
 
-  describe("on file selection", () => {
-    const createFile = ({ fileName, type }) => {
-      return new File([fileName], fileName, { type });
+  describe("sets image as value", async () => {
+    it.each(validImageCases)(
+      "accepts $type image received as a prop",
+      async ({ path }) => {
+        const value = {
+          source: path,
+          scale: 2,
+          positionX: 15,
+          positionY: 24,
+        };
+        renderSubject(value);
+        const img = getImage();
+        await expect.element(img).toHaveAttribute("src", path);
+      },
+    );
+
+    const createFileData = async (data) => {
+      const { path, type } = data;
+      const name = `file.${type}`;
+      const response = await fetch(path);
+      const blob = await response.blob();
+      const file = new File([blob], name, { type: blob.type });
+      return { ...data, file };
     };
-    const imageFiles = [
-      { fileName: "1.png", type: "image/png" },
-      { fileName: "2.svg", type: "image/svg+xml" },
-      { fileName: "2.jpeg", type: "image/jpeg" },
-      { fileName: "2.webp", type: "image/webp" },
-      { fileName: "2.webp", type: "image/webp" },
-    ].map(createFile);
 
-    const pdfFile = createFile({ fileName: "a.pdf", type: "application/pdf" });
+    const addExpectedResult = async (data) => {
+      const { type, file } = data;
 
-    beforeEach(() => {
-      renderSubject();
-      vi.spyOn(FileReader.prototype, "readAsDataURL").mockImplementation(
-        function (file) {
-          if (this.onload) this.onload({ target: { result: file.name } });
-        },
-      );
-    });
+      class Result {
+        constructor() {
+          this.expectedCall = null;
+          this.callCount = 1;
+          this.isAccepted = true;
+        }
+      }
 
-    afterEach(() => vi.restoreAllMocks());
+      class InvalidResult extends Result {
+        constructor() {
+          super();
+          this.expectedCall = new FailedCall();
+          this.isAccepted = false;
+        }
+      }
 
-    it.each(imageFiles)("accepts image files", (file) => {
-      const input = screen.queryByTestId(inputTestId);
-      const options = { target: { files: [file] } };
+      class ValidResult extends Result {
+        constructor(source) {
+          super();
+          this.expectedCall = new SuccessfulCall({ source });
+        }
+      }
 
-      fireEvent.change(input, options);
+      if (type === "pdf") return { ...data, ...new InvalidResult() };
+      const source = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onerror = () => reject();
+        reader.onload = () => resolve(reader.result);
+        reader.readAsDataURL(file);
+      });
+      return { ...data, ...new ValidResult(source) };
+    };
 
-      expect(submitDataMock).toHaveBeenCalledExactlyOnceWith(
-        expect.objectContaining({ value: { source: file.name } }),
-      );
-    });
+    const createFileCase = async (data) => {
+      const fileData = await createFileData(data);
+      const fileCase = await addExpectedResult(fileData);
+      return fileCase;
+    };
 
-    it("declines non image files", () => {
-      const file = pdfFile;
-      const input = screen.queryByTestId(inputTestId);
-      const options = { target: { files: [file] } };
+    const fileCases = await Promise.all(
+      [...validImageCases, { path: pdf, type: "pdf" }].map(createFileCase),
+    );
 
-      fireEvent.change(input, options);
-
-      expect(submitDataMock).toHaveBeenCalledExactlyOnceWith(
-        expect.objectContaining({ value: {} }),
-      );
-    });
+    it.each(fileCases)(
+      "only accepts image files if received from the file dialog, type = $type, isAccepted = $isAccepted",
+      async ({ file, expectedCall, callCount }) => {
+        renderSubject();
+        const input = page.getByTestId(inputTestId);
+        await input.upload(file);
+        const lastCall = submitDataMock.mock.lastCall;
+        const result = lastCall ? lastCall[0] : undefined;
+        expect(submitDataMock).toHaveBeenCalledTimes(callCount);
+        expect(result).toEqual(expectedCall);
+      },
+    );
   });
 
-  it("removes the image on remove buttons`s click", () => {
+  it("reports a value reset on remove buttons`s click", async () => {
     const value = {
-      source: "./test.svg",
+      source: svg,
       scale: 2,
       positionX: 15,
       positionY: 24,
     };
+    const expectedCall = new FailedCall();
     renderSubject(value);
-    const button = screen.queryByText(destructiveActionLabel);
+    const button = page.getByText(destructiveActionLabel);
 
-    fireEvent.click(button);
+    await button.click();
 
-    expect(submitDataMock).toHaveBeenCalledExactlyOnceWith(
-      expect.objectContaining({ value: {} }),
-    );
+    const lastCall = submitDataMock.mock.lastCall;
+    const result = lastCall ? lastCall[0] : undefined;
+    expect(submitDataMock).toHaveBeenCalledTimes(1);
+    expect(result).toEqual(expectedCall);
   });
 });
