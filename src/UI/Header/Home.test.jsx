@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import HomeLogo from "./Home";
-import { render, screen } from "@testing-library/react";
+import { render } from "vitest-browser-react";
+import { page } from "vitest/browser";
 
 const propList = [
   {},
@@ -21,10 +22,10 @@ describe.each(propList)(
       expect(targetElement).toBeInTheDocument();
     });
 
-    it.runIf(children)("renders the children", () => {
+    it.runIf(children)("renders the children", async () => {
       const text = "soy un test";
-      const targetElement = screen.queryByText(text);
-      expect(targetElement).toBeInTheDocument();
+      const target = page.getByText(text);
+      await expect.element(target).toBeInTheDocument();
     });
 
     it.runIf(classArr)("has classArr applied as the last classes", () => {
