@@ -1,5 +1,7 @@
-import { act, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { render } from "vitest-browser-react";
+import { page } from "vitest/browser";
+import { act } from "react";
 
 const smallSize = 150;
 const bigSize = 950;
@@ -12,6 +14,7 @@ const PanelMock = vi.fn(({ screens }) => {
 });
 const minDualPanelScreenWidth = 700;
 let Main;
+const getPanels = () => page.getByTestId(panelId).elements();
 
 describe("Main", async () => {
   beforeEach(async () => {
@@ -21,7 +24,7 @@ describe("Main", async () => {
       ["../Carrousel/Carrousel", PanelMock],
     ];
     const setMocks = ([path, mock]) => {
-      vi.doMock(path, () => ({ default: mock }));
+      vi.doMock(import(path), () => ({ default: mock }));
     };
     mocks.forEach(setMocks);
     Main = (await import("./Main")).default;
@@ -29,44 +32,47 @@ describe("Main", async () => {
 
   afterEach(() => vi.resetAllMocks());
 
-  it("renders a single panel if screenSize < minDualPanelScreenWidth", () => {
-    render(<Main {...{ minDualPanelScreenWidth }}></Main>);
-    const panels = screen.queryAllByTestId(panelId);
+  it("renders a single panel if screenSize < minDualPanelScreenWidth", async () => {
+    await render(<Main {...{ minDualPanelScreenWidth }}></Main>);
+    const panels = getPanels();
     expect(panels).toHaveLength(1);
   });
 
   describe("renders a dual panel if screenSize >= minDualPanelScreenWidth", () => {
     const screenSizes = [minDualPanelScreenWidth, bigSize];
-    const renderScreen = (screenSize) => {
+    const renderScreen = async (screenSize) => {
       useScreenSizeMock.mockReturnValueOnce(screenSize);
-      render(<Main {...{ minDualPanelScreenWidth }}></Main>);
+      await render(<Main {...{ minDualPanelScreenWidth }}></Main>);
     };
 
-    it.each(screenSizes)("has 2 panels with screenSize = %i", (screenSize) => {
-      renderScreen(screenSize);
-      const panels = screen.queryAllByTestId(panelId);
-      expect(panels).toHaveLength(2);
-    });
+    it.each(screenSizes)(
+      "has 2 panels with screenSize = %i",
+      async (screenSize) => {
+        await renderScreen(screenSize);
+        const panels = getPanels();
+        expect(panels).toHaveLength(2);
+      },
+    );
 
-    it("first panel contains all the screens excluding the last screen", () => {
-      renderScreen(bigSize);
-      const panels = screen.queryAllByTestId(panelId);
+    it("first panel contains all the screens excluding the last screen", async () => {
+      await renderScreen(bigSize);
+      const panels = getPanels();
       const text = screenList.slice(0, screenList.length - 1).join("");
       const [target] = panels;
       expect(target).toHaveTextContent(text);
     });
 
-    it("last panel only contains the last screen", () => {
-      renderScreen(bigSize);
-      const panels = screen.queryAllByTestId(panelId);
+    it("last panel only contains the last screen", async () => {
+      await renderScreen(bigSize);
+      const panels = getPanels();
       const text = screenList[screenList.length - 1];
       const [, target] = panels;
       expect(target).toHaveTextContent(text);
     });
   });
 
-  it("changes it's state on screen's value changes", () => {
-    render(<Main {...{ minDualPanelScreenWidth }}></Main>);
+  it("changes it's state on screen's value changes", async () => {
+    await render(<Main {...{ minDualPanelScreenWidth }}></Main>);
     const expectedValue = { test: "test" };
     const { onChange, userData: initialValue } =
       buildScreensMock.mock.lastCall[0];
