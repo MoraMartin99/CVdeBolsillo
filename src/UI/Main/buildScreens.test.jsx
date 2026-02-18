@@ -1,5 +1,6 @@
-import { render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { render } from "vitest-browser-react";
+import { page } from "vitest/browser";
 
 const userData = { message: "userData" };
 
@@ -32,6 +33,9 @@ const screensData = {
     id: "screen3",
   },
 };
+
+const testSubjects = Object.values(screensData);
+
 describe("buildScreens", () => {
   beforeEach(async () => {
     const mocks = [
@@ -40,10 +44,10 @@ describe("buildScreens", () => {
       ["../Preview/Preview", PreviewMock],
     ];
     const setMocks = ([path, mock]) => {
-      vi.doMock(path, () => ({ default: mock }));
+      vi.doMock(import(path), () => ({ default: mock }));
     };
     mocks.forEach(setMocks);
-    const buildViews = (await import("./buildScreens")).default;
+    const buildScreens = (await import("./buildScreens")).default;
     TestMock.mockImplementation((props) => {
       const mapper = ({ id, component, label }) => {
         return (
@@ -53,26 +57,26 @@ describe("buildScreens", () => {
           </div>
         );
       };
-      return <div data-testid="Test">{buildViews(props).map(mapper)}</div>;
+      return <div data-testid="Test">{buildScreens(props).map(mapper)}</div>;
     });
   });
 
   afterEach(() => vi.resetAllMocks());
-  const testSubjects = Object.values(screensData);
-  it.each(testSubjects)("builds the $label component", (screenData) => {
+
+  it.each(testSubjects)("builds the $label component", async (screenData) => {
     const {
       id,
       label,
       data: { component: componentId },
     } = screenData;
-    render(
+    await render(
       <TestMock
         {...{ screensData: [screenData], userData, onChange: onChangeMock }}
       ></TestMock>,
     );
-    const screenTarget = screen.queryByTestId(id);
-    const component = screen.queryByTestId(componentId);
-    expect(screenTarget).toContainHTML(label);
-    expect(screenTarget).toContainElement(component);
+    const target = page.getByTestId(id);
+    const component = page.getByTestId(componentId);
+    await expect.element(target).toContainHTML(label);
+    await expect.element(target).toContainElement(component);
   });
 });
