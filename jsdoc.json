@@ -1,7 +1,7 @@
 {
   "plugins": ["plugins/markdown"],
   "source": {
-    "include": ["./src"],
+    "include": ["./src", "./plugins"],
     "includePattern": ".+\\.jsx{0,1}$",
     "excludePattern": "(node_modules|docs)"
   },
