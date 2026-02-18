@@ -2,12 +2,18 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import svgr from "vite-plugin-svgr";
 import { playwright } from "@vitest/browser-playwright";
+import createVirtualModulePlugin from "./plugins/createVirtualModulePlugin";
 
 const regularTestPaths = ["**/*.{test,spec}.{js,ts}"];
 const browserTestPaths = ["**/*.{test,spec}.{jsx,tsx}"];
 
+const TemplateFormPlugin = createVirtualModulePlugin({
+  moduleId: "TemplateForm",
+});
+const PreviewPlugin = createVirtualModulePlugin({ moduleId: "Preview" });
+
 export default defineConfig({
-  plugins: [react(), svgr()],
+  plugins: [TemplateFormPlugin, PreviewPlugin, react(), svgr()],
   test: {
     projects: [
       {
