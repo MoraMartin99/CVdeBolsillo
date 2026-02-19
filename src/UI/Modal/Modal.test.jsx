@@ -1,64 +1,62 @@
-import { describe, beforeEach, afterEach, vi, it, expect } from "vitest";
+import { describe, afterEach, vi, it, expect } from "vitest";
 import SUT from "./Modal";
-import { fireEvent, screen } from "@testing-library/dom";
-import { render } from "@testing-library/react";
+import { render } from "vitest-browser-react";
+import { page } from "vitest/browser";
 
-const visibilities = [undefined, false, true];
-const getBoundingClientRectSpy = vi.spyOn(
-  HTMLDialogElement.prototype,
-  "getBoundingClientRect",
-);
 const onOutsideClickMock = vi.fn(() => {});
+const renderComponent = ({ isOpen }) => {
+  render(
+    <SUT isOpen={isOpen} onOutsideClick={onOutsideClickMock}>
+      <div
+        style={{ backgroundColor: "red", padding: "10px", fontSize: "16px" }}
+        data-testid="child"
+      >
+        Soy un elemento!!!
+      </div>
+    </SUT>,
+  );
+};
 
 describe("Modal", () => {
-  beforeEach(() => {
-    HTMLDialogElement.prototype.showModal = vi.fn(function () {
-      this.setAttribute("open", true);
-    });
-    HTMLDialogElement.prototype.close = vi.fn(function () {
-      this.setAttribute("open", false);
-    });
-  });
-
   afterEach(() => vi.resetAllMocks());
 
-  it.each(visibilities)("shows or hides based on isOpen = %s", (isOpen) => {
-    render(<SUT isOpen={isOpen}></SUT>);
-    const target = screen.queryByRole("dialog");
-    const expectedVisibility = String(Boolean(isOpen));
-    expect(target).toHaveAttribute("open", expectedVisibility);
-  });
+  const truthyCases = [true, 1, "hi", [], () => {}, {}];
+
+  it.each(truthyCases)(
+    "shows the component if isOpen is truthy, isOpen = %s",
+    async (isOpen) => {
+      renderComponent({ isOpen });
+      const target = page.getByRole("dialog");
+      await expect.element(target).toBeVisible();
+    },
+  );
+
+  const falsyCases = [false, null, undefined, NaN, 0, ""];
+
+  it.each(falsyCases)(
+    "hides the component if isOpen is falsy, isOpen = %s",
+    async (isOpen) => {
+      renderComponent({ isOpen });
+      const target = page.getByRole("dialog", { includeHidden: true });
+      await expect.element(target).not.toBeVisible();
+    },
+  );
 
   describe("on clicks", () => {
-    const clickElement = ({
-      isOpen = true,
-      onOutsideClick = onOutsideClickMock,
-      clientX = 25,
-      clientY = 10,
-    } = {}) => {
-      getBoundingClientRectSpy.mockReturnValue({
-        left: 10,
-        right: 15,
-        top: 0,
-        bottom: 5,
-      });
-      render(<SUT isOpen={isOpen} onOutsideClick={onOutsideClick}></SUT>);
-      const target = screen.queryByRole("dialog");
-      fireEvent.click(target, { clientX, clientY });
-    };
     describe("inside the modal", () => {
-      it("doesn't run onOutsideClick if its defined and isOpen is truthy", () => {
-        clickElement({
-          clientX: 11,
-          clientY: 1,
-        });
-        expect(onOutsideClickMock).toHaveBeenCalledTimes(0);
+      it("doesn't run onOutsideClick if its defined", async () => {
+        renderComponent({ isOpen: true });
+        const target = page.getByRole("dialog");
+        await target.click();
+        expect(onOutsideClickMock).not.toHaveBeenCalled();
       });
     });
 
     describe("outside the modal", () => {
-      it("runs onOutsideClick if its define and isOpen is truthy", () => {
-        clickElement();
+      it("runs onOutsideClick if its define", async () => {
+        renderComponent({ isOpen: true });
+        const target = page.getByRole("dialog");
+        await target.click({ position: { x: -5, y: -5 } });
         expect(onOutsideClickMock).toHaveBeenCalledOnce();
       });
     });
