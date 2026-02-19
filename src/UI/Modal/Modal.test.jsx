@@ -4,17 +4,36 @@ import { render } from "vitest-browser-react";
 import { page } from "vitest/browser";
 
 const onOutsideClickMock = vi.fn(() => {});
-const renderComponent = ({ isOpen }) => {
-  render(
-    <SUT isOpen={isOpen} onOutsideClick={onOutsideClickMock}>
-      <div
-        style={{ backgroundColor: "red", padding: "10px", fontSize: "16px" }}
-        data-testid="child"
-      >
-        Soy un elemento!!!
+const onScrollMock = vi.fn(() => {});
+const targetSiblingId = "sibling";
+
+const renderComponent = async ({ isOpen }) => {
+  const baseStyle = {
+    fontSize: "16px",
+  };
+  const style1 = { ...baseStyle, height: "50px", backgroundColor: "salmon" };
+  const style2 = { ...style1, backgroundColor: "greenyellow" };
+  await render(
+    <div style={{ position: "relative" }}>
+      <div style={style1}>1</div>
+      <div data-testid={targetSiblingId} style={style2}>
+        2
       </div>
-    </SUT>,
+      <SUT isOpen={isOpen} onOutsideClick={onOutsideClickMock}>
+        <div
+          style={{
+            ...baseStyle,
+            backgroundColor: "cyan",
+          }}
+          data-testid="child1"
+        >
+          modal
+        </div>
+      </SUT>
+    </div>,
   );
+  document.body.style.height = "80px";
+  page.viewport(100, 80);
 };
 
 describe("Modal", () => {
@@ -50,6 +69,15 @@ describe("Modal", () => {
         await target.click();
         expect(onOutsideClickMock).not.toHaveBeenCalled();
       });
+  it("prevents scroll events on the body", async () => {
+    await renderComponent({ isOpen: true });
+    const targetElement = page.getByTestId(targetSiblingId).element();
+    const body = document.body;
+    body.addEventListener("scroll", onScrollMock);
+    targetElement.scrollIntoView({ behavior: "instant" });
+    expect(onScrollMock).not.toHaveBeenCalled();
+  });
+
     });
 
     describe("outside the modal", () => {
