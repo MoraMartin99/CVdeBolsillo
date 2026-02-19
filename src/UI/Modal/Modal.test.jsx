@@ -61,14 +61,6 @@ describe("Modal", () => {
     },
   );
 
-  describe("on clicks", () => {
-    describe("inside the modal", () => {
-      it("doesn't run onOutsideClick if its defined", async () => {
-        renderComponent({ isOpen: true });
-        const target = page.getByRole("dialog");
-        await target.click();
-        expect(onOutsideClickMock).not.toHaveBeenCalled();
-      });
   it("prevents scroll events on the body", async () => {
     await renderComponent({ isOpen: true });
     const targetElement = page.getByTestId(targetSiblingId).element();
@@ -78,15 +70,21 @@ describe("Modal", () => {
     expect(onScrollMock).not.toHaveBeenCalled();
   });
 
+  describe("on clicks inside the modal", () => {
+    it("doesn't run onOutsideClick if its defined", async () => {
+      renderComponent({ isOpen: true });
+      const target = page.getByRole("dialog");
+      await target.click();
+      expect(onOutsideClickMock).not.toHaveBeenCalled();
     });
+  });
 
-    describe("outside the modal", () => {
-      it("runs onOutsideClick if its define", async () => {
-        renderComponent({ isOpen: true });
-        const target = page.getByRole("dialog");
-        await target.click({ position: { x: -5, y: -5 } });
-        expect(onOutsideClickMock).toHaveBeenCalledOnce();
-      });
+  describe("on clicks outside the modal", () => {
+    it("runs onOutsideClick if its define", async () => {
+      renderComponent({ isOpen: true });
+      const target = page.getByRole("dialog");
+      await target.click({ position: { x: 0, y: -5 } });
+      expect(onOutsideClickMock).toHaveBeenCalledOnce();
     });
   });
 });
