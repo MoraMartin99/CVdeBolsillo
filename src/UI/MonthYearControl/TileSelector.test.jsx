@@ -1,5 +1,4 @@
 import { beforeEach, describe, vi, it, expect } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
 import TileSelector from "./TileSelector";
 import { useState } from "react";
 
