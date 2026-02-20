@@ -1,7 +1,8 @@
 import RepoBadge from "./RepoBadge";
-import Icon from "../../assets/images/arrow.svg?react";
+import Icon from "./test/genericIcon.svg?react";
 import { beforeEach, describe, it, expect } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render } from "vitest-browser-react";
+import { page } from "vitest/browser";
 
 const propList = [
   {},
@@ -22,27 +23,27 @@ describe.each(propList)(
       );
     });
 
-    it("renders the parent element", () => {
+    it("renders the parent element", async () => {
       const targetClass = "repobadge";
       const targetElement = document.querySelector(`.${targetClass}`);
-      expect(targetElement).toBeInTheDocument();
+      await expect.element(targetElement).toBeInTheDocument();
     });
 
-    it("has the corresponding href attribute", () => {
+    it("has the corresponding href attribute", async () => {
       const targetClass = "repobadge";
       const targetElement = document.querySelector(`.${targetClass}`);
       const attribute = "href";
-      expect(targetElement).toHaveAttribute(attribute, repoUrl);
+      await expect.element(targetElement).toHaveAttribute(attribute, repoUrl);
     });
 
-    it("renders an icon", () => {
-      const targetElement = screen.getByRole("img");
-      expect(targetElement).toBeInTheDocument();
+    it("renders an icon", async () => {
+      const targetElement = page.getByRole("img");
+      await expect.element(targetElement).toBeInTheDocument();
     });
 
-    it.runIf(label)("has the corresponding label", () => {
-      const targetElement = screen.getByText(label);
-      expect(targetElement).toBeInTheDocument();
+    it.runIf(label)("has the corresponding label", async () => {
+      const targetElement = page.getByText(label);
+      await expect.element(targetElement).toBeInTheDocument();
     });
 
     it.runIf(classArr)("has classArr applied as the last classes", () => {
