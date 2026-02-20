@@ -38,10 +38,10 @@ const defaultStartYear = defaultFinishYear - 60;
  * The MonthYearControl component lets you indicate a month and year (and optionally the "currently" value) using a GUI
  * @param {object} props The component properties
  * @param {Array<string>} [props.classArr = []] A list of CSS classes to apply to the component
- * @param {(dateValue|currentlyValue)} [props.value = {month: 1, year: new Date().getFullYear()}] The value of the component
  * @param {onChange} props.onChange A callback that runs if the value change and is valid
  * @param {number} [props.startYear = defaultStartYear] The first value of the year selector interface
  * @param {number} [props.finishYear = defaultFinishYear] The last value of the year selector interface
+ * @param {(dateValue|currentlyValue)} [props.value = {month: 1, year: props.finishYear}] The value of the component
  * @param {boolean} [props.allowCurrentlyOption = true] If true display the currently checkbox, if false the opposite
  * @param {boolean} [props.isDisable = false] If truthy sets the component as readonly, if falsy sets the opposite
  * @param {onCloseButtonClick} props.onCloseButtonClick A callback that runs on closeButton click
@@ -54,7 +54,7 @@ function MonthYearControl({
   finishYear = defaultFinishYear,
   value: { month: monthProp, year: yearProp, isCurrently: isCurrentlyProp } = {
     month: 1,
-    year: new Date().getFullYear(),
+    year: finishYear,
   },
   onChange,
   allowCurrentlyOption = true,
