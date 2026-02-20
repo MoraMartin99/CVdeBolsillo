@@ -1,28 +1,37 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import SUT from "./ClassicInput";
-import { fireEvent, render, screen } from "@testing-library/react";
-import { useState } from "react";
+import { render } from "vitest-browser-react";
+import { page, userEvent } from "vitest/browser";
 
-const TestComponent = () => {
-  const [, setCount] = useState(0);
-  return (
-    <SUT
-      onChange={() => setCount(1)}
-      isInvalid={true}
-      tip={"Es invalido"}
-    ></SUT>
-  );
-};
+const onChangeMock = vi.fn(() => {});
+const onClickMock = vi.fn(() => {});
 
 describe("ClassicInput", () => {
-  it("sets the validity only if the component had been focus out at least 1 time", () => {
-    render(<TestComponent></TestComponent>);
-    const target = screen.queryByRole("textbox");
-    const initialValidity = target.checkValidity();
-    fireEvent.blur(target);
-    const finalValidity = target.checkValidity();
+  beforeEach(() =>
+    render(<SUT onChange={onChangeMock} onClick={onClickMock}></SUT>),
+  );
 
-    expect(initialValidity).toBeTruthy();
-    expect(finalValidity).toBeFalsy();
+  afterEach(() => vi.resetAllMocks());
+
+  describe("runs onChange", () => {
+    it("on first blur", async () => {
+      const target = page.getByRole("textbox");
+      await target.click();
+      await userEvent.tab();
+      expect(onChangeMock).toHaveBeenCalledOnce();
+    });
+
+    it("on value change", async () => {
+      const target = page.getByRole("textbox");
+      const text = "hola!";
+      await target.fill(text);
+      expect(onChangeMock).toHaveBeenCalledOnce();
+    });
+  });
+
+  it("runs onClick", async () => {
+    const target = page.getByRole("textbox");
+    await target.click();
+    expect(onClickMock).toHaveBeenCalledOnce();
   });
 });
