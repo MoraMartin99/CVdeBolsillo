@@ -8,6 +8,9 @@ import months from "../../months";
  * @module MonthYearControl
  */
 
+const defaultFinishYear = new Date().getFullYear();
+const defaultStartYear = defaultFinishYear - 60;
+
 /**
  * A callback that runs if the value change and is valid
  * @callback onChange
@@ -37,8 +40,8 @@ import months from "../../months";
  * @param {Array<string>} [props.classArr = []] A list of CSS classes to apply to the component
  * @param {(dateValue|currentlyValue)} [props.value = {month: 1, year: new Date().getFullYear()}] The value of the component
  * @param {onChange} props.onChange A callback that runs if the value change and is valid
- * @param {number} [props.startYear = new Date().getFullYear() - 120] The first value of the year selector interface
- * @param {number} [props.finishYear = new Date().getFullYear()] The last value of the year selector interface
+ * @param {number} [props.startYear = defaultStartYear] The first value of the year selector interface
+ * @param {number} [props.finishYear = defaultFinishYear] The last value of the year selector interface
  * @param {boolean} [props.allowCurrentlyOption = true] If true display the currently checkbox, if false the opposite
  * @param {boolean} [props.isDisable = false] If truthy sets the component as readonly, if falsy sets the opposite
  * @param {onCloseButtonClick} props.onCloseButtonClick A callback that runs on closeButton click
@@ -47,13 +50,13 @@ import months from "../../months";
  */
 function MonthYearControl({
   classArr = [],
+  startYear = defaultStartYear,
+  finishYear = defaultFinishYear,
   value: { month: monthProp, year: yearProp, isCurrently: isCurrentlyProp } = {
     month: 1,
     year: new Date().getFullYear(),
   },
   onChange,
-  startYear = new Date().getFullYear() - 60,
-  finishYear = new Date().getFullYear(),
   allowCurrentlyOption = true,
   isDisable = false,
   onCloseButtonClick,
