@@ -1,6 +1,7 @@
 import { beforeEach, describe, it, expect } from "vitest";
-import NavigationButton from "./NavigationButton";
-import { render, screen } from "@testing-library/react";
+import SUT from "./NavigationButton";
+import { render } from "vitest-browser-react";
+import { page } from "vitest/browser";
 
 const DOWN_POSITION = "down";
 const DOWN_TEST_ID = "downIcon";
@@ -21,31 +22,29 @@ describe.each(propList)(
       iconDirection,
     );
     beforeEach(() => {
-      render(
-        <NavigationButton iconDirection={iconDirection}></NavigationButton>,
-      );
+      render(<SUT iconDirection={iconDirection}></SUT>);
     });
 
-    it("renders the parent element", () => {
-      const targetElement = screen.queryByRole("button");
-      expect(targetElement).toBeInTheDocument();
+    it("renders the parent element", async () => {
+      const targetElement = page.getByRole("button");
+      await expect.element(targetElement).toBeInTheDocument();
     });
 
     it.runIf(!iconDirection || !hasValidIconDirection)(
       "renders the default icon if iconDirection is undefined or is invalid",
-      () => {
-        const targetElement = screen.queryByTestId(defaultId);
-        expect(targetElement).toBeInTheDocument();
+      async () => {
+        const targetElement = page.getByTestId(defaultId);
+        await expect.element(targetElement).toBeInTheDocument();
       },
     );
 
     it.runIf(hasValidIconDirection)(
       "renders the corresponding icon to the iconDirection",
-      () => {
+      async () => {
         const testId =
           iconDirection === UP_POSITION ? UP_TEST_ID : DOWN_TEST_ID;
-        const targetElement = screen.queryByTestId(testId);
-        expect(targetElement).toBeInTheDocument();
+        const targetElement = page.getByTestId(testId);
+        await expect.element(targetElement).toBeInTheDocument();
       },
     );
   },
