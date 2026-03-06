@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { toPascalCase } from "./utils";
 
-describe("utils test suite", () => {
-  describe("toPascalCase test suite", () => {
+describe("utils", () => {
+  describe("toPascalCase", () => {
     const setExpectation = ([text, expectedValue]) => {
       expect(toPascalCase(text)).toBe(expectedValue);
     };
