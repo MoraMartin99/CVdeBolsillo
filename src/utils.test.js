@@ -1,5 +1,5 @@
-import { describe, expect, it } from "vitest";
-import { toPascalCase } from "./utils";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { toPascalCase, Debouncer } from "./utils";
 
 describe("utils", () => {
   describe("toPascalCase", () => {
@@ -78,6 +78,47 @@ describe("utils", () => {
         [" -_", ""],
       ];
       testSubjects.forEach(setExpectation);
+    });
+  });
+
+  describe("Debouncer", () => {
+    const callbackMock = vi.fn(() => {});
+    const delay = 100;
+
+    beforeEach(() => {
+      vi.resetAllMocks();
+    });
+
+    describe("on run", () => {
+      it("runs the callback after the delay", async () => {
+        const debouncer = new Debouncer(delay);
+        const options = { timeout: delay + delay * 0.2, interval: 10 };
+        debouncer.run(callbackMock);
+        expect(callbackMock).toHaveBeenCalledTimes(0);
+        await vi.waitFor(() => {
+          if (!callbackMock.mock.calls.length) {
+            throw new Error("No se lamo callback");
+          }
+        }, options);
+        expect(callbackMock).toHaveBeenCalledTimes(1);
+      });
+
+      it("aborts previously scheduled callbacks", async () => {
+        const debouncer = new Debouncer(delay);
+        const options = { timeout: delay * 2 + delay * 0.2, interval: 10 };
+        const firstValue = 1;
+        const secondValue = 2;
+        const firstCallback = () => callbackMock(firstValue);
+        const secondCallback = () => callbackMock(secondValue);
+        debouncer.run(firstCallback);
+        setTimeout(() => debouncer.run(secondCallback), delay - 10);
+        await vi.waitFor(() => {
+          if (!callbackMock.mock.calls.length) {
+            throw new Error("No se lamo callback");
+          }
+        }, options);
+        expect(callbackMock).toHaveBeenCalledExactlyOnceWith(secondValue);
+      });
     });
   });
 });

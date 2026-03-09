@@ -38,5 +38,39 @@ const toPascalCase = (text) => {
   return words.map(mapper).join("");
 };
 
-export { reduceToClassName, toPascalCase };
-export default { reduceToClassName, toPascalCase };
+/**
+ * A class that implements a debounce functionality
+ */
+class Debouncer {
+  #delay;
+  #timeOut;
+
+  /**
+   * Creates a debouncer
+   * @param {number} delay The time in milliseconds needed to wait to run a callback
+   */
+  constructor(delay) {
+    this.#delay = delay;
+    this.#timeOut = null;
+  }
+
+  /**
+   * Runs the callback after the time delay. It aborts previously scheduled callbacks that were pending
+   * @param {function} callback
+   */
+  run(callback) {
+    clearTimeout(this.#timeOut);
+    this.#timeOut = setTimeout(callback, this.delay);
+  }
+
+  /**
+   * The time in milliseconds needed to wait to run a callback
+   * @returns {number} the delay
+   */
+  get delay() {
+    return this.#delay;
+  }
+}
+
+export { reduceToClassName, toPascalCase, Debouncer };
+export default { reduceToClassName, toPascalCase, Debouncer };
