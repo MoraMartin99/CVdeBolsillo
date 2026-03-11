@@ -72,5 +72,16 @@ class Debouncer {
   }
 }
 
-export { reduceToClassName, toPascalCase, Debouncer };
-export default { reduceToClassName, toPascalCase, Debouncer };
+/**
+ * The clamp function clamps a value within a range of values between a minimum and a maximum
+ * @param {number} min
+ * @param {number} preferred
+ * @param {number} max
+ * @returns {number}
+ */
+const clamp = (min, preferred, max) => {
+  return Math.min(Math.max(preferred, min), max);
+};
+
+export { reduceToClassName, toPascalCase, Debouncer, clamp };
+export default { reduceToClassName, toPascalCase, Debouncer, clamp };

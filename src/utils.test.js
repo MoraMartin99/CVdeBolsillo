@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { toPascalCase, Debouncer } from "./utils";
+import { toPascalCase, Debouncer, clamp } from "./utils";
 
 describe("utils", () => {
   describe("toPascalCase", () => {
@@ -120,5 +120,35 @@ describe("utils", () => {
         expect(callbackMock).toHaveBeenCalledExactlyOnceWith(secondValue);
       });
     });
+  });
+
+  describe("clamp", () => {
+    const min = 5;
+    const max = 10;
+
+    const setCase = (preferred) => {
+      return { preferred, min, max };
+    };
+
+    it.each([min, 1].map(setCase))(
+      "returns the min value if preferred <= min, preferred = $preferred, min = $min, max = $max",
+      ({ preferred }) => {
+        expect(clamp(min, preferred, max)).toBe(min);
+      },
+    );
+
+    it.each([max, 42].map(setCase))(
+      "returns the max value if preferred >= max, preferred = $preferred, min = $min, max = $max",
+      ({ preferred }) => {
+        expect(clamp(min, preferred, max)).toBe(max);
+      },
+    );
+
+    it.each([7].map(setCase))(
+      "return the preferred value if min < preferred < max",
+      ({ preferred }) => {
+        expect(clamp(min, preferred, max)).toBe(preferred);
+      },
+    );
   });
 });
