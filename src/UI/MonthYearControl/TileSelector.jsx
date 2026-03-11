@@ -38,24 +38,6 @@ function TileSelector({
   isDisable = false,
   visibleTiles = 5,
 }) {
-  const requiredProps = { itemArr, onChange };
-  const hasAllRequiredProps = Object.values(requiredProps).every(
-    (item) => item,
-  );
-  const getErrorMessage = () => {
-    const filter = ([, value]) => !value;
-    const list = Object.entries(requiredProps).filter(filter);
-    const reducer = (total, [key], index, arr) => {
-      const lastIndex = arr.length - 1;
-      if (index === 0 && index !== lastIndex) return `${key} prop`;
-      if (index === 0 && index === lastIndex) return `${key} prop was omitted`;
-      if (index > 0 && index !== lastIndex) return `${total}, ${key} prop`;
-      return `${total} and ${key} prop were omitted`;
-    };
-    return list.reduce(reducer, "");
-  };
-  if (!hasAllRequiredProps) throw new TypeError(getErrorMessage());
-
   const tileContainerRef = useRef(null);
   const MIN_TILE_INDEX = 0;
   const MAX_TILE_INDEX = itemArr.length - 1;
