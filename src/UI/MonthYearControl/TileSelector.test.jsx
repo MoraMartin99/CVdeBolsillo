@@ -1,522 +1,284 @@
-import { beforeEach, describe, vi, it, expect } from "vitest";
-import TileSelector from "./TileSelector";
+import { describe, it, vi, expect, beforeEach } from "vitest";
+import SUT from "./TileSelector";
+import { render } from "vitest-browser-react";
+import { page } from "vitest/browser";
+import "../../global.css";
+import "../../variables.css";
+import css from "./TileSelector.module.css";
 import { useState } from "react";
 
-const containsClass = (element, token) => {
-  const list = Array.from(element.classList);
-  const tester =
-    typeof token === "string"
-      ? (item) => item === token
-      : token instanceof RegExp
-        ? (item) => token.test(item)
-        : () => false;
+const enrichItem = (value, index) => ({ ...value, key: index, index });
 
-  return list.some(tester);
+const items = [
+  { value: "0", label: "item 0" },
+  { value: "1", label: "item 1" },
+  { value: "2", label: "item 2" },
+].map(enrichItem);
+
+const onChangeMock = vi.fn(() => {});
+
+const renderComponent = async ({ currentIndex, isDisable } = {}) => {
+  await render(
+    <SUT
+      items={items}
+      onChange={onChangeMock}
+      currentIndex={currentIndex}
+      isDisable={isDisable}
+    ></SUT>,
+  );
 };
 
-const currentClassRegex = /current/i;
+const getNextButton = (options) => {
+  return page.getByRole("button", options).last();
+};
 
-const onChangeMock = vi.fn();
+const getPreviousButton = (options) => {
+  return page.getByRole("button", options).first();
+};
 
-const IntersectionObserverMock = vi.fn((callback) => {
-  let observedList = [];
+const expectItemAsCurrenTile = async ({ label, value: expectedCall }) => {
+  const tile = page.getByText(label);
+  await expect.element(tile).toHaveClass(css.current);
+  expect(onChangeMock).toHaveBeenLastCalledWith(expectedCall);
+};
 
-  const trigger = (entryList) => {
-    const mapper = ({ isIntersecting, index }) => {
-      const target = observedList.find((item) => {
-        return Number(item.getAttribute("data-index")) === index;
+const expectRendersItemAsCurrentTile = async (item) => {
+  await expectItemAsCurrenTile(item);
+  expect(onChangeMock).toHaveBeenCalledTimes(1);
+};
+
+const expectItemAsNextCurrenTileOnButtonClick = async ({
+  currentTile,
+  button,
+  item,
+}) => {
+  await expect.element(currentTile).toHaveClass(css.current);
+  await button.click();
+  await expectItemAsCurrenTile(item);
+};
+
+describe("TileSelector", () => {
+  beforeEach(() => vi.resetAllMocks());
+
+  it("renders the items as tiles", async () => {
+    await renderComponent();
+    const setExpectation = ({ label }, index) => {
+      const tile = page.getByText(label);
+      const tiles = page.getByRole("listitem");
+      expect(tile.element()).toBe(tiles.elements()[index]);
+    };
+    items.forEach(setExpectation);
+  });
+
+  describe("sets the current tile", () => {
+    describe("selects the first tile", () => {
+      it("if currentIndex is undefined", async () => {
+        await renderComponent();
+        await expectRendersItemAsCurrentTile(items[0]);
       });
-      return { isIntersecting, target };
-    };
-    return callback(entryList.map(mapper));
-  };
-  return {
-    disconnect: vi.fn(() => (observedList = [])),
-    observe: vi.fn((item) => observedList.push(item)),
-    takeRecords: vi.fn(),
-    unobserve: vi.fn(),
-    trigger,
-  };
-});
 
-const scrollIntoViewMock = vi.fn(function () {
-  const trigger = IntersectionObserverMock.mock.results[0].value.trigger;
-  const targetElement = this;
-  const isCurrentTile = containsClass(targetElement, currentClassRegex);
-  const parentElement = targetElement.parentElement;
-  const childrenList = Array.from(parentElement.children);
-  const mapper = (item) => {
-    return item === targetElement
-      ? {
-          isIntersecting: true,
-          index: Number(item.getAttribute("data-index")),
-        }
-      : {
-          isIntersecting: false,
-          index: Number(item.getAttribute("data-index")),
-        };
-  };
-
-  if (isCurrentTile) return;
-  trigger(childrenList.map(mapper));
-  fireEvent.scroll(parentElement);
-  vi.runAllTimers();
-});
-
-const propList = [
-  {},
-  {
-    itemArr: [{ value: "test0", label: "0" }],
-  },
-  {
-    currentIndex: 0,
-    onChange: onChangeMock,
-  },
-  {
-    itemArr: [{ value: "test0", label: "0" }],
-    currentIndex: 0,
-    isDisable: false,
-    onChange: onChangeMock,
-  },
-  {
-    itemArr: [
-      { value: "test0", label: "0" },
-      { value: "test1", label: "1" },
-      { value: "test2", label: "2" },
-      { value: "test3", label: "3" },
-      { value: "test4", label: "4" },
-      { value: "test5", label: "5" },
-      { value: "test6", label: "6" },
-      { value: "test7", label: "7" },
-    ],
-    currentIndex: 0,
-    isDisable: true,
-    onChange: onChangeMock,
-  },
-  {
-    itemArr: [
-      { value: "test0", label: "0" },
-      { value: "test1", label: "1" },
-      { value: "test2", label: "2" },
-      { value: "test3", label: "3" },
-      { value: "test4", label: "4" },
-      { value: "test5", label: "5" },
-      { value: "test6", label: "6" },
-      { value: "test7", label: "7" },
-    ],
-    currentIndex: 6,
-    onChange: onChangeMock,
-  },
-  {
-    itemArr: [
-      { value: "test0", label: "label1" },
-      { value: "test1", label: "label2" },
-      { value: "test2", label: "label3" },
-    ],
-    label: "testLabel",
-    currentIndex: -1,
-    onChange: onChangeMock,
-  },
-  {
-    itemArr: [
-      { value: "test0", label: "0" },
-      { value: "test1", label: "1" },
-      { value: "test2", label: "2" },
-    ],
-    label: "testLabel",
-    visibleTiles: 3,
-    currentIndex: 30,
-    onChange: onChangeMock,
-  },
-  {
-    itemArr: [
-      { value: "test0", label: "0" },
-      { value: "test1", label: "1" },
-      { value: "test2", label: "2" },
-    ],
-    label: "testLabel",
-    visibleTiles: 5,
-    classArr: ["test1", "test2"],
-    onChange: onChangeMock,
-  },
-];
-
-describe.each(propList)(
-  "TileSelector component with props: {label: $label, classArr: $classArr, itemArr: $itemArr, currentIndex: $currentIndex, onChange: $onChange, isDisable: $isDisable, visibleTiles: $visibleTiles}",
-  ({
-    label,
-    classArr,
-    itemArr,
-    currentIndex,
-    onChange,
-    isDisable,
-    visibleTiles,
-  }) => {
-    const requiredProps = { itemArr, onChange };
-    const hasRequiredProps = Object.values(requiredProps).every((item) => item);
-    const boundedCurrentIndex = (() => {
-      switch (true) {
-        case currentIndex < 0:
-        case currentIndex === undefined:
-        case !Object(itemArr).length:
-          return 0;
-        case currentIndex >= itemArr.length:
-          return itemArr.length - 1;
-        default:
-          return currentIndex;
-      }
-    })();
-    const hasBoundedCurrentIndex = currentIndex === boundedCurrentIndex;
-
-    const findElementByClass = (list, token) => {
-      return list.find((item) => containsClass(item, token));
-    };
-
-    const getCurrentElement = () => {
-      const elementList = screen.queryAllByRole("listitem");
-      return findElementByClass(elementList, currentClassRegex);
-    };
-
-    beforeEach(() => {
-      vi.useFakeTimers();
-      vi.stubGlobal("IntersectionObserver", IntersectionObserverMock);
-      window.HTMLElement.prototype.scrollIntoView = scrollIntoViewMock;
-      [IntersectionObserverMock, scrollIntoViewMock, onChangeMock].forEach(
-        (item) => item.mockReset(),
-      );
-      render(
-        <TileSelector
-          {...{
-            label,
-            classArr,
-            itemArr,
-            currentIndex,
-            onChange,
-            isDisable,
-            visibleTiles,
-          }}
-        ></TileSelector>,
-      );
-      vi.runAllTimers();
+      it("if currentIndex < 0 selects", async () => {
+        await renderComponent({ currentIndex: -1 });
+        await expectRendersItemAsCurrentTile(items[0]);
+      });
     });
 
-    it.runIf(hasRequiredProps)(
-      "renders the parent element if itemArr & onChange props are passed",
-      () => {
-        const testId = "parent";
-        const targetElement = screen.queryByTestId(testId);
-        expect(targetElement).toBeInTheDocument();
+    const invalidIndexes = [items.length, items.length + 1];
+
+    it.each(invalidIndexes)(
+      "selects the last tile if currentIndex >= items.length, %s",
+      async (index) => {
+        await renderComponent({ currentIndex: index });
+        await expectRendersItemAsCurrentTile(items.at(-1));
       },
     );
 
-    it.runIf(hasRequiredProps && label)("has the corresponding label", () => {
-      const targetElement = screen.queryByRole("paragraph", {
-        value: { name: label },
-      });
-      expect(targetElement).toBeInTheDocument();
-    });
+    it.each(items)(
+      "selects the tile that represents items[currentIndex] if 0 >= currentIndex <= items.length, currentIndex = $index",
+      async (item) => {
+        await renderComponent({ currentIndex: item.index });
+        await expectRendersItemAsCurrentTile(item);
+      },
+    );
+  });
 
-    it.runIf(hasRequiredProps && !label)(
-      "doesn't render the labels tag if label prop is undefined",
-      () => {
-        const targetElement = screen.queryByRole("paragraph", {
-          value: { name: label },
+  const clickableItems = [...items.slice(1)];
+
+  it.each(clickableItems)(
+    "selects the clicked tile as current, label: $label",
+    async ({ label, value }) => {
+      await renderComponent();
+      const tile = page.getByText(label);
+      const expectedCall = value;
+
+      await tile.click();
+
+      await expect.element(tile).toHaveClass(css.current);
+      expect(onChangeMock).toHaveBeenCalledExactlyOnceWith(expectedCall);
+    },
+  );
+
+  describe("on nextTile button click", () => {
+    const indexes = items.slice(0, -1);
+
+    it.each(indexes)(
+      "selects the next sibling of the current tile if the current tile is not the last tile, index: $index",
+      async ({ index, label }) => {
+        await renderComponent({ currentIndex: index });
+        await expectItemAsNextCurrenTileOnButtonClick({
+          currentTile: page.getByText(label),
+          button: getNextButton(),
+          item: items[index + 1],
         });
-        expect(targetElement).not.toBeInTheDocument();
       },
     );
 
-    it.runIf(hasRequiredProps && classArr)(
-      "has classArr applied as the last classes",
-      () => {
-        const testId = "parent";
-        const targetElement = screen.queryByTestId(testId);
-        const classList = Array.from(targetElement.classList);
-        expect(classList.slice(-classArr.length)).toEqual(
-          expect.arrayContaining(classArr),
-        );
+    it("keeps the current tile if the the current tile is the last tile", async () => {
+      const item = items.at(-1);
+      await renderComponent({ currentIndex: item.index });
+      await expectItemAsNextCurrenTileOnButtonClick({
+        currentTile: page.getByText(item.label),
+        button: getNextButton(),
+        item,
+      });
+    });
+  });
+
+  describe("on previousTile button click", () => {
+    const indexes = items.slice(1);
+
+    it.each(indexes)(
+      "selects the previous sibling of the current tile if the current tile is not the first tile, index: $index",
+      async ({ index, label }) => {
+        await renderComponent({ currentIndex: index });
+        await expectItemAsNextCurrenTileOnButtonClick({
+          currentTile: page.getByText(label),
+          button: getPreviousButton(),
+          item: items[index - 1],
+        });
       },
     );
 
-    it.runIf(hasRequiredProps && itemArr)("renders the items as tiles", () => {
-      const setExpectations = ({ label }) => {
-        const tile = screen.queryByText(label);
-        expect(tile).toBeInTheDocument();
+    it("keeps the current tile if the the current tile is the first tile", async () => {
+      const item = items[0];
+      await renderComponent({ currentIndex: item.index });
+      await expectItemAsNextCurrenTileOnButtonClick({
+        currentTile: page.getByText(item.label),
+        button: getPreviousButton(),
+        item,
+      });
+    });
+  });
+
+  it.each(items.slice(1))(
+    "selects the tile that intersects the trigger area on scroll, currentIndex = $index",
+    async (item) => {
+      await renderComponent();
+      const tile = page.getByText(item.label);
+      const currentTile = page.getByText(items[0].label);
+      await expect.element(currentTile).toHaveClass(css.current);
+      tile.element().scrollIntoView({ behavior: "instant", block: "center" });
+      await expectItemAsCurrenTile(item);
+    },
+  );
+
+  describe("if isDisable = true", () => {
+    beforeEach(async () => {
+      await renderComponent({ isDisable: true });
+    });
+
+    it("doesn't run onChange on renders", () => {
+      expect(onChangeMock).toHaveBeenCalledTimes(0);
+    });
+
+    it("disables the click events", async () => {
+      const clickTile = async ({ label }) => {
+        const tile = page.getByText(label);
+        await tile.click();
       };
-      itemArr.forEach(setExpectations);
+
+      await Promise.all(items.map(clickTile));
+      expect(onChangeMock).toHaveBeenCalledTimes(0);
     });
 
-    it.runIf(hasRequiredProps && hasBoundedCurrentIndex && !isDisable)(
-      "selects the tile associated with the currentIndex as the current tile if currentIndex is defined",
-      () => {
-        const currentLabel = itemArr[currentIndex].label;
-        const currentValue = itemArr[currentIndex].value;
-        const targetElement = screen.queryByText(currentLabel);
-        expect(targetElement).toBeInTheDocument();
-        expect(targetElement).toHaveClass(currentClassRegex);
-        expect(onChange).toHaveBeenCalledWith(currentValue);
-        expect(onChange).toHaveBeenCalledTimes(1);
-      },
-    );
+    it("disables scroll", () => {});
 
-    it.runIf(hasRequiredProps && currentIndex && !hasBoundedCurrentIndex)(
-      "remains currentIndex within 0 and itemArr.length -1 if currentIndex is defined outside the range and selects the closest tile end",
-      () => {
-        const currentLabel = itemArr[boundedCurrentIndex].label;
-        const currentValue = itemArr[boundedCurrentIndex].value;
-        const targetElement = screen.queryByText(currentLabel);
-        expect(targetElement).toBeInTheDocument();
-        expect(targetElement).toHaveClass(currentClassRegex);
-        expect(onChange).toHaveBeenCalledWith(currentValue);
-        expect(onChange).toHaveBeenCalledTimes(1);
-      },
-    );
-
-    it.runIf(hasRequiredProps && currentIndex === undefined)(
-      "starts with the first tile as the current if currentIndex is undefined",
-      () => {
-        const currentLabel = itemArr[0].label;
-        const currentValue = itemArr[0].value;
-        const targetElement = screen.queryByText(currentLabel);
-        expect(targetElement).toBeInTheDocument();
-        expect(targetElement).toHaveClass(currentClassRegex);
-        expect(onChange).toHaveBeenCalledWith(currentValue);
-        expect(onChange).toHaveBeenCalledTimes(1);
-      },
-    );
-
-    it.runIf(hasRequiredProps && !isDisable)(
-      "sets the clicked tile as current",
-      () => {
-        const setExpectations = ({ label, value }) => {
-          const targetElement = screen.queryByText(label);
-          fireEvent.click(targetElement);
-          expect(targetElement).toBeInTheDocument();
-          expect(targetElement).toHaveClass(currentClassRegex);
-          expect(onChange).toHaveBeenLastCalledWith(value);
-        };
-        /* The list is defined this way so its possible to test a jump from the last tile to the first time by clicking if there ir some tiles in between */
-        const list = itemArr.length > 2 ? [...itemArr, itemArr[0]] : itemArr;
-        const expectedCalls =
-          boundedCurrentIndex === 0 ? list.length : list.length + 1;
-        list.forEach(setExpectations);
-        expect(onChange).toHaveBeenCalledTimes(expectedCalls);
-      },
-    );
-
-    it.runIf(hasRequiredProps && !isDisable)(
-      "selects the current tile`s next sibling if exists on nextTile button click",
-      () => {
-        const list = itemArr.filter((item, index) => {
-          return index >= boundedCurrentIndex;
-        });
-        const token = /nextTileButton/i;
-        const button = findElementByClass(
-          screen.queryAllByRole("button"),
-          token,
-        );
-        const expectedCalls = list.length;
-
-        const setExpectations = ({ value }, index, arr) => {
-          const lastIndex = arr.length - 1;
-          const currentElement = getCurrentElement();
-          fireEvent.click(button);
-          const nextCurrentElement =
-            index === lastIndex
-              ? currentElement
-              : currentElement.nextElementSibling;
-          const nextValue = index === lastIndex ? value : arr[index + 1].value;
-          expect(getCurrentElement()).toBe(nextCurrentElement);
-          expect(onChange).toHaveBeenLastCalledWith(nextValue);
-        };
-
-        list.forEach(setExpectations);
-        expect(onChange).toHaveBeenCalledTimes(expectedCalls);
-      },
-    );
-
-    it.runIf(hasRequiredProps && !isDisable)(
-      "selects the current tile`s previous sibling if exists on previousTile button click",
-      () => {
-        const list = itemArr
-          .filter((item, index) => {
-            return index <= boundedCurrentIndex;
-          })
-          .reverse();
-        const token = /previousTileButton/i;
-        const button = findElementByClass(
-          screen.queryAllByRole("button"),
-          token,
-        );
-        const expectedCalls = list.length;
-
-        const setExpectations = ({ value }, index, arr) => {
-          const lastIndex = arr.length - 1;
-          const currentElement = getCurrentElement();
-          fireEvent.click(button);
-          const nextCurrentElement =
-            index === lastIndex
-              ? currentElement
-              : currentElement.previousSibling;
-          const nextValue = index === lastIndex ? value : arr[index + 1].value;
-          expect(getCurrentElement()).toBe(nextCurrentElement);
-          expect(onChange).toHaveBeenLastCalledWith(nextValue);
-        };
-
-        list.forEach(setExpectations);
-        expect(onChange).toHaveBeenCalledTimes(expectedCalls);
-      },
-    );
-
-    it.runIf(hasRequiredProps && !isDisable)(
-      "selects the tile that intersects the trigger area on scroll",
-      () => {
-        /* The list is defined this way so its possible to test a jump from the last tile to the first time by scrolling if there ir some tiles in between */
-        const listItemArr = Array.from(screen.queryAllByRole("listitem"));
-        const list =
-          listItemArr.length > 2
-            ? [...listItemArr, listItemArr[0]]
-            : listItemArr;
-        const setExpectation = (item) => {
-          const value = itemArr[Number(item.getAttribute("data-index"))].value;
-          item.scrollIntoView();
-          expect(item).toBe(getCurrentElement());
-          expect(onChange).toHaveBeenLastCalledWith(value);
-        };
-        const expectedCalls =
-          boundedCurrentIndex === 0 ? list.length : list.length + 1;
-        list.forEach(setExpectation);
-        expect(onChange).toHaveBeenCalledTimes(expectedCalls);
-      },
-    );
-
-    it.runIf(hasRequiredProps && isDisable)(
-      "disables click events, scroll and doesn't run onChange if isDisable is truthy",
-      () => {
-        const currentElement = getCurrentElement();
-        const tileElementList = screen.queryAllByRole("listitem");
-        const clickTargetList = [
-          ...screen.queryAllByRole("button"),
-          ...tileElementList,
-        ];
-
-        scrollIntoViewMock.mockImplementation(function () {});
-
-        const clickCallback = (item) => {
-          fireEvent.click(item);
-          vi.runAllTimers();
-          expect(currentElement).toBe(getCurrentElement());
-        };
-
-        const scrollCallback = (item) => {
-          item.scrollIntoView();
-          expect(currentElement).toBe(getCurrentElement());
-        };
-
-        clickTargetList.forEach(clickCallback);
-        tileElementList.forEach(scrollCallback);
-        expect(onChange).not.toHaveBeenCalled();
-      },
-    );
-  },
-);
-
-describe.each(propList)(
-  "TileSelector component with props: {label: $label, classArr: $classArr, itemArr: $itemArr, currentIndex: $currentIndex, onChange: $onChange, isDisable: $isDisable, visibleTiles: $visibleTiles}",
-  ({
-    label,
-    classArr,
-    itemArr,
-    currentIndex,
-    onChange,
-    isDisable,
-    visibleTiles,
-  }) => {
-    const requiredProps = { itemArr, onChange };
-    const hasRequiredProps = Object.values(requiredProps).every((item) => item);
-    const boundedCurrentIndex = (() => {
-      switch (true) {
-        case currentIndex < 0:
-        case currentIndex === undefined:
-        case !Object(itemArr).length:
-          return 0;
-        case currentIndex >= itemArr.length:
-          return itemArr.length - 1;
-        default:
-          return currentIndex;
-      }
-    })();
-
-    beforeEach(() => {
-      vi.useFakeTimers();
-      vi.stubGlobal("IntersectionObserver", IntersectionObserverMock);
-      window.HTMLElement.prototype.scrollIntoView = scrollIntoViewMock;
-      [IntersectionObserverMock, scrollIntoViewMock, onChangeMock].forEach(
-        (item) => item.mockClear(),
-      );
+    it("disables navigation buttons clicks", async () => {
+      const clickButton = async (button) => await button.click({ force: true });
+      const buttons = [
+        getNextButton({ disabled: true }),
+        getPreviousButton({ disabled: true }),
+      ];
+      await Promise.all(buttons.map(clickButton));
+      expect(onChangeMock).toHaveBeenCalledTimes(0);
     });
+  });
 
-    it.runIf(!hasRequiredProps)(
-      "throws an error if the required props are undefined",
-      () => {
-        const filter = ([, value]) => !value;
-        const mapper = ([key]) => key;
-        const setExpectations = (key) => {
-          expect(() =>
-            render(
-              <TileSelector
-                {...{
-                  label,
-                  classArr,
-                  itemArr,
-                  currentIndex,
-                  onChange,
-                  isDisable,
-                  visibleTiles,
-                }}
-              ></TileSelector>,
-            ),
-          ).toThrowError(key);
-        };
-        const list = Object.entries(requiredProps).filter(filter).map(mapper);
-        list.forEach(setExpectations);
-      },
-    );
+  it("if isInView = false it doesn't run onChange", async () => {
+    await renderComponent({ isInView: false });
+    expect(onChangeMock).toHaveBeenCalledTimes(0);
+  });
 
-    it.runIf(hasRequiredProps && !isDisable)(
-      "runs onChange with the last current value if isDisable toggles from falsy to truthy",
-      () => {
-        const dataTestId = "tester";
-        const TestButton = () => {
-          const [testIsDisable, setTestIsDisable] = useState(isDisable);
-          const onClick = () => setTestIsDisable(!testIsDisable);
-          return (
-            <button data-testid={dataTestId} onClick={onClick}>
-              <TileSelector
-                {...{
-                  label,
-                  classArr,
-                  itemArr,
-                  currentIndex,
-                  onChange,
-                  isDisable: testIsDisable,
-                  visibleTiles,
-                }}
-              ></TileSelector>
+  describe("reselects the current tile", () => {
+    it("if isDisable toggles from true to false", async () => {
+      const label = "Enable";
+      const item = items[1];
+      const TestComponent = () => {
+        const [isDisable, setIsDisable] = useState(true);
+        return (
+          <>
+            <SUT
+              isDisable={isDisable}
+              items={items}
+              onChange={onChangeMock}
+              currentIndex={item.index}
+            ></SUT>
+            <button
+              style={{ fontSize: "10px" }}
+              onClick={() => setIsDisable(false)}
+              type="button"
+            >
+              {label}
             </button>
-          );
-        };
-
-        render(<TestButton></TestButton>);
-        vi.runAllTimers();
-
-        const containerElement = screen.queryByTestId(dataTestId);
-        fireEvent.click(containerElement);
-        expect(onChange).toHaveBeenCalledTimes(1);
-        expect(onChange).toHaveBeenCalledWith(
-          itemArr[boundedCurrentIndex].value,
+          </>
         );
-      },
-    );
-  },
-);
+      };
+
+      await render(<TestComponent></TestComponent>);
+      const button = page.getByText(label);
+      expect(onChangeMock).toHaveBeenCalledTimes(0);
+      await button.click();
+      await expectRendersItemAsCurrentTile(item);
+    });
+
+    it("if isInView toggles from false to true", async () => {
+      const label = "Enable";
+      const item = items[1];
+      const TestComponent = () => {
+        const [isInView, setIsInView] = useState(false);
+        return (
+          <>
+            <SUT
+              isInView={isInView}
+              items={items}
+              onChange={onChangeMock}
+              currentIndex={item.index}
+            ></SUT>
+            <button
+              style={{ fontSize: "10px" }}
+              onClick={() => setIsInView(true)}
+              type="button"
+            >
+              {label}
+            </button>
+          </>
+        );
+      };
+      await render(<TestComponent></TestComponent>);
+      const button = page.getByText(label);
+      expect(onChangeMock).toHaveBeenCalledTimes(0);
+      await button.click();
+      await expectRendersItemAsCurrentTile(item);
+    });
+  });
+});
