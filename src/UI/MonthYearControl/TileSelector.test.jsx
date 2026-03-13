@@ -24,6 +24,7 @@ const renderComponent = async ({ currentIndex, isDisable, isInView } = {}) => {
       onChange={onChangeMock}
       currentIndex={currentIndex}
       isDisable={isDisable}
+      label="Test"
       isInView={isInView}
     ></SUT>,
   );
