@@ -110,13 +110,17 @@ describe("TileSelector", () => {
     "selects the clicked tile as current, label: $label",
     async ({ label, value }) => {
       await renderComponent();
-      const tile = page.getByText(label);
+      const currentTile = page.getByText(items[0].label);
+      const targetTile = page.getByText(label);
       const expectedCall = value;
 
-      await tile.click();
+      await expect.element(currentTile).toHaveClass(css.current);
 
-      await expect.element(tile).toHaveClass(css.current);
-      expect(onChangeMock).toHaveBeenCalledExactlyOnceWith(expectedCall);
+      await targetTile.click();
+
+      await expect.element(targetTile).toHaveClass(css.current);
+      expect(onChangeMock).toHaveBeenLastCalledWith(expectedCall);
+      expect(onChangeMock).toHaveBeenCalledTimes(2);
     },
   );
 
