@@ -17,13 +17,14 @@ const items = [
 
 const onChangeMock = vi.fn(() => {});
 
-const renderComponent = async ({ currentIndex, isDisable } = {}) => {
+const renderComponent = async ({ currentIndex, isDisable, isInView } = {}) => {
   await render(
     <SUT
       items={items}
       onChange={onChangeMock}
       currentIndex={currentIndex}
       isDisable={isDisable}
+      isInView={isInView}
     ></SUT>,
   );
 };
