@@ -207,7 +207,14 @@ describe("TileSelector", () => {
       expect(onChangeMock).toHaveBeenCalledTimes(0);
     });
 
-    it("disables scroll", () => {});
+    it("disables scroll", async () => {
+      const container = page.getByRole("list");
+      const target = page.getByText(items.at(-1).label).element();
+      const getTop = () => target.getBoundingClientRect().top;
+      const initialTop = getTop();
+      await container.wheel({ delta: { y: 25 } });
+      expect(initialTop).toBe(getTop());
+    });
 
     it("disables navigation buttons clicks", async () => {
       const clickButton = async (button) => await button.click({ force: true });
