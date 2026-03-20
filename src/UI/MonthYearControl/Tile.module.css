@@ -1,0 +1,55 @@
+.main {
+  --minWidth: 50px;
+  --BGColor: inherit;
+  --color: var(--secondary1100color);
+  --fontSize: 1rem;
+  --paddingInline: 4px;
+  --BGColorHover: var(--secondary1200color);
+  --colorHover: var(--secondary1500color);
+  --BGColorCurrent: var(--secondary900color);
+  --colorCurrent: var(--secondary1500color);
+  --endsMargin: calc(var(--height) * (var(--visibleTiles) - 1) / 2);
+
+  scroll-snap-align: start;
+}
+
+.button {
+  min-width: var(--minWidth);
+  height: var(--height);
+  background-color: var(--BGColor);
+  color: var(--color);
+  font-size: var(--fontSize);
+  font-weight: 500;
+  padding-inline: var(--paddingInline);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background-color 0.2s linear;
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
+}
+
+.main:first-child {
+  margin-top: var(--endsMargin);
+}
+
+.main:last-child {
+  margin-bottom: var(--endsMargin);
+}
+
+.button:hover:not(.disable .button:hover) {
+  --BGColor: var(--BGColorHover);
+  --color: var(--colorHover);
+}
+
+.button.current:not(.disable.button.current) {
+  --BGColor: var(--BGColorCurrent);
+  --color: var(--colorCurrent);
+}
