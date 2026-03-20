@@ -1,8 +1,8 @@
 import NavigationButton from "./NavigationButton";
-import styles from "./TileSelector.module.css";
-import { reduceToClassName } from "../../utils";
-import { useCallback, useEffect, useRef } from "react";
-import { Debouncer } from "../../utils";
+import css from "./TileSelector.module.css";
+import { Debouncer, reduceToClassName, clamp } from "../../utils";
+import { useCallback, useEffect, useRef, useState } from "react";
+import Tile from "./Tile";
 
 const scrollDelay = 150;
 
@@ -37,164 +37,112 @@ function TileSelector({
   label,
   classArr = [],
   items,
-  currentIndex = 0,
+  currentIndex: currentIndexProp = 0,
   onChange,
   isDisable = false,
   visibleTiles = 5,
   isInView = true,
 }) {
+  const getBoundedIndex = useCallback(
+    (index) => clamp(0, index, items.length - 1),
+    [items.length],
+  );
+  const [currentIndex, setCurrentIndex] = useState(
+    getBoundedIndex(currentIndexProp),
+  );
   const tileContainerRef = useRef(null);
-  const tileMarginMultiplier = (visibleTiles - 1) / 2;
 
-  const getIndex = (element) => Number(element.getAttribute("data-index"));
+  const hasToSkipEffect = useCallback(
+    () => isDisable || !isInView,
+    [isDisable, isInView],
+  );
 
   const getTiles = () => {
     const tileContainer = tileContainerRef.current;
     return tileContainer ? [...tileContainer.children] : [];
   };
 
-  const scrollTo = useCallback(
-    (target, options = { behavior: "smooth", block: "center" }) => {
-      if (target) target.scrollIntoView(options);
-    },
-    [],
-  );
-
   const createTile = ({ label, key }, index) => {
-    const onClick = ({ target }) => {
-      if (!isDisable) scrollTo(target);
-    };
-
     return (
-      <li
+      <Tile
         key={key}
-        onClick={onClick}
-        data-index={index}
-        className={styles.tile}
+        index={index}
+        isDisable={isDisable}
+        isCurrent={currentIndex === index}
+        classArr={[css.tile]}
       >
         {label}
-      </li>
+      </Tile>
     );
   };
 
-  const getElementBy = useCallback(
-    (filterCallback) => getTiles().find(filterCallback),
-    [],
-  );
-
-  const getCurrentElement = useCallback(() => {
-    const filter = (item) => item.classList.contains(styles.current);
-    return getElementBy(filter);
-  }, [getElementBy]);
+  const previousTile = () => {
+    setCurrentIndex(getBoundedIndex(currentIndex - 1));
+  };
 
   const nextTile = () => {
-    const currentTile = getCurrentElement();
-    if (isDisable || !currentTile) return;
-
-    scrollTo(currentTile.nextElementSibling);
+    setCurrentIndex(getBoundedIndex(currentIndex + 1));
   };
-
-  const previousTile = () => {
-    const currentTile = getCurrentElement();
-    if (isDisable || !currentTile) return;
-
-    scrollTo(currentTile.previousElementSibling);
-  };
-
-  const setTileAsCurrent = useCallback(
-    (target) => {
-      const removeClass = (target) => {
-        target.classList.remove(styles.current);
-      };
-      getTiles().forEach(removeClass);
-      target.classList.add(styles.current);
-      const index = getIndex(target);
-      onChange(items[index].value);
-    },
-    [items, onChange],
-  );
-
-  const getElementByIndex = useCallback(
-    (index) => {
-      const boundedIndex = Math.min(Math.max(index, 0), items.length - 1);
-      const filter = (item) => getIndex(item) === boundedIndex;
-      return getElementBy(filter);
-    },
-    [getElementBy, items.length],
-  );
 
   useEffect(() => {
-    if (isDisable || !isInView) return;
-    const target = getElementByIndex(currentIndex);
-    const debouncer = new Debouncer(scrollDelay);
+    setCurrentIndex(getBoundedIndex(currentIndexProp));
+  }, [currentIndexProp, getBoundedIndex]);
 
-    const margin = ` -${(tileMarginMultiplier * 100) / visibleTiles}%`;
-    const observerOptions = {
+  useEffect(() => {
+    if (hasToSkipEffect()) return;
+    onChange(items[currentIndex].value);
+  }, [currentIndex, hasToSkipEffect, items, onChange]);
+
+  useEffect(() => {
+    if (hasToSkipEffect()) return;
+    const debouncer = new Debouncer(scrollDelay);
+    const options = {
       root: tileContainerRef.current,
-      rootMargin: `${margin} 0px ${margin}`,
       threshold: 0.95,
+      rootMargin: `-${((visibleTiles - 1) / visibleTiles) * 50}% 0px`,
     };
-    const scrollOptions = { behavior: "instant", block: "center" };
 
     const callback = (entries) => {
       const cleanEntries = ({ isIntersecting }) => isIntersecting;
-      const setState = ({ target }) => {
-        debouncer.run(() => setTileAsCurrent(target));
+      const getIndex = ({ target }) => {
+        return Number(target.getAttribute("data-index"));
       };
-      entries.filter(cleanEntries).forEach(setState);
+      const setState = (index) => debouncer.run(() => setCurrentIndex(index));
+      entries.filter(cleanEntries).map(getIndex).forEach(setState);
     };
 
-    scrollTo(target, scrollOptions);
-    const observer = new IntersectionObserver(callback, observerOptions);
+    const observer = new IntersectionObserver(callback, options);
     getTiles().forEach((item) => observer.observe(item));
 
     return () => observer.disconnect();
-  }, [
-    currentIndex,
-    getElementByIndex,
-    isDisable,
-    setTileAsCurrent,
-    tileMarginMultiplier,
-    visibleTiles,
-    isInView,
-    scrollTo,
-  ]);
+  }, [currentIndex, hasToSkipEffect, visibleTiles]);
 
   return (
     <div
-      data-testid="parent"
-      style={{
-        "--visibleTiles": visibleTiles,
-        "--tileMarginMultiplier": tileMarginMultiplier,
-      }}
       className={reduceToClassName([
-        "TileSelector",
-        styles.TileSelector,
-        isDisable ? styles.disable : "",
         ...classArr,
+        css.main,
+        isDisable ? css.disable : "",
       ])}
+      style={{ "--visibleTiles": visibleTiles }}
     >
-      <div className={reduceToClassName(["TileControl", styles.TileControl])}>
+      <div className={css.TileControl}>
         <NavigationButton
-          classArr={[
-            styles.Button,
-            styles.previousTileButton,
-            "previousTileButton",
-          ]}
+          classArr={(css.button, css.previousTileButton)}
           onClick={previousTile}
           isDisable={isDisable}
         ></NavigationButton>
-        <ol ref={tileContainerRef} className={styles.tileContainer}>
+        <ol ref={tileContainerRef} className={css.tileContainer}>
           {items.map(createTile)}
         </ol>
         <NavigationButton
           iconDirection="down"
-          classArr={[styles.Button, styles.nextTileButton, "nextTileButton"]}
+          classArr={(css.button, css.nextTileButton)}
           onClick={nextTile}
           isDisable={isDisable}
         ></NavigationButton>
       </div>
-      {label ? <p className={styles.label}>{label}</p> : undefined}
+      {label ? <p className={css.label}>{label}</p> : undefined}
     </div>
   );
 }

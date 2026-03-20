@@ -1,31 +1,22 @@
-.TileSelector {
+.main {
   --TileSelectorColor: var(--secondary500color);
   --TileSelectorRowGap: 5px;
-  --tileMinWidth: 50px;
   --tileHeight: 25px;
   --TileControlRowGap: 5px;
-  --tileBGColor: inherit;
-  --tileBGColorHover: var(--secondary1200color);
-  --tileBGColorCurrent: var(--secondary900color);
-  --tileColor: var(--secondary1100color);
-  --tileColorHover: var(--secondary1500color);
-  --tileColorCurrent: var(--secondary1500color);
-  --tileFontSize: 1rem;
-  --tilePaddingInline: 4px;
-  --tileContainerWidth: var(--tileMinWidth);
   --tileContainerHeight: calc(var(--tileHeight) * var(--visibleTiles));
   --tileContainerBGColor: var(--secondary1400color);
   --tileContainerScrollPaddingBlock: calc(
     (var(--tileContainerHeight) - var(--tileHeight)) / 2
   );
   --labelFontSize: 0.875rem;
+
   display: flex;
   flex-direction: column;
   align-items: center;
   row-gap: var(--TileSelectorRowGap);
 }
 
-.TileSelector.disable {
+.main.disable {
   --TileSelectorColor: var(--secondary1200color);
 }
 
@@ -38,7 +29,6 @@
 
 .tileContainer {
   background-color: var(--tileContainerBGColor);
-  min-width: var(--tileContainerWidth);
   height: var(--tileContainerHeight);
   display: flex;
   flex-direction: column;
@@ -63,45 +53,7 @@
 }
 
 .tile {
-  scroll-snap-align: start;
-  min-width: var(--tileMinWidth);
-  height: var(--tileHeight);
-  background-color: var(--tileBGColor);
-  color: var(--tileColor);
-  font-size: var(--tileFontSize);
-  font-weight: 500;
-  padding-inline: var(--tilePaddingInline);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  flex-shrink: 0;
-  transition: background-color 0.2s linear;
-  -webkit-touch-callout: none; /* iOS Safari */
-  -webkit-user-select: none; /* Safari */
-  -khtml-user-select: none; /* Konqueror HTML */
-  -moz-user-select: none; /* Old versions of Firefox */
-  -ms-user-select: none; /* Internet Explorer/Edge */
-  user-select: none; /* Non-prefixed version, currently
-                                  supported by Chrome, Edge, Opera and Firefox */
-}
-
-.tile:first-child {
-  margin-top: calc(var(--tileHeight) * var(--tileMarginMultiplier));
-}
-
-.tile:last-child {
-  margin-bottom: calc(var(--tileHeight) * var(--tileMarginMultiplier));
-}
-
-.tile:hover:not(.disable .tile:hover) {
-  --tileBGColor: var(--tileBGColorHover);
-  --tileColor: var(--tileColorHover);
-}
-
-.tile.current:not(.disable .tile.current) {
-  --tileBGColor: var(--tileBGColorCurrent);
-  --tileColor: var(--tileColorCurrent);
+  --height: var(--tileHeight);
 }
 
 .Button {

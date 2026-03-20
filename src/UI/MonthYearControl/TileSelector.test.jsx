@@ -4,7 +4,7 @@ import { render } from "vitest-browser-react";
 import { page } from "vitest/browser";
 import "../../global.css";
 import "../../variables.css";
-import css from "./TileSelector.module.css";
+import tileCSS from "./Tile.module.css";
 import { useState } from "react";
 
 const enrichItem = (value, index) => ({ ...value, key: index, index });
@@ -38,9 +38,14 @@ const getPreviousButton = (options) => {
   return page.getByRole("button", options).first();
 };
 
+const getTiles = () => {
+  const regex = /[\w]+/;
+  return page.getByRole("button").filter({ hasText: regex });
+};
+
 const expectItemAsCurrenTile = async ({ label, value: expectedCall }) => {
   const tile = page.getByText(label);
-  await expect.element(tile).toHaveClass(css.current);
+  await expect.element(tile).toHaveClass(tileCSS.current);
   expect(onChangeMock).toHaveBeenLastCalledWith(expectedCall);
 };
 
@@ -54,7 +59,7 @@ const expectItemAsNextCurrenTileOnButtonClick = async ({
   button,
   item,
 }) => {
-  await expect.element(currentTile).toHaveClass(css.current);
+  await expect.element(currentTile).toHaveClass(tileCSS.current);
   await button.click();
   await expectItemAsCurrenTile(item);
 };
@@ -66,7 +71,7 @@ describe("TileSelector", () => {
     await renderComponent();
     const setExpectation = ({ label }, index) => {
       const tile = page.getByText(label);
-      const tiles = page.getByRole("listitem");
+      const tiles = getTiles();
       expect(tile.element()).toBe(tiles.elements()[index]);
     };
     items.forEach(setExpectation);
@@ -114,11 +119,11 @@ describe("TileSelector", () => {
       const targetTile = page.getByText(label);
       const expectedCall = value;
 
-      await expect.element(currentTile).toHaveClass(css.current);
+      await expect.element(currentTile).toHaveClass(tileCSS.current);
 
       await targetTile.click();
 
-      await expect.element(targetTile).toHaveClass(css.current);
+      await expect.element(targetTile).toHaveClass(tileCSS.current);
       expect(onChangeMock).toHaveBeenLastCalledWith(expectedCall);
       expect(onChangeMock).toHaveBeenCalledTimes(2);
     },
@@ -182,7 +187,7 @@ describe("TileSelector", () => {
       await renderComponent();
       const tile = page.getByText(item.label);
       const currentTile = page.getByText(items[0].label);
-      await expect.element(currentTile).toHaveClass(css.current);
+      await expect.element(currentTile).toHaveClass(tileCSS.current);
       tile.element().scrollIntoView({ behavior: "instant", block: "center" });
       await expectItemAsCurrenTile(item);
     },
@@ -198,13 +203,12 @@ describe("TileSelector", () => {
     });
 
     it("disables the click events", async () => {
-      const clickTile = async ({ label }) => {
+      const setExpectation = async ({ label }) => {
         const tile = page.getByText(label);
-        await tile.click();
+        await expect.element(tile).toBeDisabled();
       };
 
-      await Promise.all(items.map(clickTile));
-      expect(onChangeMock).toHaveBeenCalledTimes(0);
+      await Promise.all(items.map(setExpectation));
     });
 
     it("disables scroll", async () => {
