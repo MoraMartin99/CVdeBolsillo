@@ -18,6 +18,7 @@ import css from "./BaseButton.module.css";
  * @param {boolean} [props.isDisable = false] If true sets the disable attribute as true, if false sets the opposite
  * @param {Object} [props.style = {}] An object that sets the inline style
  * @param {"submit"|"reset"|"button"} [props.type = "button"] The [type attribute]{@link https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/button#attributes}
+ * @param {React.Ref<HTMLButtonElement>} [props.ref = undefined] A reference to the component
  * @returns {JSX.Element}
  */
 function BaseButton({
@@ -29,6 +30,7 @@ function BaseButton({
   isDisable = false,
   style: initialStyle = {},
   type = "button",
+  ref,
 }) {
   const iconPositionClass =
     iconPosition.toLowerCase() === "right" ? css.right : "";
@@ -40,6 +42,7 @@ function BaseButton({
       onClick={onClick}
       style={{ ...initialStyle }}
       type={type}
+      ref={ref}
     >
       {Icon}
       {children}
