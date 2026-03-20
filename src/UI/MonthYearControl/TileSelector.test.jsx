@@ -202,7 +202,7 @@ describe("TileSelector", () => {
       expect(onChangeMock).toHaveBeenCalledTimes(0);
     });
 
-    it("disables the click events", async () => {
+    it("disables tile clicks", async () => {
       const setExpectation = async ({ label }) => {
         const tile = page.getByText(label);
         await expect.element(tile).toBeDisabled();
