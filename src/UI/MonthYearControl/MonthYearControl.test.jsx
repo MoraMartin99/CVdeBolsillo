@@ -1,83 +1,123 @@
-import {
-  afterEach,
-  describe,
-  expect,
-  it,
-  onTestFailed,
-  onTestFinished,
-  vi,
-} from "vitest";
+import { describe, expect, it, vi, beforeEach } from "vitest";
 import { render } from "vitest-browser-react";
 import { page } from "vitest/browser";
 import SUT from "./MonthYearControl";
 import months from "../../months";
 
 const onChangeMock = vi.fn(() => {});
+const onCloseButtonClickMock = vi.fn(() => {});
+const startYear = 2000;
+const finishYear = 2009;
 
-const renderComponent = async ({ startYear, finishYear }) => {
+const renderComponent = async (
+  { startYearProp, finishYearProp, isDisable } = {
+    startYearProp: startYear,
+    finishYearProp: finishYear,
+  },
+) => {
   await render(
     <SUT
-      startYear={startYear}
-      finishYear={finishYear}
+      startYear={startYearProp}
+      finishYear={finishYearProp}
       onChange={onChangeMock}
+      isDisable={isDisable}
+      onCloseButtonClick={onCloseButtonClickMock}
     ></SUT>,
   );
 };
 
+const expectTileInTheComponent = async (label) => {
+  const target = page.getByText(label);
+  await expect.element(target).toBeInTheDocument();
+};
+
 describe("MonthYearControl", () => {
-  afterEach(() => vi.resetAllMocks());
+  beforeEach(() => vi.resetAllMocks());
 
-  describe("onChange", () => {
-    const startYear = 2000;
-    const finishYear = 2009;
+  describe("month selector", () => {
+    it("renders 12 tiles", async () => {
+      await renderComponent();
+      const getLabel = ({ label }) => label;
+      await Promise.all(months.map(getLabel).map(expectTileInTheComponent));
+    });
 
-    it("runs on tile selection", async () => {
-      await renderComponent({ startYear, finishYear });
-      const expectedMonth = months[2];
-      const monthTile = page.getByText(expectedMonth.label);
-      const expectedYear = { value: 2005, label: "2005" };
-      const yearTile = page.getByText(expectedYear.label);
-      await monthTile.click();
-      await yearTile.click();
+    it("if value is undefined, it selects January", async () => {
+      await renderComponent();
+      expect(onChangeMock).toHaveBeenCalledExactlyOnceWith(
+        expect.objectContaining({ month: 1 }),
+      );
+    });
+  });
 
-      expect(onChangeMock).toHaveBeenLastCalledWith({
-        month: expectedMonth.value,
-        year: expectedYear.value,
+  describe("year selector", () => {
+    describe("renders the corresponding tiles", () => {
+      const expectTilesInTheSelector = async ({ finishYear, startYear }) => {
+        const labels = Array.from(
+          { length: finishYear - startYear + 1 },
+          (_, index) => startYear + index,
+        );
+        await Promise.all(labels.map(expectTileInTheComponent));
+      };
+
+      it("if startYear is undefined it uses a default value", async () => {
+        const defaultValue = finishYear - 60;
+        await renderComponent({ finishYearProp: finishYear });
+        await expectTilesInTheSelector({ startYear: defaultValue, finishYear });
+      });
+
+      it("if finishYear is undefined it uses a default value", async () => {
+        const defaultValue = new Date().getFullYear();
+        await renderComponent({ startYearProp: startYear });
+        await expectTilesInTheSelector({ startYear, finishYear: defaultValue });
+      });
+
+      it("if startYear and finishYear are defined it renders the amount of tiles corresponding to the years between them", async () => {
+        await renderComponent({
+          finishYearProp: finishYear,
+          startYearProp: startYear,
+        });
+        await expectTilesInTheSelector({ startYear, finishYear });
       });
     });
 
-    it("runs on checkbox change");
+    it("if value is undefined, it selects finishYear", async () => {
+      await renderComponent();
+      expect(onChangeMock).toHaveBeenCalledExactlyOnceWith(
+        expect.objectContaining({ year: finishYear }),
+      );
+    });
   });
 
-  it("has classArr applied as the last classes");
-
-  it("renders the 12 tiles for the months");
-
-  describe("renders the year's tiles", () => {
-    it("if startYear is undefined it uses a default value");
-    it("if finishYear is undefined it uses a default value");
-    it(
-      "if startYear and finishYear are defined it renders the amount of tiles corresponding to the years between them",
-    );
+  describe("runs onChange", () => {
+    it("on currently checkbox change", async () => {
+      await renderComponent();
+      const target = page.getByRole("checkbox");
+      await target.click();
+      const checkedValue = {
+        isCurrently: true,
+      };
+      expect(onChangeMock).toHaveBeenLastCalledWith(checkedValue);
+      await target.click();
+      const uncheckedValue = {
+        month: 1,
+        year: finishYear,
+      };
+      expect(onChangeMock).toHaveBeenLastCalledWith(uncheckedValue);
+    });
   });
 
-  it("sets the component to the defined value: $value");
+  describe("if isDisable is truthy", () => {
+    it("disables currently checkbox", async () => {
+      await renderComponent({ isDisable: true });
+      const target = page.getByRole("checkbox");
+      await expect.element(target).toBeDisabled();
+    });
+  });
 
-  it(
-    "renders the currently checkbox if allowCurrentlyOption is truthy, allowCurrentlyOption = $allowCurrentlyOption",
-  );
-
-  it(
-    "doesn't render the currently checkbox if allowCurrentlyOption is falsy, allowCurrentlyOption = $allowCurrentlyOption",
-  );
-
-  it(
-    "disables TileSelector interfaces and the currently checkbox if isDisable is truthy, isDisable = $isDisable",
-  );
-
-  it("runs onCloseButtonClick on a closeButton click");
-
-  it(
-    "sets the inline style if the style prop is defined with valid properties",
-  );
+  it("runs onCloseButtonClick on a closeButton click", async () => {
+    await renderComponent();
+    const target = page.getByRole("button").first();
+    await target.click();
+    expect(onCloseButtonClickMock).toHaveBeenCalledOnce();
+  });
 });
