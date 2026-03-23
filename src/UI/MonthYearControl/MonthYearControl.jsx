@@ -133,7 +133,7 @@ function MonthYearControl({
         onClick={onCloseButtonClick}
       ></CloseButton>
       <TileSelector
-        itemArr={months}
+        items={months}
         isDisable={isDisable || isCurrently}
         onChange={onMonthChange}
         currentIndex={getIndexByValue(months, month)}
@@ -142,7 +142,7 @@ function MonthYearControl({
         isInView={isInView}
       ></TileSelector>
       <TileSelector
-        itemArr={years}
+        items={years}
         isDisable={isDisable || isCurrently}
         onChange={onYearChange}
         currentIndex={getIndexByValue(years, year)}
