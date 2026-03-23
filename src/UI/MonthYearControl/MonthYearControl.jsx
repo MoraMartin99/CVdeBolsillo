@@ -95,7 +95,8 @@ function MonthYearControl({
     setYear(stateSetter);
   };
 
-  const onIsCurrentlyChange = (isCurrently) => {
+  const onIsCurrentlyChange = (value) => {
+    const isCurrently = Boolean(value);
     const stateSetter = (currentValue) => {
       return currentValue === isCurrently ? currentValue : isCurrently;
     };
