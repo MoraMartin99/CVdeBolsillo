@@ -116,14 +116,11 @@ function MonthYearControl({
     }
   }, [isCurrently, month, onChange, year]);
 
-  useEffect(() => onMonthChange(monthProp), [monthProp]);
-
-  useEffect(() => onYearChange(yearProp), [yearProp]);
-
-  useEffect(
-    () => onIsCurrentlyChange(Boolean(isCurrentlyProp)),
-    [isCurrentlyProp],
-  );
+  useEffect(() => {
+    onMonthChange(monthProp);
+    onYearChange(yearProp);
+    onIsCurrentlyChange(isCurrentlyProp);
+  }, [monthProp, yearProp, isCurrentlyProp]);
 
   return (
     <div
