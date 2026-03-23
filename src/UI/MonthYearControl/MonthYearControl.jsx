@@ -111,7 +111,7 @@ function MonthYearControl({
     setIsCurrently(stateSetter);
   };
 
-  const onInputChange = (e) => {
+  const onCheckboxChange = (e) => {
     const isChecked = e.target.checked;
     onIsCurrentlyChange(isChecked);
   };
@@ -161,7 +161,7 @@ function MonthYearControl({
       {allowCurrentlyOption ? (
         <label className={css.checkBox}>
           <input
-            onChange={onInputChange}
+            onChange={onCheckboxChange}
             type="checkbox"
             checked={isCurrently}
             disabled={isDisable}
