@@ -104,7 +104,7 @@ function MonthYearControl({
   };
 
   const onInputChange = (e) => {
-    const isChecked = Boolean(e.target.checked);
+    const isChecked = e.target.checked;
     onIsCurrentlyChange(isChecked);
   };
 
