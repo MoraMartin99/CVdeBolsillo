@@ -46,6 +46,7 @@ const defaultStartYear = defaultFinishYear - 60;
  * @param {boolean} [props.isDisable = false] If truthy sets the component as readonly, if falsy sets the opposite
  * @param {onCloseButtonClick} props.onCloseButtonClick A callback that runs on closeButton click
  * @param {Object} [props.style = {}] An object that sets the inline style
+ * @param {boolean} [props.isInView = true] If true represents that the component is expected to be visible, if false represents the opposite. This property does not sets the visibility state of the component.
  * @returns {JSX.Element}
  */
 function MonthYearControl({
@@ -61,6 +62,7 @@ function MonthYearControl({
   isDisable = false,
   onCloseButtonClick,
   style = {},
+  isInView = true,
 }) {
   const [month, setMonth] = useState(monthProp);
   const [year, setYear] = useState(yearProp);
@@ -139,6 +141,7 @@ function MonthYearControl({
         currentIndex={getIndexByValue(months, month)}
         label="Mes"
         classArr={[css.selector]}
+        isInView={isInView}
       ></TileSelector>
       <TileSelector
         itemArr={years}
@@ -147,6 +150,7 @@ function MonthYearControl({
         currentIndex={getIndexByValue(years, year)}
         label="Año"
         classArr={[css.selector]}
+        isInView={isInView}
       ></TileSelector>
       {allowCurrentlyOption ? (
         <label className={css.checkBox}>
