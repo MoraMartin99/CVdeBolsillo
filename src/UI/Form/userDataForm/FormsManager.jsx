@@ -26,16 +26,11 @@ import formFactory from "../formFactory";
  * The FormsManager component allows you to generate, clean, and load examples into a collection of forms.
  * @param {object} props The component properties
  * @param {data} props.data The information required to build the forms
- * @param {Array<object>} props.exampleContent A [content]{@link module:useFormModel} that represents an example of how the forms should be completed
  * @param {onChange} props.onChange The callback that runs on model initialization and modifications
  * @returns {JSX.Element}
  */
-function FormsManager({
-  data: { content, templates },
-  exampleContent = [],
-  onChange,
-}) {
-  const [model, setModel] = useFormModel(content, templates);
+function FormsManager({ data: { content, templates }, onChange }) {
+  const { model, resetModel, loadExamples } = useFormModel(content, templates);
   const [confirmationProps, setConfirmationProps] = useState({
     isOpen: false,
   });
@@ -50,7 +45,7 @@ function FormsManager({
   const showLoadExampleModal = () => {
     const onAccept = () => {
       closeConfirmationMenu();
-      setModel({ content: exampleContent });
+      loadExamples();
     };
     const message = "¿Desea cargar el ejemplo?";
     const tip = "Se eliminaran sus datos de los formularios";
@@ -64,10 +59,10 @@ function FormsManager({
     });
   };
 
-  const showRestartFormsModal = () => {
+  const showResetFormsModal = () => {
     const onAccept = () => {
       closeConfirmationMenu();
-      setModel({ content });
+      resetModel();
     };
     const message = "¿Desea limpiar los formularios?";
     const isOpen = true;
@@ -94,7 +89,7 @@ function FormsManager({
         ])}
       >
         <FormButton
-          onClick={showRestartFormsModal}
+          onClick={showResetFormsModal}
           Icon={TrashIcon}
           variant="destructive"
         >

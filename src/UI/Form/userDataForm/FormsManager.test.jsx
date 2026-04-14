@@ -5,9 +5,8 @@ import { page } from "vitest/browser";
 const defaultValue = "soy default value";
 const exampleValue = "soy un ejemplo";
 const templateId = "input";
-const templates = { input: { templateId, value: defaultValue } };
+const templates = { input: { templateId, value: defaultValue, exampleValue } };
 const content = [{ templateId: "input" }];
-const exampleContent = [{ value: exampleValue, templateId }];
 const onChangeMock = vi.fn(() => {});
 const formFactoryStub = vi.fn((model = []) => {
   const buildItem = ({ value, submitData, id }) => {
@@ -33,7 +32,6 @@ describe("FormsManager", async () => {
       <FormsManager
         {...{
           data: { content, templates },
-          exampleContent,
           onChange: onChangeMock,
         }}
       ></FormsManager>,
