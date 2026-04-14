@@ -10,11 +10,15 @@ import { cloneDeep } from "lodash";
  */
 
 /**
- * A function that sets the model using new templates and/or new content
- * @callback setModel
- * @param {object} settings
- * @param {object} [settings.templates] A collections of objects used as a base to construct the form elements. Its default value is the last templates
- * @param {Array<object>} [settings.content] An ordered list used as the initial structure of the model. Its default value is the last content
+ * A function that sets the exampleValue property (if defined) as the current value for every item in the model
+ * @callback loadExamples
+ * @returns {void}
+ */
+
+/**
+ * A function that resets the model to the its initial value, cleaning any changes made
+ * @callback resetModel
+ * @returns {void}
  */
 
 /**
@@ -47,124 +51,166 @@ const content = [
 ];
 
 const TestElement = ({ templates, content }) => {
-      const [model, setModel] = useFormModel(content, templates);
+      const { model, resetModel, loadExamples } = useFormModel(
+        content,
+        templates,
+      );
 
       return <div></div>;
     };
- * @returns {Array<model, setModel>}
+ * @returns {{model: model, resetModel: resetModel, loadExamples: loadExamples}}
  */
 function useFormModel(content = [], templates = {}) {
   const contentRef = useRef(content);
   const templatesRef = useRef(templates);
   const [model, setModel] = useState(buildModel(content, templates));
 
-  const addContentItem = (targetId, templateId) => {
-    const addContent = ({ value, id: parentId }) => {
-      const content = [{ templateId, parentId }];
-      const templates = templatesRef.current;
-      const [target] = buildModel(content, templates);
-      value.push(target);
-    };
-    mutateModel(targetId, addContent);
-  };
-
-  const removeContentItem = (targetId) => {
-    const removeItem = (target, container) => {
-      const targetIndex = container.indexOf(target);
-      container.splice(targetIndex, 1);
-    };
-    mutateModel(targetId, removeItem);
-  };
-
-  function submitData(data) {
-    const { id } = data;
-    const setData = (item) => {
-      for (const key in data) item[key] = data[key];
-    };
-    mutateModel(id, setData);
-  }
-
-  function createId({ parentId, templateId, childrenId }) {
-    return parentId
-      ? `${parentId}${toPascalCase(templateId)}${childrenId}`
-      : `${templateId}${childrenId}`;
+  function hasTemplateId(item) {
+    if (typeof item !== "object" || item === null) return false;
+    return Boolean(item.templateId);
   }
 
   function buildModel(content, templates) {
-    const buildItem = (item, index) => {
-      if (typeof item !== "object") return item;
-      const { templateId, value: contentValue, parentId } = item;
-      const templateModel = templates[templateId];
-      if (!templateModel) return item;
-      const buildValue = (item, index) => {
-        return buildItem({ ...item, parentId: id }, index);
-      };
-      const buildActions = (templateId, index) => {
-        return buildItem({ templateId, parentId: id }, index);
-      };
-      const {
-        value: defaultValue,
-        actions: initialActions = [],
-        action,
-        targetId,
-      } = templateModel;
-      const preferredValue =
-        contentValue === undefined ? defaultValue : contentValue;
-      const childrenId = index + 1;
-      const id = createId({ childrenId, parentId, templateId });
-      const value = Array.isArray(preferredValue)
-        ? preferredValue.map(buildValue)
-        : preferredValue;
-      const actions = initialActions.map(buildActions);
-      const actionFunctions = {
-        addItem: () => addContentItem(parentId, targetId),
-        removeItem: () => removeContentItem(parentId),
-      };
-
-      return {
-        ...templateModel,
-        id,
-        templateId,
-        childrenId,
-        value,
-        submitData,
-        actions,
-        onClick: actionFunctions[action],
-      };
-    };
-    return content.map(buildItem);
-  }
-
-  const replaceModel = ({ content: newContent, templates: newTemplates }) => {
-    if (newContent) contentRef.current = newContent;
-    if (newTemplates) templatesRef.current = newTemplates;
-    setModel(buildModel(contentRef.current, templatesRef.current));
-  };
-
-  const mutateModel = (id, mutator) => {
-    const getReferences = (id, list) => {
-      for (const target of list) {
-        if (typeof target !== "object") continue;
-        const { id: currentId, value } = target;
-        if (currentId === id) return [target, list];
-        if (!Array.isArray(value)) continue;
-        const result = getReferences(id, value);
-        if (result) return result;
+    const getModelItemReference = (id, model) => {
+      const isTargetItem = (item) => item.id === id;
+      for (const item of model) {
+        if (!hasTemplateId(item)) continue;
+        if (isTargetItem(item)) return [item, model];
+        if (!Array.isArray(item.value)) continue;
+        const recursiveResult = getModelItemReference(id, item.value);
+        if (recursiveResult) return recursiveResult;
       }
     };
 
+    const mergeWithTemplate = (item) => {
+      return { ...templates[item.templateId], ...item };
+    };
+
+    const addId = (item) => {
+      const { parentId, templateId, childrenId } = item;
+
+      const createId = ({
+        parentId = "",
+        templateId = "",
+        childrenId = "",
+      }) => {
+        return parentId
+          ? `${parentId}${toPascalCase(templateId)}${childrenId}`
+          : `${templateId}${childrenId}`;
+      };
+
+      return { ...item, id: createId({ parentId, templateId, childrenId }) };
+    };
+
+    const enrichChildren = (item) => {
+      const { value, actions, id: parentId } = item;
+      const hasListValue = ([, value]) => Array.isArray(value);
+      const enrich = ([key, value]) => {
+        const addParentId = (item) => ({ ...item, parentId });
+        const buildChild = (item, index) => ({ ...buildItem(item, index) });
+        return [
+          key,
+          value.filter(hasTemplateId).map(addParentId).map(buildChild),
+        ];
+      };
+      const enrichedChildren = Object.fromEntries(
+        Object.entries({ value, actions }).filter(hasListValue).map(enrich),
+      );
+
+      return { ...item, ...enrichedChildren };
+    };
+
+    const setAction = (item) => {
+      const { targetId, parentId, action } = item;
+
+      const addItem = () => {
+        const mutator = (model) => {
+          const [{ value: container }] = getModelItemReference(parentId, model);
+          container.push(buildItem({ templateId: targetId, parentId }));
+        };
+
+        mutateModel(mutator);
+      };
+
+      const removeItem = () => {
+        const mutator = (model) => {
+          const [item, container] = getModelItemReference(parentId, model);
+          container.splice(container.indexOf(item), 1);
+        };
+
+        mutateModel(mutator);
+      };
+
+      const actions = { addItem, removeItem };
+      return { ...item, onClick: actions[action] };
+    };
+
+    const addSubmitData = (item) => {
+      if (item.action) return { ...item };
+      const submitData = (data) => {
+        const mutator = (model) => {
+          const [modelItem] = getModelItemReference(item.id, model);
+          for (const key in data) modelItem[key] = data[key];
+        };
+
+        mutateModel(mutator);
+      };
+
+      return { ...item, submitData };
+    };
+
+    const buildItem = (item, index) => {
+      if (!hasTemplateId(item)) return item;
+
+      const addChildrenId = (item) => ({ ...item, childrenId: index + 1 });
+
+      const enrichItem = (result, callback) => ({ ...callback(result) });
+
+      return {
+        ...[
+          mergeWithTemplate,
+          addChildrenId,
+          addId,
+          setAction,
+          addSubmitData,
+          enrichChildren,
+        ].reduce(enrichItem, item),
+      };
+    };
+
+    return content.map(buildItem);
+  }
+
+  const resetModel = () => {
+    setModel(buildModel(contentRef.current, templatesRef.current));
+  };
+
+  const loadExamples = () => {
+    const mutator = (model) => {
+      const applyTransformation = (item) => {
+        if (!hasTemplateId(item)) return;
+        const hasExampleValue = (item) => Object.hasOwn(item, "exampleValue");
+        if (hasExampleValue(item)) item.value = item.exampleValue;
+        if (Array.isArray(item.value)) item.value.forEach(applyTransformation);
+      };
+
+      model.forEach(applyTransformation);
+    };
+
+    mutateModel(mutator);
+  };
+
+  const mutateModel = (mutator) => {
     const mutateState = (model) => {
       const newModel = cloneDeep(model);
-      const [target, container] = getReferences(id, newModel);
-
-      mutator(target, container);
+      mutator(newModel);
       return newModel;
     };
 
     setModel(mutateState);
   };
 
-  return [model, replaceModel];
+  return { model, resetModel, loadExamples };
 }
 
 export default useFormModel;

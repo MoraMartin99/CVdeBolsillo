@@ -1,4 +1,4 @@
-import { describe, it, beforeEach, vi, expect, afterEach } from "vitest";
+import { describe, it, beforeEach, vi, expect, beforeAll } from "vitest";
 import { render } from "vitest-browser-react";
 import { act } from "react";
 
@@ -9,18 +9,22 @@ const getLastCall = () => catcherMock.mock.lastCall[0];
 const templates = {
   section: {
     templateId: "section",
-    actions: ["removeItem", "addNumber"],
+    actions: [{ templateId: "removeItem" }, { templateId: "addNumber" }],
     value: [{ templateId: "text" }, { templateId: "number" }],
   },
-  text: { templateId: "text", value: "soy un texto" },
-  number: { templateId: "number" },
+  text: {
+    templateId: "text",
+    value: "soy un texto",
+    exampleValue: "soy un valor de ejemplo",
+  },
+  number: { templateId: "number", exampleValue: 350 },
   addNumber: { templateId: "addNumber", action: "addItem", targetId: "number" },
   removeItem: { templateId: "removeItem", action: "removeItem" },
-  formA: { templateId: "formA", actions: ["addNumber"] },
+  formA: { templateId: "formA", actions: [{ templateId: "addNumber" }] },
   formB: {
     templateId: "formB",
     value: [{ templateId: "section" }],
-    actions: ["addNumber"],
+    actions: [{ templateId: "addNumber" }],
   },
   formC: { templateId: "formC", value: [{ templateId: "number" }] },
 };
@@ -57,7 +61,28 @@ const simplifyModel = ({ templateId, value: defaultValue }) => {
   return { templateId, value };
 };
 
+const flatModel = (model) => {
+  const reducer = (result, current) => {
+    const hasTemplateId = (item) => {
+      if (typeof item !== "object" || item === null) return false;
+      return Boolean(item.templateId);
+    };
+    const isArray = (item) => Array.isArray(item);
+    if (!hasTemplateId(current)) return [...result];
+    return [
+      ...result,
+      current,
+      ...[current.value, current.actions].filter(isArray).flatMap(flatModel),
+    ];
+  };
+  return model.reduce(reducer, []);
+};
+
 describe("useFormModel", () => {
+  beforeAll(() => {
+    window.IS_REACT_ACT_ENVIRONMENT = true;
+  });
+
   beforeEach(async () => {
     vi.doMock("../utils.js", async (importOriginal) => {
       const mod = await importOriginal();
@@ -69,15 +94,16 @@ describe("useFormModel", () => {
     vi.resetAllMocks();
     let useFormModel = (await import("./useFormModel")).default;
     const TestElement = ({ templates, content }) => {
-      const [model, setModel] = useFormModel(content, templates);
-      catcherMock({ model, setModel, templates, content });
+      const { model, resetModel, loadExamples } = useFormModel(
+        content,
+        templates,
+      );
+      catcherMock({ model, resetModel, loadExamples, templates, content });
 
       return <div></div>;
     };
-    render(<TestElement {...{ templates, content }}></TestElement>);
+    await render(<TestElement {...{ templates, content }}></TestElement>);
   });
-
-  afterEach(() => vi.resetAllMocks());
 
   describe("returns the correct model", () => {
     it("items hierarchy are based on the content", () => {
@@ -115,37 +141,6 @@ describe("useFormModel", () => {
     });
   });
 
-  describe("generates a new model by setting its parameters", () => {
-    const parameters = [
-      {},
-      { content: [{ templateId: "formC" }] },
-      {
-        templates: {
-          ...templates,
-          text: { templateId: "text", value: "texto cambiado" },
-          number: { templateId: "number", value: 3.1416 },
-        },
-      },
-    ];
-
-    it.each(parameters)(
-      "replaces with its initial values the undefined parameters: { content: $content, templates: $templates }",
-      ({ content, templates }) => {
-        const {
-          setModel,
-          content: initialContent,
-          templates: initialTemplates,
-        } = getLastCall();
-        const finalContent = content ? content : initialContent;
-        const finalTemplates = templates ? templates : initialTemplates;
-        const expectedModel = buildModel(finalContent, finalTemplates);
-        act(() => setModel({ content, templates }));
-        const currentModel = getLastCall().model.map(simplifyModel);
-        expect(currentModel).toEqual(expectedModel);
-      },
-    );
-  });
-
   it("adds items to the model", () => {
     const { model: initialModel, templates } = getLastCall();
     const { onClick: execute, targetId } = initialModel[0].actions[0];
@@ -175,5 +170,34 @@ describe("useFormModel", () => {
     const finalItem = getLastCall().model[3];
     expect(initialItem).not.toEqual(expect.objectContaining(properties));
     expect(finalItem).toEqual(expect.objectContaining(properties));
+  });
+
+  it("loads the example values", () => {
+    const { loadExamples, model: initialModel } = getLastCall();
+    const exampleValueIsLoaded = ({ exampleValue, value }) => {
+      return exampleValue === undefined ? true : exampleValue === value;
+    };
+    act(() => loadExamples());
+    const { model: finalModel } = getLastCall();
+    expect(flatModel(initialModel).every(exampleValueIsLoaded)).toBeFalsy();
+    expect(flatModel(finalModel).every(exampleValueIsLoaded)).toBeTruthy();
+  });
+
+  it("resets the current value to the initial values", () => {
+    const { resetModel, loadExamples } = getLastCall();
+    const getModelValues = () => {
+      const extractData = ({ id, value }) => ({ id, value });
+      return JSON.parse(
+        JSON.stringify(flatModel(getLastCall().model).map(extractData)),
+      );
+    };
+    const initialModelValues = getModelValues();
+    act(() => loadExamples());
+    const exampleModelValues = getModelValues();
+    act(() => resetModel());
+    const finalModelValues = getModelValues();
+
+    expect(finalModelValues).not.toEqual(exampleModelValues);
+    expect(finalModelValues).toEqual(initialModelValues);
   });
 });
