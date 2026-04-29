@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" style="-webkit-print-color-adjust::exact" viewBox="-13041 -8620 14 14">
+  <g fill="#000" class="icon icon-tabler icons-tabler-outline icon-tabler-brain">
+    <path fill="none" d="M-13041-8620h14v14h-14Z" class="fills"/>
+    <path fill="none" d="M-13031.958-8612.417a2.04 2.04 0 0 0-2.042 2.042v.583a2.042 2.042 0 1 0 4.083 0v-1.05" class="fills"/>
+    <g fill="none" stroke-linejoin="round" class="strokes">
+      <path stroke="currentColor" d="M-13031.958-8612.417a2.04 2.04 0 0 0-2.042 2.042v.583a2.042 2.042 0 1 0 4.083 0v-1.05" class="stroke-shape"/>
+    </g>
+    <path fill="none" d="M-13036.042-8612.417c1.128 0 2.042.914 2.042 2.042v.583a2.042 2.042 0 1 1-4.083 0v-1.05" class="fills"/>
+    <g fill="none" stroke-linejoin="round" class="strokes">
+      <path stroke="currentColor" d="M-13036.042-8612.417c1.128 0 2.042.914 2.042 2.042v.583a2.042 2.042 0 1 1-4.083 0v-1.05" class="stroke-shape"/>
+    </g>
+    <path fill="none" d="M-13030.792-8610.667a2.042 2.042 0 1 0 0-4.083h-.291" class="fills"/>
+    <g fill="none" stroke-linejoin="round" class="strokes">
+      <path stroke="currentColor" d="M-13030.792-8610.667a2.042 2.042 0 1 0 0-4.083h-.291" class="stroke-shape"/>
+    </g>
+    <path fill="none" d="M-13029.917-8614.575v-1.633a2.042 2.042 0 1 0-4.083 0" class="fills"/>
+    <g fill="none" stroke-linejoin="round" class="strokes">
+      <path stroke="currentColor" d="M-13029.917-8614.575v-1.633a2.042 2.042 0 1 0-4.083 0" class="stroke-shape"/>
+    </g>
+    <path fill="none" d="M-13037.208-8610.667a2.042 2.042 0 1 1 0-4.083h.291" class="fills"/>
+    <g fill="none" stroke-linejoin="round" class="strokes">
+      <path stroke="currentColor" d="M-13037.208-8610.667a2.042 2.042 0 1 1 0-4.083h.291" class="stroke-shape"/>
+    </g>
+    <path fill="none" d="M-13038.083-8614.575v-1.633a2.042 2.042 0 1 1 4.083 0v5.833" class="fills"/>
+    <g fill="none" stroke-linejoin="round" class="strokes">
+      <path stroke="currentColor" d="M-13038.083-8614.575v-1.633a2.042 2.042 0 1 1 4.083 0v5.833" class="stroke-shape"/>
+    </g>
+  </g>
+</svg>

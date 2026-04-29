@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none">
+  <g class="frame-container-wrapper">
+    <g class="frame-container-blur">
+      <g class="frame-container-shadows">
+        <g class="fills">
+          <rect width="14" height="14" class="frame-background" rx="0" ry="0"/>
+        </g>
+        <g class="frame-children" color="currentColor" style="fill:#000">
+          <path d="M12.833 7A5.833 5.833 0 1 0 7 12.833" class="fills" style="fill:none"/>
+          <g stroke-linejoin="round" class="strokes">
+            <path d="M12.833 7A5.833 5.833 0 1 0 7 12.833" class="stroke-shape" style="fill:none;stroke-width:1.5;stroke:#283679;stroke-opacity:1"/>
+          </g>
+          <path d="M7.583 1.195S9.333 3.5 9.333 7" class="fills" style="fill:none"/>
+          <g stroke-linejoin="round" class="strokes">
+            <path d="M7.583 1.195S9.333 3.5 9.333 7" class="stroke-shape" style="fill:none;stroke-width:1.5;stroke:#283679;stroke-opacity:1"/>
+          </g>
+          <path d="M6.417 12.805S4.667 10.5 4.667 7s1.75-5.805 1.75-5.805" class="fills" style="fill:none"/>
+          <g stroke-linejoin="round" class="strokes">
+            <path d="M6.417 12.805S4.667 10.5 4.667 7s1.75-5.805 1.75-5.805" class="stroke-shape" style="fill:none;stroke-width:1.5;stroke:#283679;stroke-opacity:1"/>
+          </g>
+          <path d="M1.534 9.042H7" class="fills" style="fill:none"/>
+          <g stroke-linejoin="round" class="strokes">
+            <path d="M1.534 9.042H7" class="stroke-shape" style="fill:none;stroke-width:1.5;stroke:#283679;stroke-opacity:1"/>
+          </g>
+          <path d="M1.534 4.958h10.932" class="fills" style="fill:none"/>
+          <g stroke-linejoin="round" class="strokes">
+            <path d="M1.534 4.958h10.932" class="stroke-shape" style="fill:none;stroke-width:1.5;stroke:#283679;stroke-opacity:1"/>
+          </g>
+          <path d="M12.763 10.452c.288.177.27.608-.027.642l-1.497.17-.672 1.348c-.132.268-.544.137-.612-.195L9.223 8.85c-.058-.28.194-.456.437-.307z" class="fills" clip-rule="evenodd" style="fill:none"/>
+          <g class="strokes" clip-rule="evenodd">
+            <path d="M12.763 10.452c.288.177.27.608-.027.642l-1.497.17-.672 1.348c-.132.268-.544.137-.612-.195L9.223 8.85c-.058-.28.194-.456.437-.307z" class="stroke-shape" style="fill:none;stroke-width:1.5;stroke:#283679;stroke-opacity:1"/>
+          </g>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

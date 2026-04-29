@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none">
+  <g class="frame-container-wrapper">
+    <g class="frame-container-blur">
+      <g class="frame-container-shadows">
+        <g class="fills">
+          <rect width="14" height="14" class="frame-background" rx="0" ry="0"/>
+        </g>
+        <g class="frame-children" style="fill:#000">
+          <path d="M10.696 10.698H9.142V8.26c0-.58-.012-1.328-.81-1.328-.811 0-.936.632-.936 1.285v2.48H5.842v-5.01h1.493v.683h.02c.21-.394.716-.81 1.475-.81 1.575 0 1.866 1.037 1.866 2.387v2.75Zm-6.61-5.696a.903.903 0 1 1-.002-1.805.903.903 0 0 1 .002 1.805Zm.78 5.696h-1.56v-5.01h1.56v5.01Zm6.608-8.948H2.525a.765.765 0 0 0-.774.756v8.988c0 .418.346.756.774.756h8.948a.769.769 0 0 0 .778-.756V2.506a.77.77 0 0 0-.778-.756Z" class="fills" fill="currentColor" style="fill-opacity:1"/>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

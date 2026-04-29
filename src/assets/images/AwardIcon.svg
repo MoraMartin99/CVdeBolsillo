@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" style="-webkit-print-color-adjust::exact" viewBox="-12998.5 -8620 14 14">
+  <g class="icon icon-tabler icons-tabler-outline icon-tabler-award" style="fill:#000">
+    <path fill="none" d="M-12998.5-8620h14v14h-14Z" class="fills" style="fill:none"/>
+    <path fill="none" d="M-12995-8614.75a3.5 3.5 0 1 0 7.001-.001 3.5 3.5 0 0 0-7.001.001" class="fills" style="fill:none"/>
+    <g fill="none" stroke-linejoin="round" class="strokes">
+      <path d="M-12995-8614.75a3.5 3.5 0 1 0 7.001-.001 3.5 3.5 0 0 0-7.001.001" class="stroke-shape" stroke="currentColor" style="fill:none;fill-opacity:none;stroke-width:1;stroke-opacity:1"/>
+    </g>
+    <path fill="none" d="m-12991.5-8611.25 1.983 3.436.932-1.886 2.1.136-1.984-3.436" class="fills" style="fill:none"/>
+    <g fill="none" stroke-linejoin="round" class="strokes">
+      <path d="m-12991.5-8611.25 1.983 3.436.932-1.886 2.1.136-1.984-3.436" class="stroke-shape" stroke="currentColor" style="fill:none;fill-opacity:none;stroke-width:1;stroke-opacity:1"/>
+    </g>
+    <path fill="none" d="m-12994.532-8613-1.984 3.436 2.099-.136.933 1.886 1.983-3.436" class="fills" style="fill:none"/>
+    <g fill="none" stroke-linejoin="round" class="strokes">
+      <path d="m-12994.532-8613-1.984 3.436 2.099-.136.933 1.886 1.983-3.436" class="stroke-shape" stroke="currentColor" style="fill:none;fill-opacity:none;stroke-width:1;stroke-opacity:1"/>
+    </g>
+  </g>
+</svg>
