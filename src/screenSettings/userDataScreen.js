@@ -117,6 +117,13 @@ const userField = new TextFieldTemplate({
   tip: "Escriba su nombre de usuario",
 });
 
+const webSiteNameField = new TextFieldTemplate({
+  templateId: "webSiteName",
+  label: "Nombre",
+  placeholder: "El blog de flora",
+  tip: "Escriba el nombre de su pagina web",
+});
+
 const urlField = new URLFieldTemplate({ templateId: "url" });
 
 const linkedInSection = new SectionTemplate({
@@ -144,7 +151,7 @@ const webSiteSection = new SectionTemplate({
   Icon: WebSiteIcon,
   name: "Sitio web",
   value: [
-    [userField, exampleUser.webSite.name],
+    [webSiteNameField, exampleUser.webSite.name],
     [urlField, exampleUser.webSite.URL],
   ].map(([{ templateId }, exampleValue]) => ({ templateId, exampleValue })),
 });
@@ -557,6 +564,7 @@ const templates = [
   phoneNumberField,
   addressField,
   userField,
+  webSiteNameField,
   urlField,
   linkedInSection,
   githubSection,
