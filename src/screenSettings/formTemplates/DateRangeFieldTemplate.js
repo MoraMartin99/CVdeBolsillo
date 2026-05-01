@@ -34,14 +34,16 @@ class DateRangeFieldTemplate extends Template {
   }) {
     super({ templateId, component: "field" });
     this.type = "date";
-    this.value = value;
+    this.value = this.#copyDateRange(value);
     this.startYear = startYear;
     this.finishYear = finishYear;
     this.startLabel = startLabel;
     this.finishLabel = finishLabel;
-    this.exampleValue = exampleValue;
+    this.exampleValue = this.#copyDateRange(exampleValue);
   }
 
+  #copyDateRange(value) {
+    return { start: { ...value.start }, finish: { ...value.finish } };
   }
 }
 
