@@ -28,7 +28,7 @@ class ListFieldTemplate extends Template {
     Object.assign(this, {
       label,
       placeholder,
-      primaryAction: { ...defaultPrimaryAction, primaryAction },
+      primaryAction: { ...defaultPrimaryAction, ...primaryAction },
       value: { ...value },
       exampleValue: { ...exampleValue },
       type: "list",
