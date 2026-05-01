@@ -29,8 +29,8 @@ class ListFieldTemplate extends Template {
       label,
       placeholder,
       primaryAction: { ...defaultPrimaryAction, ...primaryAction },
-      value: { ...value },
-      exampleValue: { ...exampleValue },
+      value: [...value],
+      exampleValue: exampleValue ? [...exampleValue] : undefined,
       type: "list",
     });
   }
