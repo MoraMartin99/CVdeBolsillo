@@ -7,8 +7,6 @@ const defaultPrimaryAction = { label: "Agregar item", Icon: TaskIcon };
  * The ListFieldTemplate class defines the properties of the list field
  */
 class ListFieldTemplate extends Template {
-  #value;
-  #exampleValue;
   /**
    * Creates the properties of a list field
    * @param {object} settings
