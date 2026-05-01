@@ -614,9 +614,9 @@ const content = [
 ].map(getTemplateIdObject);
 
 class UserScreenData extends ScreenData {
-  constructor({ content, templates, label }) {
+  constructor({ content = [], templates = {}, label }) {
     super({ label, id: "userForm" });
-    Object.assign(this, { content, templates });
+    Object.assign(this, { content: [...content], templates: { ...templates } });
   }
 }
 

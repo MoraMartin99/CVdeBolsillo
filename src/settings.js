@@ -12,14 +12,14 @@ class AppSettings {
    * @param {Object} properties
    * @param {string} [properties.name = "CVdeBolsillo"] The visible name of the app
    * @param {string} [properties.repoUrl = "https://github.com/MoraMartin99/CVdeBolsillo"] The url to the source code of the project
-   * @param {Array<ScreenData>} properties.screens
+   * @param {Array<ScreenData>} [properties.screens = []]
    * @param {number} [properties.minDualPanelScreenWidth = 700] The minimum viewport size in pixels at which the app must show the preview screen at all times
    */
   constructor({
     name = "CVdeBolsillo",
     repoLabel = "Oscar Mora",
     repoUrl = "https://github.com/MoraMartin99/CVdeBolsillo",
-    screens,
+    screens = [],
     minDualPanelScreenWidth = 700,
   }) {
     Object.assign(this, {

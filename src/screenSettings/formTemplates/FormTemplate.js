@@ -19,17 +19,17 @@ class FormTemplate extends Template {
    * @param {object} settings
    * @param {string} settings.templateId
    * @param {string} [settings.name = "formulario"] The visible tittle
-   * @param {Array<template>} settings.value
+   * @param {Array<template>} [settings.value = []]
    * @param {CurrentColorIcon} settings.Icon
-   * @param {Array<template>} settings.exampleValue
-   * @param {Array<template>} settings.actions
+   * @param {Array<template>} [settings.exampleValue]
+   * @param {Array<template>} [settings.actions = []]
    */
   constructor({
     templateId,
-    value,
+    value = [],
     name = "formulario",
     Icon,
-    actions,
+    actions = [],
     exampleValue,
   }) {
     super({ templateId, component: "form" });
@@ -37,7 +37,7 @@ class FormTemplate extends Template {
     this.name = name;
     this.Icon = Icon;
     this.actions = [...actions];
-    this.exampleValue = [...exampleValue];
+    this.exampleValue = exampleValue ? [...exampleValue] : undefined;
   }
 }
 

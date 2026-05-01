@@ -19,17 +19,17 @@ class SectionTemplate extends Template {
    * @param {object} settings
    * @param {string} settings.templateId
    * @param {string} [settings.name = "Sección"] The visible tittle
-   * @param {Array<template>} settings.value
+   * @param {Array<template>} [settings.value = []]
    * @param {CurrentColorIcon} settings.Icon
-   * @param {Array<template>} settings.exampleValue
-   * @param {Array<template>} settings.actions
+   * @param {Array<template>} [settings.exampleValue]
+   * @param {Array<template>} [settings.actions = []]
    */
   constructor({
     templateId,
     name = "Sección",
     Icon,
-    value,
-    actions,
+    value = [],
+    actions = [],
     exampleValue,
   }) {
     super({ templateId, component: "section" });
@@ -37,9 +37,9 @@ class SectionTemplate extends Template {
       templateId,
       name,
       Icon,
-      value,
-      actions,
-      exampleValue,
+      value: [...value],
+      actions: [...actions],
+      exampleValue: exampleValue ? [...exampleValue] : undefined,
     });
   }
 }

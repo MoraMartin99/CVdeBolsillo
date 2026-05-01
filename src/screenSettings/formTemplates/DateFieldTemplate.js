@@ -16,7 +16,7 @@ class DateFieldTemplate extends Template {
    * @param {object} settings
    * @param {string} settings.templateId
    * @param {string} [settings.label = "Fecha"] The visible tittle
-   * @param {Date} settings.value
+   * @param {Date} [settings.value = {}]
    * @param {number} settings.startYear
    * @param {number} settings.finishYear
    * @param {Date} settings.exampleValue
@@ -24,7 +24,7 @@ class DateFieldTemplate extends Template {
   constructor({
     templateId,
     label = "Fecha",
-    value,
+    value = {},
     startYear,
     finishYear,
     exampleValue,
@@ -35,7 +35,7 @@ class DateFieldTemplate extends Template {
     this.value = { ...value };
     this.startYear = startYear;
     this.finishYear = finishYear;
-    this.exampleValue = { ...exampleValue };
+    this.exampleValue = exampleValue ? { ...exampleValue } : undefined;
   }
 }
 

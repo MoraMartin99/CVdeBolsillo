@@ -25,18 +25,18 @@ class ImageFieldTemplate extends Template {
    * Creates the properties that defines an image field
    * @param {object} settings
    * @param {string} settings.templateId
-   * @param {value} settings.value
+   * @param {value} [settings.value = {}]
    * @param {string} [settings.primaryActionLabel = "Subir imagen"]
    * @param {string} [settings.destructiveActionLabel = "Eliminar imagen"]
    * @param {string} [settings.alt = "imagen"]
    * @param {string} [settings.label = "Imagen"] The visible title
    * @param {string} [settings.tip = "Seleccione una imagen"]
-   * @param {value} settings.exampleValue
+   * @param {value} [settings.exampleValue]
    * @param {validator} [settings.validator = hasSource]
    */
   constructor({
     templateId,
-    value,
+    value = {},
     primaryActionLabel = "Subir imagen",
     destructiveActionLabel = "Eliminar imagen",
     alt = "imagen",
@@ -55,7 +55,7 @@ class ImageFieldTemplate extends Template {
       value: { ...value },
       alt,
       tip,
-      exampleValue: { ...exampleValue },
+      exampleValue: exampleValue ? { ...exampleValue } : undefined,
     });
   }
 }

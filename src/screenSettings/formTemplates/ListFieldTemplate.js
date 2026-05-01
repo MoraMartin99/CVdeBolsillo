@@ -14,7 +14,7 @@ class ListFieldTemplate extends Template {
    * @param {string} [settings.label = "Lista"] The visible tittle
    * @param {string} [settings.placeholder = "item"]
    * @param {Array<string|number>} [settings.value = [""]]
-   * @param {Array<string|number>} settings.exampleValue
+   * @param {Array<string|number>} [settings.exampleValue]
    */
   constructor({
     templateId,

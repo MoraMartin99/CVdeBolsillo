@@ -18,16 +18,16 @@ class DateRangeFieldTemplate extends Template {
    * @param {string} settings.templateId
    * @param {string} [settings.startLabel = "Desde"] The label of the start date control
    * @param {string} [settings.finishYear = "Hasta"] The label of the finish date control
-   * @param {dateRange} settings.value
+   * @param {dateRange} [settings.value = { start: {}, finish: {} }]
    * @param {number} settings.startYear
    * @param {number} settings.finishYear
-   * @param {dateRange} settings.exampleValue
+   * @param {dateRange} [settings.exampleValue]
    */
   constructor({
     templateId,
     startLabel = "Desde",
     finishLabel = "Hasta",
-    value,
+    value = { start: {}, finish: {} },
     startYear,
     finishYear,
     exampleValue,
@@ -39,7 +39,9 @@ class DateRangeFieldTemplate extends Template {
     this.finishYear = finishYear;
     this.startLabel = startLabel;
     this.finishLabel = finishLabel;
-    this.exampleValue = this.#copyDateRange(exampleValue);
+    this.exampleValue = exampleValue
+      ? this.#copyDateRange(exampleValue)
+      : undefined;
   }
 
   #copyDateRange(value) {
