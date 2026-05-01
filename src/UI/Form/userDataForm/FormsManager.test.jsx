@@ -31,7 +31,8 @@ describe("FormsManager", async () => {
     await render(
       <FormsManager
         {...{
-          data: { content, templates },
+          content,
+          templates,
           onChange: onChangeMock,
         }}
       ></FormsManager>,

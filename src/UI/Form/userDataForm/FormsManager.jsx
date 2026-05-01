@@ -12,12 +12,6 @@ import formFactory from "../formFactory";
 /**@module FormsManager */
 
 /**
- * @typedef {object} data The information required to build the forms
- * @property {Array<object>} content see [content in useFormModel]{@link module:useFormModel} for more details
- * @property {object} templates see [templates in useFormModel]{@link module:useFormModel} for more details
- */
-
-/**
  * A callback that runs on model initialization and modifications
  * @callback onChange
  */
@@ -25,11 +19,12 @@ import formFactory from "../formFactory";
 /**
  * The FormsManager component allows you to generate, clean, and load examples into a collection of forms.
  * @param {object} props The component properties
- * @param {data} props.data The information required to build the forms
+ * @param {Array<object>} props.content see [content in useFormModel]{@link module:useFormModel} for more details
  * @param {onChange} props.onChange The callback that runs on model initialization and modifications
+ * @param {object} props.templates see [templates in useFormModel]{@link module:useFormModel} for more details
  * @returns {JSX.Element}
  */
-function FormsManager({ data: { content, templates }, onChange }) {
+function FormsManager({ content, templates, onChange }) {
   const { model, resetModel, loadExamples } = useFormModel(content, templates);
   const [confirmationProps, setConfirmationProps] = useState({
     isOpen: false,
