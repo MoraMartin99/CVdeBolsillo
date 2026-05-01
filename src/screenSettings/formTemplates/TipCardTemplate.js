@@ -15,14 +15,6 @@ class TipCardTemplate extends Template {
     super({ templateId, component: "tipCard" });
     Object.assign(this, { tip, title });
   }
-
-  get title() {
-    return this.title;
-  }
-
-  get tip() {
-    return this.tip;
-  }
 }
 
 export default TipCardTemplate;

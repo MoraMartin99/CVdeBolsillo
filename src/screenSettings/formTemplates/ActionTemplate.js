@@ -18,18 +18,6 @@ class ActionTemplate extends Template {
     this.label = label;
     this.Icon = Icon;
   }
-
-  get action() {
-    return this.action;
-  }
-
-  get label() {
-    return this.label;
-  }
-
-  get Icon() {
-    return this.Icon;
-  }
 }
 
 export default ActionTemplate;

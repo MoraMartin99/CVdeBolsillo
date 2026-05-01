@@ -33,31 +33,11 @@ class FormTemplate extends Template {
     exampleValue,
   }) {
     super({ templateId, component: "form" });
-    this.value = value;
+    this.value = [...value];
     this.name = name;
     this.Icon = Icon;
-    this.actions = actions;
-    this.exampleValue = exampleValue;
-  }
-
-  get value() {
-    return this.value;
-  }
-
-  get name() {
-    return this.name;
-  }
-
-  get Icon() {
-    return this.Icon;
-  }
-
-  get actions() {
-    return this.actions;
-  }
-
-  get exampleValue() {
-    return this.exampleValue;
+    this.actions = [...actions];
+    this.exampleValue = [...exampleValue];
   }
 }
 

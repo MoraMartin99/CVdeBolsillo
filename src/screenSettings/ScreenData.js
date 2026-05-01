@@ -10,16 +10,7 @@ class ScreenData {
    *
    */
   constructor({ label, id }) {
-    this.label = label;
-    this.id = id;
-  }
-
-  get label() {
-    return this.label;
-  }
-
-  get id() {
-    return this.id;
+    Object.assign(this, { label, id });
   }
 }
 

@@ -618,14 +618,6 @@ class UserScreenData extends ScreenData {
     super({ label, id: "userForm" });
     Object.assign(this, { content, templates });
   }
-
-  get content() {
-    return this.content;
-  }
-
-  get templates() {
-    return this.templates;
-  }
 }
 
 export default new UserScreenData({ label, templates, content });

@@ -42,32 +42,6 @@ class DateRangeFieldTemplate extends Template {
     this.exampleValue = exampleValue;
   }
 
-  get type() {
-    return this.type;
-  }
-
-  get value() {
-    return this.value;
-  }
-
-  get startYear() {
-    return this.startYear;
-  }
-
-  get finishYear() {
-    return this.finishYear;
-  }
-
-  get startLabel() {
-    return this.startLabel;
-  }
-
-  get finishLabel() {
-    return this.finishLabel;
-  }
-
-  get exampleValue() {
-    return this.exampleValue;
   }
 }
 

@@ -32,34 +32,10 @@ class DateFieldTemplate extends Template {
     super({ templateId, component: "field" });
     this.type = "date";
     this.label = label;
-    this.value = value;
+    this.value = { ...value };
     this.startYear = startYear;
     this.finishYear = finishYear;
-    this.exampleValue = exampleValue;
-  }
-
-  get type() {
-    return this.type;
-  }
-
-  get label() {
-    return this.label;
-  }
-
-  get value() {
-    return this.value;
-  }
-
-  get startYear() {
-    return this.startYear;
-  }
-
-  get finishYear() {
-    return this.finishYear;
-  }
-
-  get exampleValue() {
-    return this.exampleValue;
+    this.exampleValue = { ...exampleValue };
   }
 }
 

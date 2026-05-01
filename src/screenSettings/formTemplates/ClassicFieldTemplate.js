@@ -47,33 +47,6 @@ class ClassicFieldTemplate extends Template {
       exampleValue,
     });
   }
-
-  get type() {
-    return this.type;
-  }
-  get validator() {
-    return this.validator;
-  }
-
-  get label() {
-    return this.label;
-  }
-
-  get placeholder() {
-    return this.placeholder;
-  }
-
-  get tip() {
-    return this.tip;
-  }
-
-  get value() {
-    return this.value;
-  }
-
-  get exampleValue() {
-    return this.exampleValue;
-  }
 }
 
 export default ClassicFieldTemplate;

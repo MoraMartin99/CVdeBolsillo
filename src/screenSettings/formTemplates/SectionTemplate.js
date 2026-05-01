@@ -42,22 +42,6 @@ class SectionTemplate extends Template {
       exampleValue,
     });
   }
-
-  get name() {
-    return this.name;
-  }
-
-  get Icon() {
-    return this.Icon;
-  }
-
-  get value() {
-    return this.value;
-  }
-
-  get actions() {
-    return this.actions;
-  }
 }
 
 export default SectionTemplate;

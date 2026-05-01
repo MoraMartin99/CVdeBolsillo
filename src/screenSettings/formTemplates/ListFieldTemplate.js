@@ -31,34 +31,10 @@ class ListFieldTemplate extends Template {
       label,
       placeholder,
       primaryAction: { ...defaultPrimaryAction, primaryAction },
-      value,
-      exampleValue,
+      value: { ...value },
+      exampleValue: { ...exampleValue },
       type: "list",
     });
-  }
-
-  get label() {
-    return this.label;
-  }
-
-  get placeholder() {
-    return this.placeholder;
-  }
-
-  get primaryAction() {
-    return this.primaryAction;
-  }
-
-  get value() {
-    return this.value;
-  }
-
-  get exampleValue() {
-    return this.exampleValue;
-  }
-
-  get type() {
-    return this.type;
   }
 }
 

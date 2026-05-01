@@ -26,29 +26,9 @@ class AppSettings {
       name,
       repoLabel,
       repoUrl,
-      screens,
+      screens: [...screens],
       minDualPanelScreenWidth,
     });
-  }
-
-  get name() {
-    return this.name;
-  }
-
-  get repoLabel() {
-    return this.repoLabel;
-  }
-
-  get repoUrl() {
-    return this.repoUrl;
-  }
-
-  get screens() {
-    return [...this.screens];
-  }
-
-  get minDualPanelScreenWidth() {
-    return this.minDualPanelScreenWidth;
   }
 }
 

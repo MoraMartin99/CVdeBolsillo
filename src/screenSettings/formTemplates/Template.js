@@ -9,16 +9,7 @@ class Template {
    * @param {"field"|"form"|"action"|"section"|"tipCard"} settings.component The component type
    */
   constructor({ templateId, component }) {
-    this.templateId = templateId;
-    this.component = component;
-  }
-
-  get templateId() {
-    return this.templateId;
-  }
-
-  get component() {
-    return this.component;
+    Object.assign(this, { templateId, component });
   }
 }
 

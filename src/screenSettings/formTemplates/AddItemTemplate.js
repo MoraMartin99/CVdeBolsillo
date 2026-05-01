@@ -16,10 +16,6 @@ class AddItemTemplate extends ActionTemplate {
     super({ templateId, action: "addItem", label, Icon });
     this.targetId = targetId;
   }
-
-  get targetId() {
-    return this.targetId;
-  }
 }
 
 export default AddItemTemplate;

@@ -52,47 +52,11 @@ class ImageFieldTemplate extends Template {
       validator,
       primaryActionLabel,
       destructiveActionLabel,
-      value,
+      value: { ...value },
       alt,
       tip,
-      exampleValue,
+      exampleValue: { ...exampleValue },
     });
-  }
-
-  get type() {
-    return this.type;
-  }
-
-  get label() {
-    return this.label;
-  }
-
-  get validator() {
-    return this.validator;
-  }
-
-  get primaryActionLabel() {
-    return this.primaryActionLabel;
-  }
-
-  get destructiveActionLabel() {
-    return this.destructiveActionLabel;
-  }
-
-  get value() {
-    return this.value;
-  }
-
-  get alt() {
-    return this.alt;
-  }
-
-  get tip() {
-    return this.tip;
-  }
-
-  get exampleValue() {
-    return this.exampleValue;
   }
 }
 
