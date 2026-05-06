@@ -4,7 +4,7 @@ import { Debouncer, reduceToClassName, clamp } from "../../utils";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Tile from "./Tile";
 
-const scrollDelay = 150;
+const scrollDelay = 200;
 
 /**
  * A callback that runs if the value change and is valid
