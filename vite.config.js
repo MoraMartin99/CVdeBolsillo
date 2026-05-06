@@ -15,6 +15,7 @@ const PreviewPlugin = createVirtualModulePlugin({ moduleId: "Preview" });
 export default defineConfig({
   plugins: [TemplateFormPlugin, PreviewPlugin, react(), svgr()],
   test: {
+    includeTaskLocation: true,
     projects: [
       {
         extends: true,
