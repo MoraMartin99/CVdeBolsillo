@@ -115,7 +115,7 @@ function TileSelector({
     getTiles().forEach((item) => observer.observe(item));
 
     return () => observer.disconnect();
-  }, [currentIndex, hasToSkipEffect, visibleTiles]);
+  }, [hasToSkipEffect, visibleTiles]);
 
   return (
     <div
