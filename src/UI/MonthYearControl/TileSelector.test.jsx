@@ -43,14 +43,22 @@ const getTiles = () => {
   return page.getByRole("button").filter({ hasText: regex });
 };
 
-const expectItemAsCurrenTile = async ({ label, value: expectedCall }) => {
-  const tile = page.getByText(label);
-  await expect.element(tile).toHaveClass(tileCSS.current);
-  expect(onChangeMock).toHaveBeenLastCalledWith(expectedCall);
+const expectCurrentTileAtIndex = async (index) => {
+  const targetTile = page.getByText(items[index].label);
+  const regularTiles = getTiles()
+    .all()
+    .filter((item) => item.element() !== targetTile.element());
+  const expectToBeRegularTile = async (tile) => {
+    await expect.element(tile).not.toHaveClass(tileCSS.current);
+  };
+  await Promise.all(regularTiles.map(expectToBeRegularTile));
+  await expect.element(targetTile).toHaveClass(tileCSS.current);
+  expect(onChangeMock).toHaveBeenLastCalledWith(items[index].value);
 };
 
-const expectRendersItemAsCurrentTile = async (item) => {
-  await expectItemAsCurrenTile(item);
+const expectCurrentTileAtIndexOnce = async (index) => {
+  await new Promise((resolve) => setTimeout(() => resolve(), 300));
+  await expectCurrentTileAtIndex(index);
   expect(onChangeMock).toHaveBeenCalledTimes(1);
 };
 
@@ -81,12 +89,12 @@ describe("TileSelector", () => {
     describe("selects the first tile", () => {
       it("if currentIndex is undefined", async () => {
         await renderComponent();
-        await expectRendersItemAsCurrentTile(items[0]);
+        await expectCurrentTileAtIndexOnce(0);
       });
 
       it("if currentIndex < 0 selects", async () => {
         await renderComponent({ currentIndex: -1 });
-        await expectRendersItemAsCurrentTile(items[0]);
+        await expectCurrentTileAtIndexOnce(0);
       });
     });
 
@@ -96,7 +104,7 @@ describe("TileSelector", () => {
       "selects the last tile if currentIndex >= items.length, %s",
       async (index) => {
         await renderComponent({ currentIndex: index });
-        await expectRendersItemAsCurrentTile(items.at(-1));
+        await expectCurrentTileAtIndexOnce(items.at(-1).index);
       },
     );
 
@@ -104,7 +112,7 @@ describe("TileSelector", () => {
       "selects the tile that represents items[currentIndex] if 0 >= currentIndex <= items.length, currentIndex = $index",
       async (item) => {
         await renderComponent({ currentIndex: item.index });
-        await expectRendersItemAsCurrentTile(item);
+        await expectCurrentTileAtIndexOnce(item.index);
       },
     );
   });
@@ -189,7 +197,7 @@ describe("TileSelector", () => {
       const currentTile = page.getByText(items[0].label);
       await expect.element(currentTile).toHaveClass(tileCSS.current);
       tile.element().scrollIntoView({ behavior: "instant", block: "center" });
-      await expectItemAsCurrenTile(item);
+      await expectCurrentTileAtIndex(item.index);
     },
   );
 
@@ -295,7 +303,7 @@ describe("TileSelector", () => {
       const button = page.getByText(label);
       expect(onChangeMock).toHaveBeenCalledTimes(0);
       await button.click();
-      await expectRendersItemAsCurrentTile(item);
+      await expectCurrentTileAtIndexOnce(index);
     });
   });
 });
