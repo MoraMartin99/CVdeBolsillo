@@ -43,8 +43,8 @@ function Tile({
 
   useEffect(() => {
     const target = buttonRef.current;
-    if (isCurrent && target) target.click();
-  }, [isCurrent]);
+    if (isCurrent && target && !isDisable) target.click();
+  }, [isCurrent, isDisable]);
 
   const cssClases = [
     css.button,
