@@ -1,6 +1,6 @@
 .main {
   --minWidth: 50px;
-  --BGColor: inherit;
+  --BGColor: var(--secondary1400color);
   --color: var(--secondary1100color);
   --fontSize: 1rem;
   --paddingInline: 4px;
