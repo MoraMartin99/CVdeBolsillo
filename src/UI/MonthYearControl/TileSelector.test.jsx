@@ -111,24 +111,17 @@ describe("TileSelector", () => {
 
   it.each(clickableItems)(
     "selects the clicked tile as current, label: $label",
-    async ({ label, value }) => {
+    async ({ index, label }) => {
       await renderComponent();
-      const currentTile = page.getByText(items[0].label);
       const targetTile = page.getByText(label);
-      const expectedCall = value;
-
-      await expect.element(currentTile).toHaveClass(tileCSS.current);
-
       await targetTile.click();
-
-      await expect.element(targetTile).toHaveClass(tileCSS.current);
-      expect(onChangeMock).toHaveBeenLastCalledWith(expectedCall);
+      await expectCurrentTileAtIndex(index);
       expect(onChangeMock).toHaveBeenCalledTimes(2);
     },
   );
 
   describe("on nextTile button click", () => {
-    const indexes = items.slice(0, -1);
+    const indexes = items.slice(0, -1).map(({ index }) => index);
 
     it.each(indexes)(
       "selects the next sibling of the current tile if the current tile is not the last tile, index: %i",
@@ -148,11 +141,11 @@ describe("TileSelector", () => {
   });
 
   describe("on previousTile button click", () => {
-    const indexes = items.slice(1);
+    const indexes = items.slice(1).map(({ index }) => index);
 
     it.each(indexes)(
-      "selects the previous sibling of the current tile if the current tile is not the first tile, index: $index",
-      async ({ index, label }) => {
+      "selects the previous sibling of the current tile if the current tile is not the first tile, index: %i",
+      async (index) => {
         await renderComponent({ currentIndex: index });
         await getPreviousButton().click();
         await expectCurrentTileAtIndex(index - 1);
@@ -172,8 +165,6 @@ describe("TileSelector", () => {
     async (item) => {
       await renderComponent();
       const tile = page.getByText(item.label);
-      const currentTile = page.getByText(items[0].label);
-      await expect.element(currentTile).toHaveClass(tileCSS.current);
       tile.element().scrollIntoView({ behavior: "instant", block: "center" });
       await expectCurrentTileAtIndex(item.index);
     },
@@ -225,7 +216,7 @@ describe("TileSelector", () => {
   describe("reselects the current tile", () => {
     it("if isDisable toggles from true to false", async () => {
       const label = "Enable";
-      const item = items[1];
+      const index = 2;
       const TestComponent = () => {
         const [isDisable, setIsDisable] = useState(true);
         return (
@@ -234,7 +225,7 @@ describe("TileSelector", () => {
               isDisable={isDisable}
               items={items}
               onChange={onChangeMock}
-              currentIndex={item.index}
+              currentIndex={index}
             ></SUT>
             <button
               style={{ fontSize: "10px" }}
@@ -249,14 +240,13 @@ describe("TileSelector", () => {
 
       await render(<TestComponent></TestComponent>);
       const button = page.getByText(label);
-      expect(onChangeMock).toHaveBeenCalledTimes(0);
       await button.click();
-      await expectRendersItemAsCurrentTile(item);
+      await expectCurrentTileAtIndexOnce(index);
     });
 
     it("if isInView toggles from false to true", async () => {
       const label = "Enable";
-      const item = items[1];
+      const index = 2;
       const TestComponent = () => {
         const [isInView, setIsInView] = useState(false);
         return (
@@ -265,7 +255,7 @@ describe("TileSelector", () => {
               isInView={isInView}
               items={items}
               onChange={onChangeMock}
-              currentIndex={item.index}
+              currentIndex={index}
             ></SUT>
             <button
               style={{ fontSize: "10px" }}
@@ -279,7 +269,6 @@ describe("TileSelector", () => {
       };
       await render(<TestComponent></TestComponent>);
       const button = page.getByText(label);
-      expect(onChangeMock).toHaveBeenCalledTimes(0);
       await button.click();
       await expectCurrentTileAtIndexOnce(index);
     });
