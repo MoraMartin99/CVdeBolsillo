@@ -125,9 +125,12 @@ function MonthYearControl({
   }, [isCurrently, month, onChange, year]);
 
   useEffect(() => {
-    onMonthChange(monthProp);
-    onYearChange(yearProp);
-    onIsCurrentlyChange(isCurrentlyProp);
+    if (isCurrentlyProp) {
+      onIsCurrentlyChange(isCurrentlyProp);
+    } else {
+      onMonthChange(monthProp);
+      onYearChange(yearProp);
+    }
   }, [monthProp, yearProp, isCurrentlyProp]);
 
   return (
