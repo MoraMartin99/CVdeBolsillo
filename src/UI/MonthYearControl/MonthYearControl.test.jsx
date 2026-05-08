@@ -3,6 +3,8 @@ import { render } from "vitest-browser-react";
 import { page } from "vitest/browser";
 import SUT from "./MonthYearControl";
 import months from "../../months";
+import "../../global.css";
+import "../../variables.css";
 
 const onChangeMock = vi.fn(() => {});
 const onCloseButtonClickMock = vi.fn(() => {});
