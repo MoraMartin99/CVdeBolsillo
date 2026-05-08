@@ -111,10 +111,7 @@ function MonthYearControl({
     setIsCurrently(stateSetter);
   };
 
-  const onCheckboxChange = (e) => {
-    const isChecked = e.target.checked;
-    onIsCurrentlyChange(isChecked);
-  };
+  const onCheckboxChange = ({ target }) => onIsCurrentlyChange(target.checked);
 
   useEffect(() => {
     if (isCurrently) {
