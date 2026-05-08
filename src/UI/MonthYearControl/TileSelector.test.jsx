@@ -62,16 +62,6 @@ const expectCurrentTileAtIndexOnce = async (index) => {
   expect(onChangeMock).toHaveBeenCalledTimes(1);
 };
 
-const expectItemAsNextCurrenTileOnButtonClick = async ({
-  currentTile,
-  button,
-  item,
-}) => {
-  await expect.element(currentTile).toHaveClass(tileCSS.current);
-  await button.click();
-  await expectItemAsCurrenTile(item);
-};
-
 describe("TileSelector", () => {
   beforeEach(() => vi.resetAllMocks());
 
@@ -141,25 +131,19 @@ describe("TileSelector", () => {
     const indexes = items.slice(0, -1);
 
     it.each(indexes)(
-      "selects the next sibling of the current tile if the current tile is not the last tile, index: $index",
-      async ({ index, label }) => {
+      "selects the next sibling of the current tile if the current tile is not the last tile, index: %i",
+      async (index) => {
         await renderComponent({ currentIndex: index });
-        await expectItemAsNextCurrenTileOnButtonClick({
-          currentTile: page.getByText(label),
-          button: getNextButton(),
-          item: items[index + 1],
-        });
+        await getNextButton().click();
+        await expectCurrentTileAtIndex(index + 1);
       },
     );
 
     it("keeps the current tile if the the current tile is the last tile", async () => {
-      const item = items.at(-1);
-      await renderComponent({ currentIndex: item.index });
-      await expectItemAsNextCurrenTileOnButtonClick({
-        currentTile: page.getByText(item.label),
-        button: getNextButton(),
-        item,
-      });
+      const index = items.at(-1).index;
+      await renderComponent({ currentIndex: index });
+      await getNextButton().click();
+      await expectCurrentTileAtIndex(index);
     });
   });
 
@@ -170,22 +154,16 @@ describe("TileSelector", () => {
       "selects the previous sibling of the current tile if the current tile is not the first tile, index: $index",
       async ({ index, label }) => {
         await renderComponent({ currentIndex: index });
-        await expectItemAsNextCurrenTileOnButtonClick({
-          currentTile: page.getByText(label),
-          button: getPreviousButton(),
-          item: items[index - 1],
-        });
+        await getPreviousButton().click();
+        await expectCurrentTileAtIndex(index - 1);
       },
     );
 
     it("keeps the current tile if the the current tile is the first tile", async () => {
-      const item = items[0];
-      await renderComponent({ currentIndex: item.index });
-      await expectItemAsNextCurrenTileOnButtonClick({
-        currentTile: page.getByText(item.label),
-        button: getPreviousButton(),
-        item,
-      });
+      const index = items[0].index;
+      await renderComponent({ currentIndex: index });
+      await getPreviousButton().click();
+      await expectCurrentTileAtIndex(index);
     });
   });
 
