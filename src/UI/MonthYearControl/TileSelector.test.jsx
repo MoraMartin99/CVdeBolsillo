@@ -107,7 +107,7 @@ describe("TileSelector", () => {
     );
   });
 
-  const clickableItems = [...items.slice(1)];
+  const clickableItems = items.slice(1);
 
   it.each(clickableItems)(
     "selects the clicked tile as current, label: $label",
