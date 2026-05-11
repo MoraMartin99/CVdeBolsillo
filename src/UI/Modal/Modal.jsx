@@ -5,7 +5,7 @@ import css from "./Modal.module.css";
 /**@module Modal */
 
 /**
- * A function that runs if a click is registered outside the modal. Useful to close the modal on outside click
+ * A function that runs if a click is registered outside the modal's children. Useful to close the modal on outside click
  * @callback onOutsideClick
  * @param {*} value
  */
@@ -21,21 +21,21 @@ import css from "./Modal.module.css";
  * @returns {JSX.Element}
  */
 function Modal({ children, isOpen = false, classArr = [], onOutsideClick }) {
-  const ref = useRef(null);
+  const modalRef = useRef(null);
+  const contentContainerRef = useRef(null);
 
   useEffect(() => {
-    const modal = ref.current;
+    const modal = modalRef.current;
+    const contentContainer = contentContainerRef.current;
 
     if (isOpen) {
       const body = document.body;
       body.style.overflow = "hidden";
       modal.showModal();
-      const onClick = ({ clientX, clientY }) => {
-        const isOutside = ({ clientX: x, clientY: y }) => {
-          const { left, right, top, bottom } = modal.getBoundingClientRect();
-          return x < left || x > right || y < top || y > bottom;
-        };
-        if (isOutside({ clientX, clientY }) && onOutsideClick) onOutsideClick();
+      const onClick = ({ target }) => {
+        if (!contentContainer.contains(target) && onOutsideClick) {
+          onOutsideClick();
+        }
       };
 
       modal.addEventListener("click", onClick);
@@ -50,8 +50,11 @@ function Modal({ children, isOpen = false, classArr = [], onOutsideClick }) {
   }, [isOpen, onOutsideClick]);
 
   return (
-    <dialog ref={ref} className={reduceToClassName([...classArr, css.main])}>
-      {children}
+    <dialog
+      ref={modalRef}
+      className={reduceToClassName([...classArr, css.main])}
+    >
+      <div ref={contentContainerRef}>{children}</div>
     </dialog>
   );
 }
