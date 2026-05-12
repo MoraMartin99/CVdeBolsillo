@@ -89,27 +89,11 @@ function MonthYearControl({
     return list.findIndex(({ value }) => value === item);
   };
 
-  const onMonthChange = (month) => {
-    const stateSetter = (currentValue) => {
-      return currentValue === month ? currentValue : month;
-    };
-    setMonth(stateSetter);
-  };
+  const onMonthChange = (month) => setMonth(month);
 
-  const onYearChange = (year) => {
-    const stateSetter = (currentValue) => {
-      return currentValue === year ? currentValue : year;
-    };
-    setYear(stateSetter);
-  };
+  const onYearChange = (year) => setYear(year);
 
-  const onIsCurrentlyChange = (value) => {
-    const isCurrently = Boolean(value);
-    const stateSetter = (currentValue) => {
-      return currentValue === isCurrently ? currentValue : isCurrently;
-    };
-    setIsCurrently(stateSetter);
-  };
+  const onIsCurrentlyChange = (value) => setIsCurrently(Boolean(value));
 
   const onCheckboxChange = ({ target }) => onIsCurrentlyChange(target.checked);
 
