@@ -2,10 +2,13 @@ import { useEffect, useRef } from "react";
 import { reduceToClassName } from "../../utils";
 import css from "./Tile.module.css";
 import BaseButton from "../BaseButton/BaseButton";
-import useIsInitialRender from "../../hooks/useIsInitialRender";
 
-const defaultOption = { behavior: "smooth", block: "center" };
-const instantOption = { behavior: "instant", block: "center" };
+/**
+ * A function that sets how the tile must move on click events
+ * @memberof module:MonthYearControl
+ * @callback moveHandler
+ * @param {MouseEvent}
+ */
 
 /**
  * The Tile components represents a selectable item of [TileSelector]{@link module:MonthYearControl~TileSelector}
@@ -16,6 +19,7 @@ const instantOption = { behavior: "instant", block: "center" };
  * @param {Array<string>} [props.classArr = []] A list of CSS classes to apply to the component
  * @param {boolean} [props.isDisable = false] If true the component displays a special style and doesn't handle click events
  * @param {boolean} [props.isCurrent = false] If true sets the component as current, displaying a special style and moving the component to the trigger area of [TileSelector]{@link module:MonthYearControl~TileSelector} if require
+ * @param {moveHandler} props.moveHandler
  * @returns {JSX.Element}
  */
 function Tile({
@@ -24,25 +28,12 @@ function Tile({
   classArr = [],
   isDisable = false,
   isCurrent = false,
+  moveHandler,
 }) {
-  const isInitialRender = useIsInitialRender();
   const tileRef = useRef(null);
-  const buttonRef = useRef(null);
-
-  const defaultMove = () => {
-    tileRef.current.scrollIntoView(defaultOption);
-  };
-  const instantMove = () => {
-    tileRef.current.scrollIntoView(instantOption);
-  };
-
-  const onClick = () => {
-    if (isInitialRender.current) return instantMove();
-    defaultMove();
-  };
 
   useEffect(() => {
-    const target = buttonRef.current;
+    const target = tileRef.current;
     if (isCurrent && target && !isDisable) target.click();
   }, [isCurrent, isDisable]);
 
@@ -57,13 +48,9 @@ function Tile({
       ref={tileRef}
       data-index={index}
       className={reduceToClassName([...classArr, css.main])}
+      onClick={moveHandler}
     >
-      <BaseButton
-        ref={buttonRef}
-        classArr={cssClases}
-        onClick={onClick}
-        isDisable={isDisable}
-      >
+      <BaseButton classArr={cssClases} isDisable={isDisable}>
         {children}
       </BaseButton>
     </li>

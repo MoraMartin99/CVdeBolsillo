@@ -51,6 +51,7 @@ function TileSelector({
     getBoundedIndex(currentIndexProp),
   );
   const tileContainerRef = useRef(null);
+  const isFirstMoveRef = useRef(true);
 
   const hasToSkipEffect = useCallback(
     () => isDisable || !isInView,
@@ -63,6 +64,15 @@ function TileSelector({
   };
 
   const createTile = ({ label, key }, index) => {
+    const moveToCenter = ({ currentTarget }) => {
+      currentTarget.scrollIntoView(
+        isFirstMoveRef.current
+          ? { behavior: "instant", block: "center" }
+          : { behavior: "smooth", block: "center" },
+      );
+
+      isFirstMoveRef.current = false;
+    };
     return (
       <Tile
         key={key}
@@ -70,6 +80,7 @@ function TileSelector({
         isDisable={isDisable}
         isCurrent={currentIndex === index && isInView}
         classArr={[css.tile]}
+        moveHandler={moveToCenter}
       >
         {label}
       </Tile>
