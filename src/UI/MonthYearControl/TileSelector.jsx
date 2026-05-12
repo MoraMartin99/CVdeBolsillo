@@ -68,7 +68,7 @@ function TileSelector({
         key={key}
         index={index}
         isDisable={isDisable}
-        isCurrent={currentIndex === index}
+        isCurrent={currentIndex === index && isInView}
         classArr={[css.tile]}
       >
         {label}
