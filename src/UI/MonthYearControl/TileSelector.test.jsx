@@ -82,7 +82,7 @@ describe("TileSelector", () => {
         await expectCurrentTileAtIndexOnce(0);
       });
 
-      it("if currentIndex < 0 selects", async () => {
+      it("if currentIndex < 0", async () => {
         await renderComponent({ currentIndex: -1 });
         await expectCurrentTileAtIndexOnce(0);
       });
