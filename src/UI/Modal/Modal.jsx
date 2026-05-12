@@ -1,5 +1,6 @@
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { reduceToClassName } from "../../utils";
+import { useLayoutEffect } from "react";
 import css from "./Modal.module.css";
 
 /**@module Modal */
@@ -24,7 +25,7 @@ function Modal({ children, isOpen = false, classArr = [], onOutsideClick }) {
   const modalRef = useRef(null);
   const contentContainerRef = useRef(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const modal = modalRef.current;
     const contentContainer = contentContainerRef.current;
 
