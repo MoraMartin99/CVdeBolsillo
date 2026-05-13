@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none">
+  <g class="frame-container-wrapper">
+    <g class="frame-container-blur">
+      <g class="frame-container-shadows">
+        <g class="fills">
+          <rect width="20" height="20" class="frame-background" rx="0" ry="0"/>
+        </g>
+        <g class="frame-children">
+          <g class="icon icon-tabler icons-tabler-filled icon-tabler-calendar-week" style="fill:#000">
+            <path fill="none" d="M0 0h20v20H0Z" class="fills" style="fill:none"/>
+            <path d="M13.333 1.667c.153 0 .296.041.419.112l.027.017a.83.83 0 0 1 .388.704v.833H15a2.5 2.5 0 0 1 2.496 2.354l.004.146v10a2.5 2.5 0 0 1-2.353 2.496l-.147.004H5a2.5 2.5 0 0 1-2.496-2.353l-.004-.147v-10a2.5 2.5 0 0 1 2.353-2.495L5 3.333h.833V2.5c0-.303.164-.581.429-.728l.077-.039.055-.021.083-.024.09-.015.1-.006c.046 0 .09.003.134.011l.101.024.034.01.05.019a.828.828 0 0 1 .508.672L7.5 2.5v.833h5V2.5c0-.46.373-.833.833-.833Zm2.5 5.833H4.167v8.021c0 .587.321 1.071.736 1.138l.097.008h10c.427 0 .78-.442.827-1.013l.006-.133Z" class="fills" fill="currentColor" style="fill-opacity:1"/>
+            <path d="M7.512 10.833a.833.833 0 0 1-.833.834A.836.836 0 1 1 6.675 10c.464 0 .837.373.837.833ZM10.846 10.833a.833.833 0 0 1-.834.834.836.836 0 1 1-.004-1.667c.464 0 .838.373.838.833ZM14.183 10.833a.833.833 0 0 1-.833.834.834.834 0 1 1-.004-1.667c.464 0 .837.373.837.833ZM10.017 12.5a.833.833 0 0 1 0 1.667.836.836 0 0 1-.757-1.26.838.838 0 0 1 .757-.407ZM7.512 13.333a.833.833 0 0 1-.833.834.836.836 0 1 1-.004-1.667c.464 0 .837.373.837.833Z" class="fills" fill="currentColor" style="fill-opacity:1"/>
+          </g>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>
+

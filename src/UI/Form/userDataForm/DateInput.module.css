@@ -1,0 +1,28 @@
+.main {
+  --iconSize: 20px;
+}
+
+.display {
+  --paddingEnd: 2px;
+  --width: 98.5px;
+  --gap: var(--paddingEnd);
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  gap: var(--gap);
+}
+
+.text {
+  flex-grow: 1;
+  font-size: inherit;
+}
+
+.icon {
+  width: var(--iconSize);
+  height: var(--iconSize);
+}
+
+.hide {
+  display: none;
+}
+
