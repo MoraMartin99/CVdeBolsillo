@@ -2,7 +2,7 @@ import css from "./MonthYearControl.module.css";
 import TileSelector from "./TileSelector";
 import CloseButton from "./CloseButton";
 import { reduceToClassName } from "../../utils";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import months from "../../months";
 /**
  * @module MonthYearControl
@@ -76,26 +76,19 @@ function MonthYearControl({
   const [year, setYear] = useState(yearProp);
   const [isCurrently, setIsCurrently] = useState(Boolean(isCurrentlyProp));
 
-  const years = Array.from(
-    { length: finishYear - startYear + 1 },
-    (_, index) => ({
+  const years = useMemo(() => {
+    return Array.from({ length: finishYear - startYear + 1 }, (_, index) => ({
       value: startYear + index,
       label: startYear + index,
       key: startYear + index,
-    }),
-  );
+    }));
+  }, [finishYear, startYear]);
 
   const getIndexByValue = (list, item) => {
     return list.findIndex(({ value }) => value === item);
   };
 
-  const onMonthChange = (month) => setMonth(month);
-
-  const onYearChange = (year) => setYear(year);
-
-  const onIsCurrentlyChange = (value) => setIsCurrently(Boolean(value));
-
-  const onCheckboxChange = ({ target }) => onIsCurrentlyChange(target.checked);
+  const onCheckboxChange = ({ target }) => setIsCurrently(target.checked);
 
   useEffect(() => {
     if (isCurrently) {
@@ -107,10 +100,10 @@ function MonthYearControl({
 
   useEffect(() => {
     if (isCurrentlyProp) {
-      onIsCurrentlyChange(isCurrentlyProp);
+      setIsCurrently(Boolean(isCurrentlyProp));
     } else {
-      onMonthChange(monthProp);
-      onYearChange(yearProp);
+      setMonth(monthProp);
+      setYear(yearProp);
     }
   }, [monthProp, yearProp, isCurrentlyProp]);
 
@@ -127,7 +120,7 @@ function MonthYearControl({
       <TileSelector
         items={months}
         isDisable={isDisable || isCurrently}
-        onChange={onMonthChange}
+        onChange={setMonth}
         currentIndex={getIndexByValue(months, month)}
         label="Mes"
         classArr={[css.selector]}
@@ -136,7 +129,7 @@ function MonthYearControl({
       <TileSelector
         items={years}
         isDisable={isDisable || isCurrently}
-        onChange={onYearChange}
+        onChange={setYear}
         currentIndex={getIndexByValue(years, year)}
         label="Año"
         classArr={[css.selector]}
