@@ -189,7 +189,7 @@ function useFormModel(content = [], templates = {}) {
     const mutator = (model) => {
       const applyTransformation = (item) => {
         if (!hasTemplateId(item)) return;
-        const hasExampleValue = (item) => Object.hasOwn(item, "exampleValue");
+        const hasExampleValue = ({ exampleValue }) => !(exampleValue == null);
         if (hasExampleValue(item)) item.value = item.exampleValue;
         if (Array.isArray(item.value)) item.value.forEach(applyTransformation);
       };
