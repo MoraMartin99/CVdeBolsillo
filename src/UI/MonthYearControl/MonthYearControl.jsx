@@ -2,7 +2,7 @@ import css from "./MonthYearControl.module.css";
 import TileSelector from "./TileSelector";
 import CloseButton from "./CloseButton";
 import { reduceToClassName } from "../../utils";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useRef } from "react";
 import months from "../../months";
 /**
  * @module MonthYearControl
@@ -61,10 +61,7 @@ function MonthYearControl({
   classArr = [],
   finishYear = defaultFinishYear,
   startYear = getDefaultStartYear(finishYear),
-  value: { month: monthProp, year: yearProp, isCurrently: isCurrentlyProp } = {
-    month: 1,
-    year: finishYear,
-  },
+  value = { month: 1, year: finishYear },
   onChange,
   allowCurrentlyOption = true,
   isDisable = false,
@@ -72,10 +69,8 @@ function MonthYearControl({
   style = {},
   isInView = true,
 }) {
-  const [month, setMonth] = useState(monthProp);
-  const [year, setYear] = useState(yearProp);
-  const [isCurrently, setIsCurrently] = useState(Boolean(isCurrentlyProp));
-
+  const lastMonthRef = useRef(value.month);
+  const lastYear = useRef(value.year);
   const years = useMemo(() => {
     return Array.from({ length: finishYear - startYear + 1 }, (_, index) => ({
       value: startYear + index,
@@ -84,26 +79,26 @@ function MonthYearControl({
     }));
   }, [finishYear, startYear]);
 
+  const onMonthChange = (month) => {
+    if (month === value.month) return;
+    lastMonthRef.current = month;
+    onChange({ ...value, month });
   };
 
-  const onCheckboxChange = ({ target }) => setIsCurrently(target.checked);
+  const onYearChange = (year) => {
+    if (year === value.year) return;
+    lastYear.current = year;
+    onChange({ ...value, year });
+  };
 
-  useEffect(() => {
-    if (isCurrently) {
-      onChange({ isCurrently });
-    } else {
-      onChange({ month, year });
-    }
-  }, [isCurrently, month, onChange, year]);
+  const onCheckboxChange = ({ target }) => {
+    onChange(
+      target.checked
+        ? { isCurrently: true }
+        : { month: lastMonthRef.current, year: lastYear.current },
+    );
+  };
 
-  useEffect(() => {
-    if (isCurrentlyProp) {
-      setIsCurrently(Boolean(isCurrentlyProp));
-    } else {
-      setMonth(monthProp);
-      setYear(yearProp);
-    }
-  }, [monthProp, yearProp, isCurrentlyProp]);
   const isSelectorDisable = () => isDisable || Boolean(value.isCurrently);
 
   return (
@@ -118,8 +113,8 @@ function MonthYearControl({
       ></CloseButton>
       <TileSelector
         items={months}
-        onChange={setMonth}
         isDisable={isSelectorDisable()}
+        onChange={onMonthChange}
         currentIndex={months.findIndex((item) => item.value === value.month)}
         label="Mes"
         classArr={[css.selector]}
@@ -127,8 +122,8 @@ function MonthYearControl({
       ></TileSelector>
       <TileSelector
         items={years}
-        onChange={setYear}
         isDisable={isSelectorDisable()}
+        onChange={onYearChange}
         currentIndex={years.findIndex((item) => item.value === value.year)}
         label="Año"
         classArr={[css.selector]}
@@ -139,7 +134,7 @@ function MonthYearControl({
           <input
             onChange={onCheckboxChange}
             type="checkbox"
-            checked={isCurrently}
+            checked={Boolean(value.isCurrently)}
             disabled={isDisable}
           />
           <span>Actualidad</span>

@@ -1,10 +1,10 @@
 import NavigationButton from "./NavigationButton";
 import css from "./TileSelector.module.css";
 import { Debouncer, reduceToClassName, clamp } from "../../utils";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useEffect } from "react";
 import Tile from "./Tile";
 
-const scrollDelay = 200;
+const scrollDelay = 300;
 
 /**
  * A callback that runs if the value change and is valid
@@ -37,7 +37,7 @@ function TileSelector({
   label,
   classArr = [],
   items,
-  currentIndex: currentIndexProp = 0,
+  currentIndex = 0,
   onChange,
   isDisable = false,
   visibleTiles = 5,
@@ -47,11 +47,8 @@ function TileSelector({
     (index) => clamp(0, index, items.length - 1),
     [items.length],
   );
-  const [currentIndex, setCurrentIndex] = useState(
-    getBoundedIndex(currentIndexProp),
-  );
+
   const tileContainerRef = useRef(null);
-  const isFirstMoveRef = useRef(true);
 
   const hasToSkipEffect = useCallback(
     () => isDisable || !isInView,
@@ -64,21 +61,20 @@ function TileSelector({
   };
 
   const createTile = ({ label, key }, index) => {
+    const isCurrent = () => getBoundedIndex(currentIndex) === index && isInView;
     const moveToCenter = ({ currentTarget }) => {
       currentTarget.scrollIntoView(
-        isFirstMoveRef.current
+        isCurrent()
           ? { behavior: "instant", block: "center" }
           : { behavior: "smooth", block: "center" },
       );
-
-      isFirstMoveRef.current = false;
     };
     return (
       <Tile
         key={key}
         index={index}
         isDisable={isDisable}
-        isCurrent={currentIndex === index && isInView}
+        isCurrent={isCurrent()}
         classArr={[css.tile]}
         moveHandler={moveToCenter}
       >
@@ -88,21 +84,18 @@ function TileSelector({
   };
 
   const previousTile = () => {
-    setCurrentIndex(getBoundedIndex(currentIndex - 1));
+    tileContainerRef.current.scrollBy({
+      top: getTiles()[0].offsetHeight * -1,
+      behavior: "smooth",
+    });
   };
 
   const nextTile = () => {
-    setCurrentIndex(getBoundedIndex(currentIndex + 1));
+    tileContainerRef.current.scrollBy({
+      top: getTiles()[0].offsetHeight,
+      behavior: "smooth",
+    });
   };
-
-  useEffect(() => {
-    setCurrentIndex(getBoundedIndex(currentIndexProp));
-  }, [currentIndexProp, getBoundedIndex]);
-
-  useEffect(() => {
-    if (hasToSkipEffect()) return;
-    onChange(items[currentIndex].value);
-  }, [currentIndex, hasToSkipEffect, items, onChange]);
 
   useEffect(() => {
     if (hasToSkipEffect()) return;
@@ -115,18 +108,18 @@ function TileSelector({
 
     const callback = (entries) => {
       const cleanEntries = ({ isIntersecting }) => isIntersecting;
-      const getIndex = ({ target }) => {
-        return Number(target.getAttribute("data-index"));
+      const getValue = ({ target }) => {
+        return items[Number(target.getAttribute("data-index"))].value;
       };
-      const setState = (index) => debouncer.run(() => setCurrentIndex(index));
-      entries.filter(cleanEntries).map(getIndex).forEach(setState);
+      const setState = (value) => debouncer.run(() => onChange(value));
+      entries.filter(cleanEntries).map(getValue).forEach(setState);
     };
 
     const observer = new IntersectionObserver(callback, options);
     getTiles().forEach((item) => observer.observe(item));
 
     return () => observer.disconnect();
-  }, [hasToSkipEffect, visibleTiles]);
+  }, [hasToSkipEffect, items, onChange, visibleTiles]);
 
   return (
     <div

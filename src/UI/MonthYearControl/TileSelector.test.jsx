@@ -7,6 +7,8 @@ import "../../variables.css";
 import tileCSS from "./Tile.module.css";
 import { useState } from "react";
 
+const scrollDelay = 350;
+
 const enrichItem = (value, index) => ({ ...value, key: index, index });
 
 const items = [
@@ -29,6 +31,8 @@ const renderComponent = async ({ currentIndex, isDisable, isInView } = {}) => {
     ></SUT>,
   );
 };
+
+const getTileContainer = () => page.getByRole("list");
 
 const getNextButton = (options) => {
   return page.getByRole("button", options).last();
@@ -57,9 +61,21 @@ const expectCurrentTileAtIndex = async (index) => {
 };
 
 const expectCurrentTileAtIndexOnce = async (index) => {
-  await new Promise((resolve) => setTimeout(() => resolve(), 300));
+  await new Promise((resolve) => setTimeout(() => resolve(), scrollDelay));
   await expectCurrentTileAtIndex(index);
   expect(onChangeMock).toHaveBeenCalledTimes(1);
+};
+
+const expectReportedValue = async (value, callsCount = 1) => {
+  await vi.waitFor(
+    () => {
+      const calls = onChangeMock.mock.calls;
+      if (calls.length >= callsCount) return;
+      throw new Error(`calls.length = ${calls.length}`);
+    },
+    { timeout: scrollDelay * 3, interval: 300 },
+  );
+  expect(onChangeMock).toHaveBeenLastCalledWith(value);
 };
 
 describe("TileSelector", () => {
@@ -110,13 +126,12 @@ describe("TileSelector", () => {
   const clickableItems = items.slice(1);
 
   it.each(clickableItems)(
-    "selects the clicked tile as current, label: $label",
+    "reports the clicked tile as current, label: $label",
     async ({ index, label }) => {
       await renderComponent();
       const targetTile = page.getByText(label);
       await targetTile.click();
-      await expectCurrentTileAtIndex(index);
-      expect(onChangeMock).toHaveBeenCalledTimes(2);
+      await expectReportedValue(items[index].value);
     },
   );
 
@@ -124,11 +139,11 @@ describe("TileSelector", () => {
     const indexes = items.slice(0, -1).map(({ index }) => index);
 
     it.each(indexes)(
-      "selects the next sibling of the current tile if the current tile is not the last tile, index: %i",
+      "reports the next sibling of the current tile if the current tile is not the last tile, index: %i",
       async (index) => {
         await renderComponent({ currentIndex: index });
         await getNextButton().click();
-        await expectCurrentTileAtIndex(index + 1);
+        await expectReportedValue(items[index + 1].value);
       },
     );
 
@@ -136,7 +151,7 @@ describe("TileSelector", () => {
       const index = items.at(-1).index;
       await renderComponent({ currentIndex: index });
       await getNextButton().click();
-      await expectCurrentTileAtIndex(index);
+      await expectCurrentTileAtIndexOnce(index);
     });
   });
 
@@ -144,11 +159,11 @@ describe("TileSelector", () => {
     const indexes = items.slice(1).map(({ index }) => index);
 
     it.each(indexes)(
-      "selects the previous sibling of the current tile if the current tile is not the first tile, index: %i",
+      "reports the previous sibling of the current tile if the current tile is not the first tile, index: %i",
       async (index) => {
         await renderComponent({ currentIndex: index });
         await getPreviousButton().click();
-        await expectCurrentTileAtIndex(index - 1);
+        await expectReportedValue(items[index - 1].value);
       },
     );
 
@@ -156,17 +171,17 @@ describe("TileSelector", () => {
       const index = items[0].index;
       await renderComponent({ currentIndex: index });
       await getPreviousButton().click();
-      await expectCurrentTileAtIndex(index);
+      await expectCurrentTileAtIndexOnce(index);
     });
   });
 
   it.each(items.slice(1))(
-    "selects the tile that intersects the trigger area on scroll, currentIndex = $index",
+    "reports the tile that intersects the trigger area on scroll, currentIndex = $index",
     async (item) => {
       await renderComponent();
       const tile = page.getByText(item.label);
       tile.element().scrollIntoView({ behavior: "instant", block: "center" });
-      await expectCurrentTileAtIndex(item.index);
+      await expectReportedValue(item.value);
     },
   );
 
@@ -189,7 +204,7 @@ describe("TileSelector", () => {
     });
 
     it("disables scroll", async () => {
-      const container = page.getByRole("list");
+      const container = getTileContainer();
       const target = page.getByText(items.at(-1).label).element();
       const getTop = () => target.getBoundingClientRect().top;
       const initialTop = getTop();

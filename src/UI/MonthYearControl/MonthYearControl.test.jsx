@@ -5,26 +5,32 @@ import SUT from "./MonthYearControl";
 import months from "../../months";
 import "../../global.css";
 import "../../variables.css";
+import { useState } from "react";
 
 const onChangeMock = vi.fn(() => {});
 const onCloseButtonClickMock = vi.fn(() => {});
 const startYear = 2000;
 const finishYear = 2009;
 
-const renderComponent = async (
-  { startYearProp, finishYearProp, isDisable } = {
-    startYearProp: startYear,
-    finishYearProp: finishYear,
-  },
-) => {
-  await render(
-    <SUT
-      startYear={startYearProp}
-      finishYear={finishYearProp}
-      onChange={onChangeMock}
-      isDisable={isDisable}
-      onCloseButtonClick={onCloseButtonClickMock}
-    ></SUT>,
+const Test = ({
+  startYearProp,
+  finishYearProp,
+  isDisable = false,
+  valueProp,
+}) => {
+  const [value, setValue] = useState(valueProp);
+  onChangeMock.mockImplementation(setValue);
+  return (
+    <>
+      <SUT
+        startYear={startYearProp}
+        finishYear={finishYearProp}
+        onChange={onChangeMock}
+        isDisable={isDisable}
+        onCloseButtonClick={onCloseButtonClickMock}
+        value={value}
+      ></SUT>
+    </>
   );
 };
 
@@ -38,16 +44,9 @@ describe("MonthYearControl", () => {
 
   describe("month selector", () => {
     it("renders 12 tiles", async () => {
-      await renderComponent();
+      await render(<Test></Test>);
       const getLabel = ({ label }) => label;
       await Promise.all(months.map(getLabel).map(expectTileInTheComponent));
-    });
-
-    it("if value is undefined, it selects January", async () => {
-      await renderComponent();
-      expect(onChangeMock).toHaveBeenCalledExactlyOnceWith(
-        expect.objectContaining({ month: 1 }),
-      );
     });
   });
 
@@ -63,36 +62,30 @@ describe("MonthYearControl", () => {
 
       it("if startYear is undefined it uses a default value", async () => {
         const defaultValue = finishYear - 60;
-        await renderComponent({ finishYearProp: finishYear });
+        await render(<Test {...{ finishYearProp: finishYear }}></Test>);
         await expectTilesInTheSelector({ startYear: defaultValue, finishYear });
       });
 
       it("if finishYear is undefined it uses a default value", async () => {
         const defaultValue = new Date().getFullYear();
-        await renderComponent({ startYearProp: startYear });
+        await render(<Test startYearProp={startYear}></Test>);
         await expectTilesInTheSelector({ startYear, finishYear: defaultValue });
       });
 
       it("if startYear and finishYear are defined it renders the amount of tiles corresponding to the years between them", async () => {
-        await renderComponent({
-          finishYearProp: finishYear,
-          startYearProp: startYear,
-        });
+        await render(
+          <Test finishYearProp={finishYear} startYearProp={startYear}></Test>,
+        );
         await expectTilesInTheSelector({ startYear, finishYear });
       });
-    });
-
-    it("if value is undefined, it selects finishYear", async () => {
-      await renderComponent();
-      expect(onChangeMock).toHaveBeenCalledExactlyOnceWith(
-        expect.objectContaining({ year: finishYear }),
-      );
     });
   });
 
   describe("runs onChange", () => {
     it("on currently checkbox change", async () => {
-      await renderComponent();
+      await render(
+        <Test finishYearProp={finishYear} startYearProp={startYear}></Test>,
+      );
       const target = page.getByRole("checkbox");
       await target.click();
       const checkedValue = {
@@ -110,14 +103,14 @@ describe("MonthYearControl", () => {
 
   describe("if isDisable is truthy", () => {
     it("disables currently checkbox", async () => {
-      await renderComponent({ isDisable: true });
+      await render(<Test isDisable></Test>);
       const target = page.getByRole("checkbox");
       await expect.element(target).toBeDisabled();
     });
   });
 
   it("runs onCloseButtonClick on a closeButton click", async () => {
-    await renderComponent();
+    await render(<Test></Test>);
     const target = page.getByRole("button").first();
     await target.click();
     expect(onCloseButtonClickMock).toHaveBeenCalledOnce();
