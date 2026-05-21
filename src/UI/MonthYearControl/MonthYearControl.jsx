@@ -104,6 +104,7 @@ function MonthYearControl({
       setYear(yearProp);
     }
   }, [monthProp, yearProp, isCurrentlyProp]);
+  const isSelectorDisable = () => isDisable || Boolean(value.isCurrently);
 
   return (
     <div
@@ -117,8 +118,8 @@ function MonthYearControl({
       ></CloseButton>
       <TileSelector
         items={months}
-        isDisable={isDisable || isCurrently}
         onChange={setMonth}
+        isDisable={isSelectorDisable()}
         currentIndex={months.findIndex((item) => item.value === value.month)}
         label="Mes"
         classArr={[css.selector]}
@@ -126,8 +127,8 @@ function MonthYearControl({
       ></TileSelector>
       <TileSelector
         items={years}
-        isDisable={isDisable || isCurrently}
         onChange={setYear}
+        isDisable={isSelectorDisable()}
         currentIndex={years.findIndex((item) => item.value === value.year)}
         label="Año"
         classArr={[css.selector]}
