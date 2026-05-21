@@ -7,6 +7,8 @@ import jpg from "./test/3.jpg";
 import webp from "./test/4.webp";
 import pdf from "./test/1.pdf";
 import { describe, it, vi, expect, afterEach } from "vitest";
+import "../../../global.css";
+import "../../../variables.css";
 
 const primaryActionLabel = "Cargar";
 const destructiveActionLabel = "Remover";
