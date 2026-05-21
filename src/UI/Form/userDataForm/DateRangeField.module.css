@@ -1,0 +1,37 @@
+.main {
+  width: var(--contentWidth);
+  display: grid;
+  grid-template-columns: max-content 1fr max-content;
+  grid-template-rows: repeat(3, max-content);
+  grid-template-areas:
+    "startLabel . finishLabel"
+    "startControl . finishControl"
+    "tip tip tip";
+  row-gap: var(--rowGap);
+}
+
+.label {
+  padding-left: var(--leftPadding);
+}
+
+.startLabel {
+  grid-area: startLabel;
+}
+
+.finishLabel {
+  grid-area: finishLabel;
+}
+
+.startControl {
+  grid-area: startControl;
+}
+
+.finishControl {
+  grid-area: finishControl;
+}
+
+.tip {
+  --width: var(--contentWidth);
+  grid-area: tip;
+  padding-left: var(--leftPadding);
+}
