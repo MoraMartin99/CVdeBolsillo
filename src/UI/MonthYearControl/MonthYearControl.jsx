@@ -84,8 +84,6 @@ function MonthYearControl({
     }));
   }, [finishYear, startYear]);
 
-  const getIndexByValue = (list, item) => {
-    return list.findIndex(({ value }) => value === item);
   };
 
   const onCheckboxChange = ({ target }) => setIsCurrently(target.checked);
@@ -121,7 +119,7 @@ function MonthYearControl({
         items={months}
         isDisable={isDisable || isCurrently}
         onChange={setMonth}
-        currentIndex={getIndexByValue(months, month)}
+        currentIndex={months.findIndex((item) => item.value === value.month)}
         label="Mes"
         classArr={[css.selector]}
         isInView={isInView}
@@ -130,7 +128,7 @@ function MonthYearControl({
         items={years}
         isDisable={isDisable || isCurrently}
         onChange={setYear}
-        currentIndex={getIndexByValue(years, year)}
+        currentIndex={years.findIndex((item) => item.value === value.year)}
         label="Año"
         classArr={[css.selector]}
         isInView={isInView}
