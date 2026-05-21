@@ -166,7 +166,7 @@ describe("useFormModel", () => {
     const initialItem = getLastCall().model[3];
     const { submitData, id } = initialItem;
     const properties = { value: 105, newKey1: "hola", newMethod: () => {}, id };
-    act(() => submitData(properties));
+    act(() => submitData(id, properties));
     const finalItem = getLastCall().model[3];
     expect(initialItem).not.toEqual(expect.objectContaining(properties));
     expect(finalItem).toEqual(expect.objectContaining(properties));

@@ -15,8 +15,8 @@ import { reduceToClassName } from "../../../utils";
 /**
  * A function that report data changes to the form model
  * @callback submitData
- * @param {object} data
- * @param {string} data.id The id of the component
+ * @param {string} id The id of the component
+ * @param {object} data The properties to change
  */
 
 /**
@@ -50,7 +50,7 @@ function ClassicField({
 
   const onChange = ({ target }) => {
     const value = target.value;
-    submitData({ id, isInvalid: isInvalid(value), value });
+    submitData(id, { isInvalid: isInvalid(value), value });
   };
 
   return (

@@ -30,8 +30,8 @@ import ImageMagnifier from "../../ImageMagnifier/ImageMagnifier";
 /**
  * A function that report data changes to the form model
  * @callback submitData
- * @param {object} data
- * @param {string} data.id The id of the component
+ * @param {string} id The id of the component
+ * @param {object} data The properties to change
  */
 
 /**
@@ -78,8 +78,7 @@ function ImageField({
     const reader = new FileReader();
     reader.onload = ({ target: { result: path } }) => {
       const value = { source: path };
-      submitData({
-        id,
+      submitData(id, {
         value,
         isInvalid: isInvalid(value),
       });
@@ -88,8 +87,7 @@ function ImageField({
   };
 
   const onImageManipulation = (value) => {
-    submitData({
-      id,
+    submitData(id, {
       value,
       isInvalid: isInvalid(value),
     });
@@ -99,8 +97,7 @@ function ImageField({
 
   const resetFileInput = () => {
     const value = {};
-    submitData({
-      id,
+    submitData(id, {
       value,
       isInvalid: isInvalid(value),
     });

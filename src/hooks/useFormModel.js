@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { toPascalCase } from "../utils";
 import { cloneDeep } from "lodash";
 
@@ -61,17 +61,23 @@ const TestElement = ({ templates, content }) => {
  * @returns {{model: model, resetModel: resetModel, loadExamples: loadExamples}}
  */
 function useFormModel(content = [], templates = {}) {
-  const contentRef = useRef(content);
-  const templatesRef = useRef(templates);
-  const [model, setModel] = useState(buildModel(content, templates));
+  const mutateModel = useCallback((mutator) => {
+    const mutateState = (model) => {
+      const newModel = cloneDeep(model);
+      mutator(newModel);
+      return newModel;
+    };
 
-  function hasTemplateId(item) {
+    setModel(mutateState);
+  }, []);
+
+  const hasTemplateId = useCallback((item) => {
     if (typeof item !== "object" || item === null) return false;
     return Boolean(item.templateId);
-  }
+  }, []);
 
-  function buildModel(content, templates) {
-    const getModelItemReference = (id, model) => {
+  const getModelItemReference = useCallback(
+    (id, model) => {
       const isTargetItem = (item) => item.id === id;
       for (const item of model) {
         if (!hasTemplateId(item)) continue;
@@ -80,8 +86,23 @@ function useFormModel(content = [], templates = {}) {
         const recursiveResult = getModelItemReference(id, item.value);
         if (recursiveResult) return recursiveResult;
       }
-    };
+    },
+    [hasTemplateId],
+  );
 
+  const submitData = useCallback(
+    (id, data) => {
+      const mutator = (model) => {
+        const [modelItem] = getModelItemReference(id, model);
+        for (const key in data) modelItem[key] = data[key];
+      };
+
+      mutateModel(mutator);
+    },
+    [getModelItemReference, mutateModel],
+  );
+
+  const buildModel = (content, templates) => {
     const mergeWithTemplate = (item) => {
       return { ...templates[item.templateId], ...item };
     };
@@ -146,17 +167,7 @@ function useFormModel(content = [], templates = {}) {
     };
 
     const addSubmitData = (item) => {
-      if (item.action) return { ...item };
-      const submitData = (data) => {
-        const mutator = (model) => {
-          const [modelItem] = getModelItemReference(item.id, model);
-          for (const key in data) modelItem[key] = data[key];
-        };
-
-        mutateModel(mutator);
-      };
-
-      return { ...item, submitData };
+      return item.action ? { ...item } : { ...item, submitData };
     };
 
     const buildItem = (item, index) => {
@@ -179,7 +190,11 @@ function useFormModel(content = [], templates = {}) {
     };
 
     return content.map(buildItem);
-  }
+  };
+
+  const contentRef = useRef(content);
+  const templatesRef = useRef(templates);
+  const [model, setModel] = useState(buildModel(content, templates));
 
   const resetModel = () => {
     setModel(buildModel(contentRef.current, templatesRef.current));
@@ -198,16 +213,6 @@ function useFormModel(content = [], templates = {}) {
     };
 
     mutateModel(mutator);
-  };
-
-  const mutateModel = (mutator) => {
-    const mutateState = (model) => {
-      const newModel = cloneDeep(model);
-      mutator(newModel);
-      return newModel;
-    };
-
-    setModel(mutateState);
   };
 
   return { model, resetModel, loadExamples };

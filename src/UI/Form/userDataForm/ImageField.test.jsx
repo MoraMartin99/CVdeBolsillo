@@ -24,27 +24,19 @@ const validImageCases = [
   { path: webp, type: "webp" },
 ];
 
-class SubmitCall {
-  constructor() {
-    this.id = id;
-    this.isInvalid = false;
-    this.value = null;
-  }
-}
+const getSubmitCall = ({ value = null, isInvalid = false }) => {
+  return [
+    id,
+    {
+      value,
+      isInvalid,
+    },
+  ];
+};
 
-class SuccessfulCall extends SubmitCall {
-  constructor({ source, scale, positionX, positionY }) {
-    super();
-    this.value = { source, scale, positionX, positionY };
-  }
-}
+const getSuccessfulCall = (value) => getSubmitCall({ value });
 
-class FailedCall extends SubmitCall {
-  constructor() {
-    super();
-    this.value = {};
-  }
-}
+const getFailedCall = () => getSubmitCall({ value: {} });
 
 const renderSubject = (value) => {
   render(
@@ -88,7 +80,7 @@ describe("ImageField", () => {
       },
     );
 
-    const createFileData = async (data) => {
+    const addFile = async (data) => {
       const { path, type } = data;
       const name = `file.${type}`;
       const response = await fetch(path);
@@ -97,46 +89,32 @@ describe("ImageField", () => {
       return { ...data, file };
     };
 
-    const addExpectedResult = async (data) => {
-      const { type, file } = data;
-
-      class Result {
-        constructor() {
-          this.expectedCall = null;
-          this.callCount = 1;
-          this.isAccepted = true;
-        }
+    const addExpectedCall = async (data) => {
+      const acceptedTypes = validImageCases.map(({ type }) => type);
+      if (!acceptedTypes.includes(data.type)) {
+        return { ...data, expectedCall: getFailedCall() };
       }
 
-      class InvalidResult extends Result {
-        constructor() {
-          super();
-          this.expectedCall = new FailedCall();
-          this.isAccepted = false;
-        }
-      }
-
-      class ValidResult extends Result {
-        constructor(source) {
-          super();
-          this.expectedCall = new SuccessfulCall({ source });
-        }
-      }
-
-      if (type === "pdf") return { ...data, ...new InvalidResult() };
       const source = await new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onerror = () => reject();
         reader.onload = () => resolve(reader.result);
-        reader.readAsDataURL(file);
+        reader.readAsDataURL(data.file);
       });
-      return { ...data, ...new ValidResult(source) };
+      return { ...data, expectedCall: getSuccessfulCall({ source }) };
+    };
+
+    const addIsAccepted = async (data) => {
+      const acceptedTypes = validImageCases.map(({ type }) => type);
+      return { ...data, isAccepted: acceptedTypes.includes(data.type) };
     };
 
     const createFileCase = async (data) => {
-      const fileData = await createFileData(data);
-      const fileCase = await addExpectedResult(fileData);
-      return fileCase;
+      const transformations = [addFile, addExpectedCall, addIsAccepted];
+      return transformations.reduce(
+        async (result, transformation) => transformation(await result),
+        Promise.resolve(data),
+      );
     };
 
     const fileCases = await Promise.all(
@@ -145,14 +123,18 @@ describe("ImageField", () => {
 
     it.each(fileCases)(
       "only accepts image files if received from the file dialog, type = $type, isAccepted = $isAccepted",
-      async ({ file, expectedCall, callCount }) => {
+      async ({ file, expectedCall }) => {
         renderSubject();
         const input = page.getByTestId(inputTestId);
         await input.upload(file);
-        const lastCall = submitDataMock.mock.lastCall;
-        const result = lastCall ? lastCall[0] : undefined;
-        expect(submitDataMock).toHaveBeenCalledTimes(callCount);
-        expect(result).toEqual(expectedCall);
+        await vi.waitFor(
+          () => {
+            if (submitDataMock.mock.lastCall) return;
+            throw new Error("submitDataMock has not been called");
+          },
+          { timeout: 1000, interval: 100 },
+        );
+        expect(submitDataMock).toHaveBeenCalledExactlyOnceWith(...expectedCall);
       },
     );
   });
@@ -164,7 +146,6 @@ describe("ImageField", () => {
       positionX: 15,
       positionY: 24,
     };
-    const expectedCall = new FailedCall();
     renderSubject(value);
     const button = page.getByText(destructiveActionLabel);
 
@@ -173,6 +154,6 @@ describe("ImageField", () => {
     const lastCall = submitDataMock.mock.lastCall;
     const result = lastCall ? lastCall[0] : undefined;
     expect(submitDataMock).toHaveBeenCalledTimes(1);
-    expect(result).toEqual(expectedCall);
+    expect(result).toEqual(...getFailedCall());
   });
 });
