@@ -147,6 +147,16 @@ describe("TileSelector", () => {
       },
     );
 
+    it("can chain multiple clicks", async () => {
+      await renderComponent({ currentIndex: 0 });
+      await getNextButton().click();
+      await new Promise((resolve) => requestAnimationFrame(resolve));
+      await getNextButton().click();
+      await new Promise((resolve) => requestAnimationFrame(resolve));
+      await expectReportedValue(items[2].value);
+      expect(onChangeMock).toHaveBeenCalledTimes(1);
+    });
+
     it("keeps the current tile if the the current tile is the last tile", async () => {
       const index = items.at(-1).index;
       await renderComponent({ currentIndex: index });
@@ -166,6 +176,16 @@ describe("TileSelector", () => {
         await expectReportedValue(items[index - 1].value);
       },
     );
+
+    it("can chain multiple clicks", async () => {
+      await renderComponent({ currentIndex: 2 });
+      await getPreviousButton().click();
+      await new Promise((resolve) => requestAnimationFrame(resolve));
+      await getPreviousButton().click();
+      await new Promise((resolve) => requestAnimationFrame(resolve));
+      await expectReportedValue(items[0].value);
+      expect(onChangeMock).toHaveBeenCalledTimes(1);
+    });
 
     it("keeps the current tile if the the current tile is the first tile", async () => {
       const index = items[0].index;
