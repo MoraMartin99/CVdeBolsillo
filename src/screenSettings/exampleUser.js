@@ -74,7 +74,7 @@ const projects = [
     role: "full developer",
     dateRange: {
       start: { month: 3, year: 2025 },
-      isCurrently: true,
+      finish: { isCurrently: true },
     },
   },
   {
