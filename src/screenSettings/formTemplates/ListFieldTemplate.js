@@ -4,6 +4,12 @@ import TaskIcon from "../../assets/images/TaskIcon.svg?react";
 const defaultPrimaryAction = { label: "Agregar item", Icon: TaskIcon };
 
 /**
+ * @typedef {object} listItem
+ * @property {string|number} value
+ * @property {string} id
+ */
+
+/**
  * The ListFieldTemplate class defines the properties of the list field
  */
 class ListFieldTemplate extends Template {
@@ -13,15 +19,15 @@ class ListFieldTemplate extends Template {
    * @param {string} settings.templateId
    * @param {string} [settings.label = "Lista"] The visible tittle
    * @param {string} [settings.placeholder = "item"]
-   * @param {Array<string|number>} [settings.value = [""]]
-   * @param {Array<string|number>} [settings.exampleValue]
+   * @param {Array<listItem>} [settings.value = [{ value: "", id: self.crypto.randomUUID() }]]
+   * @param {Array<listItem>} [settings.exampleValue]
    */
   constructor({
     templateId,
     label = "Lista",
     placeholder = "item",
     primaryAction = defaultPrimaryAction,
-    value = [""],
+    value = [{ value: "", id: self.crypto.randomUUID() }],
     exampleValue,
   }) {
     super({ templateId, component: "field" });
