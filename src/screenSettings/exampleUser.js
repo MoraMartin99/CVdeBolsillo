@@ -31,7 +31,7 @@ class ListItem {
   }
 }
 
-class User {
+class ExampleUser {
   constructor({
     name,
     lastName,
@@ -320,7 +320,7 @@ const studies = [
   },
 ];
 
-const exampleUser = new User({
+const exampleUser = new ExampleUser({
   name: "Oscar Martin",
   lastName: "Mora",
   title: "Ingeniero industrial y estudiante autodidacta de Desarrollo web",
