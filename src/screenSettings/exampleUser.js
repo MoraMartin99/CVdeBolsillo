@@ -233,7 +233,10 @@ const studies = [
   {
     issuingOrganization: "The Odin project",
     study: "Frontend Web Development",
-    dateRange: { start: { month: 2, year: 2022 }, isCurrently: true },
+    dateRange: {
+      start: { month: 2, year: 2022 },
+      finish: { isCurrently: true },
+    },
   },
   {
     issuingOrganization: "freeCodeCamp",
