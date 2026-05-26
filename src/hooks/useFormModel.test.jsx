@@ -61,12 +61,13 @@ const simplifyModel = ({ templateId, value: defaultValue }) => {
   return { templateId, value };
 };
 
+const hasTemplateId = (item) => {
+  if (typeof item !== "object" || item === null) return false;
+  return Boolean(item.templateId);
+};
+
 const flatModel = (model) => {
   const reducer = (result, current) => {
-    const hasTemplateId = (item) => {
-      if (typeof item !== "object" || item === null) return false;
-      return Boolean(item.templateId);
-    };
     const isArray = (item) => Array.isArray(item);
     if (!hasTemplateId(current)) return [...result];
     return [
@@ -111,23 +112,6 @@ describe("useFormModel", () => {
       const expectedValue = buildModel(content, templates);
       const value = model.map(simplifyModel);
       expect(value).toEqual(expectedValue);
-    });
-
-    it("items ids are based on the ancestor tree and the position within its siblings", () => {
-      const { model } = getLastCall();
-      const setExpectations = (
-        { templateId, id, parentId, value, actions },
-        index,
-      ) => {
-        const expectedId = `${parentId ? parentId : ""}${templateId}${index + 1}`;
-        const setter = (item, index) => {
-          setExpectations({ ...item, parentId: id }, index);
-        };
-        if (Array.isArray(value)) value.forEach(setter);
-        if (Array.isArray(actions)) actions.forEach(setter);
-        expect(id).toBe(expectedId);
-      };
-      model.forEach((item, index) => setExpectations(item, index));
     });
 
     it("content items can overwrite and extends its base template", () => {
@@ -183,21 +167,36 @@ describe("useFormModel", () => {
     expect(flatModel(finalModel).every(exampleValueIsLoaded)).toBeTruthy();
   });
 
-  it("resets the current value to the initial values", () => {
+  it("recalculates the model based on the initial content and templates", () => {
     const { resetModel, loadExamples } = getLastCall();
-    const getModelValues = () => {
-      const extractData = ({ id, value }) => ({ id, value });
-      return JSON.parse(
-        JSON.stringify(flatModel(getLastCall().model).map(extractData)),
-      );
-    };
-    const initialModelValues = getModelValues();
-    act(() => loadExamples());
-    const exampleModelValues = getModelValues();
-    act(() => resetModel());
-    const finalModelValues = getModelValues();
+    const getStableModel = () => {
+      const cleanModel = (item) => {
+        if (!hasTemplateId(item)) return item;
+        const unstableKeys = ["onClick", "id", "parentId"];
+        const stableItem = Object.fromEntries(
+          Object.entries(item).filter(([key]) => !unstableKeys.includes(key)),
+        );
 
-    expect(finalModelValues).not.toEqual(exampleModelValues);
-    expect(finalModelValues).toEqual(initialModelValues);
+        return {
+          ...stableItem,
+          value: Array.isArray(item.value)
+            ? item.value.map(cleanModel)
+            : item.value,
+          actions: Array.isArray(item.actions)
+            ? item.actions.map(cleanModel)
+            : item.actions,
+        };
+      };
+      return getLastCall().model.map(cleanModel);
+    };
+
+    const initialModel = getStableModel();
+    act(() => loadExamples());
+    const exampleModel = getStableModel();
+    act(() => resetModel());
+    const finalModel = getStableModel();
+
+    expect(finalModel).not.toEqual(exampleModel);
+    expect(finalModel).toEqual(initialModel);
   });
 });

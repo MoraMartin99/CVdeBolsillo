@@ -1,5 +1,4 @@
 import { useCallback, useRef, useState } from "react";
-import { toPascalCase } from "../utils";
 import { cloneDeep } from "lodash";
 
 /** @module useFormModel */
@@ -107,21 +106,7 @@ function useFormModel(content = [], templates = {}) {
       return { ...templates[item.templateId], ...item };
     };
 
-    const addId = (item) => {
-      const { parentId, templateId, childrenId } = item;
-
-      const createId = ({
-        parentId = "",
-        templateId = "",
-        childrenId = "",
-      }) => {
-        return parentId
-          ? `${parentId}${toPascalCase(templateId)}${childrenId}`
-          : `${templateId}${childrenId}`;
-      };
-
-      return { ...item, id: createId({ parentId, templateId, childrenId }) };
-    };
+    const addId = (item) => ({ ...item, id: crypto.randomUUID() });
 
     const enrichChildren = (item) => {
       const { value, actions, id: parentId } = item;
@@ -170,17 +155,14 @@ function useFormModel(content = [], templates = {}) {
       return item.action ? { ...item } : { ...item, submitData };
     };
 
-    const buildItem = (item, index) => {
+    const buildItem = (item) => {
       if (!hasTemplateId(item)) return item;
-
-      const addChildrenId = (item) => ({ ...item, childrenId: index + 1 });
 
       const enrichItem = (result, callback) => ({ ...callback(result) });
 
       return {
         ...[
           mergeWithTemplate,
-          addChildrenId,
           addId,
           setAction,
           addSubmitData,
