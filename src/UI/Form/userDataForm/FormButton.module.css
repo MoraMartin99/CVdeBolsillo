@@ -32,6 +32,16 @@
   background-color: var(--BGColorHover);
 }
 
+.borderless {
+  --color: var(--primary500color);
+  --BGColor: inherit;
+}
+
+.borderless:hover {
+  --color: var(--primary600color);
+  --BGColorHover: inherit;
+}
+
 .icon {
   color: inherit;
   width: var(--iconSize);
