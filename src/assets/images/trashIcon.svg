@@ -1,12 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" style="-webkit-print-color-adjust::exact" viewBox="-12136 -9235 15 15">
   <g class="frame-container-wrapper">
     <g class="frame-container-blur">
       <g class="frame-container-shadows">
         <g class="fills">
-          <rect width="10" height="10" class="frame-background" rx="0" ry="0"/>
+          <rect width="15" height="15" x="-12136" y="-9235" class="frame-background" rx="0" ry="0"/>
         </g>
-        <g class="frame-children" style="fill:#000">
-          <path d="M7.083 2.5h2.084v.833h-.834V8.75c0 .23-.187.417-.416.417H2.083a.416.416 0 0 1-.416-.417V3.333H.833V2.5h2.084V1.25c0-.23.187-.417.416-.417h3.334c.23 0 .416.187.416.417V2.5Zm.417.833h-5v5h5v-5Zm-3.75 1.25h.833v2.5H3.75v-2.5Zm1.667 0h.833v2.5h-.833v-2.5ZM3.75 1.667V2.5h2.5v-.833h-2.5Z" class="fills" fill="currentColor" style="fill-opacity:1"/>
+        <g class="frame-children">
+          <path fill="currentColor" d="M-12125.375-9231.25h3.125v1.25h-1.25v8.125c0 .345-.28.625-.625.625h-8.75a.626.626 0 0 1-.625-.625V-9230h-1.25v-1.25h3.125v-1.875c0-.345.28-.625.625-.625h5c.345 0 .625.28.625.625zm-5 3.125v3.75h1.25v-3.75zm2.5 0v3.75h1.25v-3.75zm-2.5-4.375v1.25h3.75v-1.25z" class="fills"/>
         </g>
       </g>
     </g>
