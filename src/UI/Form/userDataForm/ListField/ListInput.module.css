@@ -1,0 +1,20 @@
+.main {
+  display: flex;
+  gap: var(--gap);
+}
+
+.button {
+  align-items: center;
+  background-color: inherit;
+  cursor: pointer;
+  color: var(--error400Color);
+}
+
+.button:hover {
+  color: var(--error500Color);
+}
+
+.icon {
+  width: var(--iconSize);
+  height: var(--iconSize);
+}

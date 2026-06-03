@@ -1,0 +1,20 @@
+.main {
+  --width: 200px;
+  --iconSize: 15px;
+  --inputGap: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--rowGap);
+}
+
+.label {
+  align-self: center;
+}
+
+.input {
+  --gap: var(--inputGap);
+}
+
+.button{
+  align-self: center;
+}
