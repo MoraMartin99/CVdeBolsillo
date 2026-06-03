@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
   <g class="frame-container-wrapper">
     <g class="frame-container-blur">
       <g class="frame-container-shadows">
@@ -16,4 +16,3 @@
     </g>
   </g>
 </svg>
-

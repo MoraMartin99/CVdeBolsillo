@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 15 15">
   <defs>
     <clipPath id="a" class="frame-clip frame-clip-def">
       <rect width="15" height="15" rx="0" ry="0" transform="rotate(180 7.5 7.5)"/>
