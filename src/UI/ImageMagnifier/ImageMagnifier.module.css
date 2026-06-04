@@ -1,6 +1,6 @@
 .main {
   --size: 100px;
-  --placeholderHeigh: 88px;
+  --placeholderHeight: 88px;
   --borderSize: 1.5px;
   --borderColor: var(--primary300color);
   --invalidBorderColor: var(--error500Color);
@@ -17,6 +17,6 @@
   height: var(--size);
 }
 
-.placeHolder {
+.placeholder {
   height: var(--placeholderHeight);
 }
