@@ -4,6 +4,7 @@ import ClassicField from "./userDataForm/ClassicField";
 import ImageField from "./userDataForm/ImageField";
 import DateRangeField from "./userDataForm/DateRangeField";
 import ListField from "./userDataForm/ListField/ListField";
+import FormButton from "./userDataForm/FormButton";
 import DateField from "./userDataForm/DateField/DateField";
 
 /**
@@ -86,6 +87,20 @@ const formFactory = (model = []) => {
       return <ListField key={item.id} {...item}></ListField>;
     };
 
+    const isAction = (item) => Boolean(item.action);
+
+    const buildAction = (item) => {
+      return (
+        <FormButton
+          key={item.id}
+          {...item}
+          variant={item.action === "removeItem" ? "destructive" : "primary"}
+        >
+          {item.label}
+        </FormButton>
+      );
+    };
+
     if (!isObject(item)) return item;
     if (isForm(item)) return buildForm(item);
     if (isClassicField(item)) return buildClassicField(item);
@@ -94,6 +109,7 @@ const formFactory = (model = []) => {
     if (isDateRangeField(item)) return buildDateRangeField(item);
     if (isDateField(item)) return buildDateField(item);
     if (isListField(item)) return buildListField(item);
+    if (isAction(item)) return buildAction(item);
     return item;
   };
 
