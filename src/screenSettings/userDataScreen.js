@@ -426,9 +426,8 @@ hardSkills
 
 const hardSkillsTipCard = new TipCardTemplate({
   templateId: "hardSkillTipCard",
-  tip: `Para este proyecto una habilidad dura es una capacidad y/o conocimiento medible 
-  que se adquiere mediante el aprendizaje y puede concretarse en una acción relacionada a un area del conocimiento
-  
+  tip: `Para este proyecto una habilidad dura es una capacidad y/o conocimiento medible que se adquiere mediante el aprendizaje y puede concretarse en una acción relacionada a un area del conocimiento
+
   Ejemplos:
 
 - Tocar el piano
