@@ -1,0 +1,49 @@
+.main{
+  --borderColor: var(--secondary1000color);
+  --borderWidth: 1px;
+  --gap: 2px;
+  --tittleFontSize: 0.75rem;
+  --tittleColor: var(--secondary400color);
+  --iconSize: 10px;
+  --width: var(--contentWidth);
+  --headerHeight: 20px;
+  --headerBackgroundColor: var(--secondary1400color);
+  --headerLeftPadding: 10px;
+  --tipFontSize: 0.688rem;
+  --tipPadding: 10px 20px;
+  --tipBackgroundColor: var(--secondary1500color);
+  --tipColor: var(--secondary500color);
+
+  
+  width: var(--width);
+  border: var(--borderColor) var(--borderWidth) solid;
+  display: flex;
+  flex-direction: column;
+}
+
+.header{
+  padding-left: var(--headerLeftPadding);
+  background-color: var(--headerBackgroundColor);
+  height: var(--headerHeight);
+  display: flex;
+  gap: var(--gap);
+  font-size: var(--tittleFontSize);
+  font-weight: 600;
+  color: var(--tittleColor);
+  align-items: center;
+}
+
+.icon{
+  width: var(--iconSize);
+  height: var(--iconSize);
+}
+
+.tip{
+  color: var(--tipColor);
+ font-size: var(--tipFontSize);
+ font-weight: 500;
+ line-height: 1.2;
+ padding: var(--tipPadding);
+ background-color: var(--tipBackgroundColor);
+ white-space: pre-wrap;
+}

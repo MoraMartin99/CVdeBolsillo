@@ -6,6 +6,7 @@ import DateRangeField from "./userDataForm/DateRangeField";
 import ListField from "./userDataForm/ListField/ListField";
 import FormButton from "./userDataForm/FormButton";
 import DateField from "./userDataForm/DateField/DateField";
+import TipCard from "./userDataForm/TipCard/TipCard";
 
 /**
  * The formFactory builds all form elements based on a model
@@ -87,6 +88,16 @@ const formFactory = (model = []) => {
       return <ListField key={item.id} {...item}></ListField>;
     };
 
+    const isTipCard = ({ component }) => component === "tipCard";
+
+    const buildTipCard = (item) => {
+      return (
+        <TipCard key={item.id} {...item}>
+          {item.tip}
+        </TipCard>
+      );
+    };
+
     const isAction = (item) => Boolean(item.action);
 
     const buildAction = (item) => {
@@ -109,6 +120,7 @@ const formFactory = (model = []) => {
     if (isDateRangeField(item)) return buildDateRangeField(item);
     if (isDateField(item)) return buildDateField(item);
     if (isListField(item)) return buildListField(item);
+    if (isTipCard(item)) return buildTipCard(item);
     if (isAction(item)) return buildAction(item);
     return item;
   };
