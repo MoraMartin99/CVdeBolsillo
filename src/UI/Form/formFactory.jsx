@@ -4,6 +4,7 @@ import ClassicField from "./userDataForm/ClassicField";
 import ImageField from "./userDataForm/ImageField";
 import DateRangeField from "./userDataForm/DateRangeField";
 import ListField from "./userDataForm/ListField/ListField";
+import DateField from "./userDataForm/DateField/DateField";
 
 /**
  * The formFactory builds all form elements based on a model
@@ -69,6 +70,14 @@ const formFactory = (model = []) => {
       return <DateRangeField key={item.id} {...item}></DateRangeField>;
     };
 
+    const isDateField = ({ component, type }) => {
+      return component === "field" && type === "date";
+    };
+
+    const buildDateField = (item) => {
+      return <DateField key={item.id} {...item}></DateField>;
+    };
+
     const isListField = ({ component, type }) => {
       return component === "field" && type === "list";
     };
@@ -83,6 +92,7 @@ const formFactory = (model = []) => {
     if (isImageField(item)) return buildImageField(item);
     if (isSection(item)) return buildSection(item);
     if (isDateRangeField(item)) return buildDateRangeField(item);
+    if (isDateField(item)) return buildDateField(item);
     if (isListField(item)) return buildListField(item);
     return item;
   };

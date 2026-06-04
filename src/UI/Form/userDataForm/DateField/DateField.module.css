@@ -1,0 +1,10 @@
+.main{
+  width: var(--contentWidth);
+  display: flex;
+  flex-direction: column;
+  row-gap: var(--rowGap);
+}
+
+.label {
+  padding-left: var(--leftPadding);
+}
