@@ -1,14 +1,3 @@
-<svg xmlns="http://www.w3.org/2000/svg" fill="none" style="-webkit-print-color-adjust::exact" viewBox="-13087.5 -8620 14 14">
-  <g class="frame-container-wrapper">
-    <g class="frame-container-blur">
-      <g class="frame-container-shadows">
-        <g class="fills">
-          <rect width="14" height="14" x="-13087.5" y="-8620" class="frame-background" rx="0" ry="0"/>
-        </g>
-        <g class="frame-children">
-          <path fill="currentColor" d="M-13075.83-8618.833c.642 0 1.163.523 1.163 1.161v9.344c0 .641-.52 1.161-1.163 1.161h-9.337v-2.333h-1.166v-1.167h1.166v-1.75h-1.166v-1.166h1.166v-1.75h-1.166v-1.167h1.166v-2.333zm-7.003 1.166h-1.167v9.334h1.167zm7 0h-5.834v9.334h5.834z" class="fills"/>
-        </g>
-      </g>
-    </g>
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+  <path d="M8 2v20H4v-4H2v-2h2v-3H2v-2h2V8H2V6h2V2zm12.005 0C21.107 2 22 2.898 22 3.99v16.02c0 1.099-.893 1.99-1.995 1.99H10V2z"/>
 </svg>
