@@ -25,7 +25,7 @@ import FlaskIcon from "../assets/images/FlaskIcon.svg?react";
 import TrophyIcon from "../assets/images/TrophyIcon.svg?react";
 import AwardIcon from "../assets/images/AwardIcon.svg?react";
 import LightBulbIcon from "../assets/images/LightBulbIcon.svg?react";
-import BrainIcon from "../assets/images/BrainIcon.svg?react";
+import IntellectIcon from "../assets/images/intellect.svg?react";
 import StudentIcon from "../assets/images/StudentIcon.svg?react";
 import NotebookIcon from "../assets/images/Notebook.svg?react";
 import PlantIcon from "../assets/images/PlantIcon.svg?react";
@@ -477,7 +477,7 @@ const removeSkillAction = new RemoveItemTemplate({
 const skillSection = new SectionTemplate({
   templateId: "skill",
   name: "Habilidad",
-  Icon: BrainIcon,
+  Icon: IntellectIcon,
   value: createSkillValue(),
   actions: [removeSkillAction].map(getTemplateIdObject),
 });
