@@ -3,6 +3,7 @@ import react from "@vitejs/plugin-react";
 import svgr from "vite-plugin-svgr";
 import { playwright } from "@vitest/browser-playwright";
 import createVirtualModulePlugin from "./plugins/createVirtualModulePlugin";
+import basicSsl from "@vitejs/plugin-basic-ssl";
 
 const regularTestPaths = ["**/*.{test,spec}.{js,ts}"];
 const browserTestPaths = ["**/*.{test,spec}.{jsx,tsx}"];
@@ -13,7 +14,7 @@ const TemplateFormPlugin = createVirtualModulePlugin({
 const PreviewPlugin = createVirtualModulePlugin({ moduleId: "Preview" });
 
 export default defineConfig({
-  plugins: [TemplateFormPlugin, PreviewPlugin, react(), svgr()],
+  plugins: [TemplateFormPlugin, PreviewPlugin, react(), svgr(), basicSsl()],
   test: {
     includeTaskLocation: true,
     projects: [
