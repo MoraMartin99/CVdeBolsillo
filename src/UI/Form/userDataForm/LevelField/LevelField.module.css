@@ -1,0 +1,139 @@
+.main{
+--rowGap: 19px;
+--markColor: var(--secondary600color);
+--markFontSize: 0.75rem;
+--markPadding: 5px;
+--rangeContainerRowGap: 5px;
+--rangeInputHeight: 20px;
+--rangeInputBorderWidth: 1px;
+--rangeInputBorderColor: var(--secondary900color);
+--rangeBackgroundColor: var(--secondary1500color);
+--rangeTrackColor: var(--secondary900color);
+--tickWidth: 0.5px;
+--tickHeight: 3px;
+--tickBackgroundColor: var(--rangeTrackColor);
+--valueDisplayFontSize: 0.563rem;
+--valueDisplayColor: var(--secondary1500color);
+--valueDisplayMinWidth: 20px;
+--valueDisplayMinHeight: 13px;
+--valueDisplayBackgroundColor: var(--secondary900color);
+--valueDisplayTop: -3px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--rowGap);
+}
+
+.rangeContainer{
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  grid-template-rows: repeat(2,auto);
+  grid-template-areas:  "range range"
+                            "min max";
+  row-gap: var(--rangeContainerRowGap);
+}
+
+.range{
+ grid-area: range;
+ position: relative;
+}
+
+.rangeInput {
+  -webkit-appearance: none;
+  appearance: none; 
+  width: var(--contentWidth);
+  height: var(--rangeInputHeight);
+  cursor: pointer;
+  outline: none;
+  overflow: hidden;
+  border: var(--rangeInputBorderColor) var(--rangeInputBorderWidth) solid;
+}
+
+.rangeInput::-moz-range-track{
+  height: var(--rangeInputHeight);
+  background: var(--rangeBackgroundColor);
+}
+
+.rangeInput::-webkit-slider-runnable-track{
+  height: var(--rangeInputHeight);
+  background: var(--rangeBackgroundColor);
+}
+
+.rangeInput::-webkit-slider-runnable-track{
+  height: var(--rangeInputHeight);
+  background: var(--rangeBackgroundColor);
+}
+
+.rangeInput::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none; 
+  height: 100%;
+  width: var(--thumbWidth);
+  background-color: var(--rangeTrackColor);
+  box-shadow: calc(-1 * var(--contentWidth)) 0 0 var(--contentWidth) var(--rangeTrackColor)
+}
+
+.rangeInput::-moz-range-thumb {
+  -webkit-appearance: none;
+  appearance: none; 
+  height: 100%;
+  width: var(--thumbWidth);
+  background-color: var(--rangeTrackColor);
+  box-shadow: calc(-1 * var(--contentWidth)) 0 0 var(--contentWidth) var(--rangeTrackColor)
+}
+
+.mark{
+  color: var(--markColor);
+  font-size: var(--markFontSize);
+  font-weight: 600;
+}
+
+.mark:first{
+  grid-area: min;
+  padding-left: var(--markPadding)
+}
+
+.mark:last-child{
+  grid-area: max;
+  padding-right: var(--markPadding);
+  justify-self: end;
+}
+
+.tickContainer{
+  position: absolute;
+  display: grid;
+  grid-template-columns: calc(var(--thumbWidth) * 2);
+  grid-auto-columns: var(--thumbWidth);
+  grid-template-rows: 1fr;
+  grid-auto-flow: column;
+  width: 100%;
+  height: var(--rangeInputHeight);
+  bottom: 0;
+  pointer-events: none;
+  align-items: center;
+  justify-items: end;
+}
+
+.tick{
+  width: var(--tickWidth);
+  height: var(--tickHeight);
+  background-color: var(--tickBackgroundColor);
+}
+
+.valueDisplay{
+  position: absolute;
+  font-size: var(--valueDisplayFontSize);
+  font-weight: 600;
+  min-width: var(--valueDisplayMinWidth);
+  min-height: var(--valueDisplayMinHeight);
+  background-color: var(--valueDisplayBackgroundColor);
+  color: var(--valueDisplayColor);
+  line-height: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: var(--valueDisplayMarginLeft);
+  transform: translate(-50%,-100%);
+  top: var(--valueDisplayTop);
+}

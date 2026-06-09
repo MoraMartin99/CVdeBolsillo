@@ -7,6 +7,7 @@ import ListField from "./userDataForm/ListField/ListField";
 import FormButton from "./userDataForm/FormButton";
 import DateField from "./userDataForm/DateField/DateField";
 import TipCard from "./userDataForm/TipCard/TipCard";
+import LevelField from "./userDataForm/LevelField/LevelField";
 
 /**
  * The formFactory builds all form elements based on a model
@@ -90,6 +91,14 @@ const formFactory = (model = []) => {
 
     const isTipCard = ({ component }) => component === "tipCard";
 
+    const isLevelField = ({ component, type }) => {
+      return component === "field" && type === "level";
+    };
+
+    const buildLevelField = (item) => {
+      return <LevelField key={item.id} {...item}></LevelField>;
+    };
+
     const buildTipCard = (item) => {
       return (
         <TipCard key={item.id} {...item}>
@@ -120,6 +129,7 @@ const formFactory = (model = []) => {
     if (isDateRangeField(item)) return buildDateRangeField(item);
     if (isDateField(item)) return buildDateField(item);
     if (isListField(item)) return buildListField(item);
+    if (isLevelField(item)) return buildLevelField(item);
     if (isTipCard(item)) return buildTipCard(item);
     if (isAction(item)) return buildAction(item);
     return item;
