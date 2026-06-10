@@ -38,7 +38,7 @@
     "jsdoc": "^4",
     "prettier": "^3",
     "vite": "^8",
-    "vite-plugin-svgr": "4.3.0",
+    "vite-plugin-svgr": "^5",
     "vitest": "^4",
     "vitest-browser-react": "^2.0.5"
   }
