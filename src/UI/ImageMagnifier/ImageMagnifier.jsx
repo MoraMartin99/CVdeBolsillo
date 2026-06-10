@@ -51,7 +51,6 @@ const timer = 400;
  * @todo resetTransform and setTransform from react-zoom-pan-pinch only runs inside setTimeout with an arbitrary delay.
  * @returns {JSX.Element}
  */
-
 function ImageMagnifier({
   source = placeholderSrc,
   onChange,
@@ -115,6 +114,7 @@ function ImageMagnifier({
       onZoomStop={hasPlaceholder ? undefined : reportChange}
       onPanningStop={hasPlaceholder ? undefined : reportChange}
       ref={transformationRef}
+      centerOnInit={true}
     >
       <TransformComponent
         wrapperStyle={wrapperStyle}
