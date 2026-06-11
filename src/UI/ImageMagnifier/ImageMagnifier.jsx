@@ -60,7 +60,7 @@ function ImageMagnifier({
     css.main,
     isInvalid ? css.invalid : "",
   ]);
-  const hasPlaceholder = source === placeholderSrc;
+  const hasPlaceholder = () => source === placeholderSrc;
 
   const transformationRef = useRef(null);
 
@@ -108,7 +108,7 @@ function ImageMagnifier({
         <img
           src={source}
           alt={alt}
-          className={hasPlaceholder ? css.placeholder : css.image}
+          className={hasPlaceholder() ? css.placeholder : css.image}
           onLoad={onLoad}
         ></img>
       </TransformComponent>
@@ -117,11 +117,11 @@ function ImageMagnifier({
 
   return (
     <TransformWrapper
-      panning={{ disabled: hasPlaceholder }}
-      wheel={{ disabled: hasPlaceholder }}
-      pinch={{ disabled: hasPlaceholder }}
-      onZoomStop={hasPlaceholder ? undefined : reportChange}
-      onPanningStop={hasPlaceholder ? undefined : reportChange}
+      panning={{ disabled: hasPlaceholder() }}
+      wheel={{ disabled: hasPlaceholder() }}
+      pinch={{ disabled: hasPlaceholder() }}
+      onZoomStop={hasPlaceholder() ? undefined : reportChange}
+      onPanningStop={hasPlaceholder() ? undefined : reportChange}
       ref={transformationRef}
       centerOnInit={true}
     >
