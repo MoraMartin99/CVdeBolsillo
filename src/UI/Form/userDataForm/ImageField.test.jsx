@@ -38,8 +38,8 @@ const getSuccessfulCall = (value) => getSubmitCall({ value });
 
 const getFailedCall = () => getSubmitCall({ value: {} });
 
-const renderSubject = (value) => {
-  render(
+const renderSubject = async (value) => {
+  await render(
     <ImageField
       {...{
         primaryActionLabel,
@@ -59,7 +59,7 @@ describe("ImageField", () => {
   afterEach(() => vi.resetAllMocks());
 
   it("it displays a placeholder image if it has no image source", async () => {
-    renderSubject();
+    await renderSubject();
     const img = getImage();
     await expect.element(img).toHaveAttribute("src");
   });
@@ -74,7 +74,7 @@ describe("ImageField", () => {
           positionX: 15,
           positionY: 24,
         };
-        renderSubject(value);
+        await renderSubject(value);
         const img = getImage();
         await expect.element(img).toHaveAttribute("src", path);
       },
@@ -124,7 +124,7 @@ describe("ImageField", () => {
     it.each(fileCases)(
       "only accepts image files if received from the file dialog, type = $type, isAccepted = $isAccepted",
       async ({ file, expectedCall }) => {
-        renderSubject();
+        await renderSubject();
         const input = page.getByTestId(inputTestId);
         await input.upload(file);
         await vi.waitFor(
@@ -146,7 +146,7 @@ describe("ImageField", () => {
       positionX: 15,
       positionY: 24,
     };
-    renderSubject(value);
+    await renderSubject(value);
     const button = page.getByText(destructiveActionLabel);
 
     await button.click();
