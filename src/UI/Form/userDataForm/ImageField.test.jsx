@@ -18,10 +18,10 @@ const inputTestId = "fileInput";
 const id = "imageField";
 
 const validImageCases = [
-  { path: png, type: "png" },
-  { path: svg, type: "svg" },
-  { path: jpg, type: "jpeg" },
-  { path: webp, type: "webp" },
+  { source: png, type: "png" },
+  { source: svg, type: "svg" },
+  { source: jpg, type: "jpeg" },
+  { source: webp, type: "webp" },
 ];
 
 const getSubmitCall = ({ value = null, isInvalid = false }) => {
@@ -64,79 +64,80 @@ describe("ImageField", () => {
     await expect.element(img).toHaveAttribute("src");
   });
 
-  describe("sets image as value", async () => {
-    it.each(validImageCases)(
-      "accepts $type image received as a prop",
-      async ({ path }) => {
+  describe("sets an image as value", async () => {
+    describe("using the component props", async () => {
+      it.each(validImageCases)("accepts $type image", async ({ source }) => {
         const value = {
-          source: path,
+          source,
           scale: 2,
           positionX: 15,
           positionY: 24,
         };
         await renderSubject(value);
-        const img = getImage();
-        await expect.element(img).toHaveAttribute("src", path);
-      },
-    );
-
-    const addFile = async (data) => {
-      const { path, type } = data;
-      const name = `file.${type}`;
-      const response = await fetch(path);
-      const blob = await response.blob();
-      const file = new File([blob], name, { type: blob.type });
-      return { ...data, file };
-    };
-
-    const addExpectedCall = async (data) => {
-      const acceptedTypes = validImageCases.map(({ type }) => type);
-      if (!acceptedTypes.includes(data.type)) {
-        return { ...data, expectedCall: getFailedCall() };
-      }
-
-      const source = await new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onerror = () => reject();
-        reader.onload = () => resolve(reader.result);
-        reader.readAsDataURL(data.file);
+        await expect.element(getImage()).toHaveAttribute("src", source);
       });
-      return { ...data, expectedCall: getSuccessfulCall({ source }) };
-    };
+    });
+    describe("using the file dialog", async () => {
+      const addFile = async (data) => {
+        const { source, type } = data;
+        const name = `file.${type}`;
+        const response = await fetch(source);
+        const blob = await response.blob();
+        const file = new File([blob], name, { type: blob.type });
+        return { ...data, file };
+      };
 
-    const addIsAccepted = async (data) => {
-      const acceptedTypes = validImageCases.map(({ type }) => type);
-      return { ...data, isAccepted: acceptedTypes.includes(data.type) };
-    };
+      const addExpectedCall = async (data) => {
+        const acceptedTypes = validImageCases.map(({ type }) => type);
+        if (!acceptedTypes.includes(data.type)) {
+          return { ...data, expectedCall: getFailedCall() };
+        }
 
-    const createFileCase = async (data) => {
-      const transformations = [addFile, addExpectedCall, addIsAccepted];
-      return transformations.reduce(
-        async (result, transformation) => transformation(await result),
-        Promise.resolve(data),
-      );
-    };
+        const source = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onerror = () => reject();
+          reader.onload = () => resolve(reader.result);
+          reader.readAsDataURL(data.file);
+        });
+        return { ...data, expectedCall: getSuccessfulCall({ source }) };
+      };
 
-    const fileCases = await Promise.all(
-      [...validImageCases, { path: pdf, type: "pdf" }].map(createFileCase),
-    );
+      const addIsAccepted = async (data) => {
+        const acceptedTypes = validImageCases.map(({ type }) => type);
+        return { ...data, isAccepted: acceptedTypes.includes(data.type) };
+      };
 
-    it.each(fileCases)(
-      "only accepts image files if received from the file dialog, type = $type, isAccepted = $isAccepted",
-      async ({ file, expectedCall }) => {
-        await renderSubject();
-        const input = page.getByTestId(inputTestId);
-        await input.upload(file);
-        await vi.waitFor(
-          () => {
-            if (submitDataMock.mock.lastCall) return;
-            throw new Error("submitDataMock has not been called");
-          },
-          { timeout: 1000, interval: 100 },
+      const createFileCase = async (data) => {
+        const transformations = [addFile, addExpectedCall, addIsAccepted];
+        return transformations.reduce(
+          async (result, transformation) => transformation(await result),
+          Promise.resolve(data),
         );
-        expect(submitDataMock).toHaveBeenCalledExactlyOnceWith(...expectedCall);
-      },
-    );
+      };
+
+      const fileCases = await Promise.all(
+        [...validImageCases, { path: pdf, type: "pdf" }].map(createFileCase),
+      );
+
+      it.each(fileCases)(
+        "only accepts image files if received from the file dialog, type = $type, isAccepted = $isAccepted",
+        async ({ file, expectedCall }) => {
+          await renderSubject();
+          const input = page.getByTestId(inputTestId);
+          await input.upload(file);
+          await vi.waitFor(
+            () => {
+              if (submitDataMock.mock.lastCall) return;
+              throw new Error("submitDataMock has not been called");
+            },
+            { timeout: 1000, interval: 100 },
+          );
+          expect(submitDataMock).toHaveBeenCalledExactlyOnceWith(
+            ...expectedCall,
+          );
+        },
+      );
+    });
   });
 
   it("reports a value reset on remove buttons`s click", async () => {
