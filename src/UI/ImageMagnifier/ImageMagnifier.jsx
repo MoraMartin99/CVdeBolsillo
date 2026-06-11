@@ -90,11 +90,6 @@ function ImageMagnifier({
   };
 
   useEffect(() => {
-    const { resetTransform } = transformationRef.current;
-    setTimeout(() => resetTransform(), timer);
-  }, [source]);
-
-  useEffect(() => {
     const coordinates = { positionX, positionY, scale };
     const { setTransform, instance } = transformationRef.current;
     const transformState = { ...instance.transformState };
@@ -106,6 +101,25 @@ function ImageMagnifier({
     setTimeout(() => setTransform(positionX, positionY, scale), timer);
   }, [positionX, positionY, scale]);
 
+  const buildTransformComponent = ({ resetTransform }) => {
+    const onLoad = ({ currentTarget }) => {
+      if (currentTarget.complete) resetTransform();
+    };
+    return (
+      <TransformComponent
+        wrapperStyle={wrapperStyle}
+        wrapperClass={wrapperClass}
+      >
+        <img
+          src={source}
+          alt={alt}
+          className={hasPlaceholder ? css.placeholder : css.image}
+          onLoad={onLoad}
+        ></img>
+      </TransformComponent>
+    );
+  };
+
   return (
     <TransformWrapper
       panning={{ disabled: hasPlaceholder }}
@@ -116,16 +130,7 @@ function ImageMagnifier({
       ref={transformationRef}
       centerOnInit={true}
     >
-      <TransformComponent
-        wrapperStyle={wrapperStyle}
-        wrapperClass={wrapperClass}
-      >
-        <img
-          src={source}
-          alt={alt}
-          className={hasPlaceholder ? css.placeholder : css.image}
-        ></img>
-      </TransformComponent>
+      {buildTransformComponent}
     </TransformWrapper>
   );
 }
