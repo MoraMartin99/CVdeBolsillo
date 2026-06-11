@@ -2,7 +2,7 @@ import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import css from "./ImageMagnifier.module.css";
 import placeholderSrc from "../../assets/images/imagePlaceholder.svg";
 import { reduceToClassName } from "../../utils";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 
 /**@module ImageMagnifier*/
 
@@ -32,12 +32,6 @@ const getComputedSize = (element) => {
  */
 
 /**
- * The time in milliseconds use to delay setTransformation and resetTransformation calls
- * @type {number}
- */
-const timer = 400;
-
-/**
  * The ImageMagnifier componente displays an image that can be zoomed and panned
  * @param {object} props The component properties
  * @param {string} [props.source = placeholderSrc] A path to an image
@@ -48,7 +42,6 @@ const timer = 400;
  * @param {number} props.positionX The horizontal offset of the image relative to the left upper corner of the wrapper
  * @param {number} props.positionY The vertical offset of the image relative to the left upper corner of the wrapper
  * @param {number} props.scale The ratio of the computed size to the size defined in the styles
- * @todo resetTransform and setTransform from react-zoom-pan-pinch only runs inside setTimeout with an arbitrary delay.
  * @returns {JSX.Element}
  */
 function ImageMagnifier({
@@ -89,21 +82,23 @@ function ImageMagnifier({
     });
   };
 
-  useEffect(() => {
-    const coordinates = { positionX, positionY, scale };
-    const { setTransform, instance } = transformationRef.current;
-    const transformState = { ...instance.transformState };
-    const isNewCoordinate = ([key, value]) => {
-      return value !== transformState[key] && typeof value === "number";
-    };
-    const hasToTransform = Object.entries(coordinates).some(isNewCoordinate);
-    if (!hasToTransform) return;
-    setTimeout(() => setTransform(positionX, positionY, scale), timer);
-  }, [positionX, positionY, scale]);
-
-  const buildTransformComponent = ({ resetTransform }) => {
+  const buildTransformComponent = ({ resetTransform, setTransform }) => {
     const onLoad = ({ currentTarget }) => {
-      if (currentTarget.complete) resetTransform();
+      if (!currentTarget.complete) return;
+      const hasToTransform = () => {
+        const hasValue = ([, value]) => value != null;
+        const hasChanged = ([key, value]) => {
+          transformationRef.current?.instance?.transformState?.[key] !== value;
+        };
+
+        return Object.entries({ positionX, positionY, scale })
+          .filter(hasValue)
+          .some(hasChanged);
+      };
+
+      hasToTransform()
+        ? setTransform(positionX, positionY, scale)
+        : resetTransform();
     };
     return (
       <TransformComponent
