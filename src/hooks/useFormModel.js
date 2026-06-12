@@ -119,11 +119,12 @@ function useFormModel(content = [], templates = {}) {
           value.filter(hasTemplateId).map(addParentId).map(buildChild),
         ];
       };
-      const enrichedChildren = Object.fromEntries(
-        Object.entries({ value, actions }).filter(hasListValue).map(enrich),
-      );
-
-      return { ...item, ...enrichedChildren };
+      const hasItems = ([, value]) => Boolean(value.length);
+      const enrichedEntries = Object.entries({ value, actions })
+        .filter(hasListValue)
+        .map(enrich)
+        .filter(hasItems);
+      return { ...item, ...Object.fromEntries(enrichedEntries) };
     };
 
     const setAction = (item) => {
