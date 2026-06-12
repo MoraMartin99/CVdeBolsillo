@@ -210,7 +210,7 @@ const tasksField = new ListFieldTemplate({
   templateId: "tasks",
   label: "Tareas",
   placeholder: "Diseñar paleta de colores",
-  primaryAction: { label: "Agregar tarea" },
+  primaryActionLabel: "Agregar tarea",
 });
 
 const createProjectValue = ({ name, description, role, dateRange } = {}) => {
@@ -535,7 +535,7 @@ const skillListField = new ListFieldTemplate({
   templateId: "skillList",
   label: "Habilidades",
   placeholder: "Trabajo en equipo",
-  primaryAction: { label: "Agregar habilidad", Icon: PlantIcon },
+  primaryActionLabel: "Agregar habilidad",
   exampleValue: exampleUser.softSkills,
 });
 

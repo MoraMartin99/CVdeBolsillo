@@ -36,6 +36,7 @@ const buildItem = (value = "") => ({ value, id: self.crypto.randomUUID() });
  * @param {Array<item>} [props.value = [buildItem()]]
  * @param {Array<string>} [props.classArr = []] A list of CSS classes to apply to the component
  * @param {submitData} props.submitData A function that report data changes to the form model
+ * @param {string} [props.primaryActionLabel = "Agregar item"]
  *
  * @returns {JSX.Element}
  */
@@ -46,6 +47,7 @@ function ListField({
   value = [buildItem()],
   classArr = [],
   submitData,
+  primaryActionLabel = "Agregar item",
 }) {
   const buildListInput = (item, index) => {
     const onChange = ({ target: { value: inputValue } }) => {
@@ -94,7 +96,7 @@ function ListField({
         variant={"borderless"}
         onClick={addItem}
       >
-        Agregar item
+        {primaryActionLabel}
       </FormButton>
     </div>
   );

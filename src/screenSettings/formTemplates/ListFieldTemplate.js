@@ -1,8 +1,6 @@
 import Template from "./Template";
 import TaskIcon from "../../assets/images/TaskIcon.svg?react";
 
-const defaultPrimaryAction = { label: "Agregar item", Icon: TaskIcon };
-
 /**
  * @typedef {object} listItem
  * @property {string|number} value
@@ -19,6 +17,7 @@ class ListFieldTemplate extends Template {
    * @param {string} settings.templateId
    * @param {string} [settings.label = "Lista"] The visible tittle
    * @param {string} [settings.placeholder = "item"]
+   * @param {string} [settings.primaryActionLabel = "Agregar item"]
    * @param {Array<listItem>} [settings.value = [{ value: "", id: self.crypto.randomUUID() }]]
    * @param {Array<listItem>} [settings.exampleValue]
    */
@@ -26,7 +25,7 @@ class ListFieldTemplate extends Template {
     templateId,
     label = "Lista",
     placeholder = "item",
-    primaryAction = defaultPrimaryAction,
+    primaryActionLabel = "Agregar item",
     value = [{ value: "", id: self.crypto.randomUUID() }],
     exampleValue,
   }) {
@@ -34,7 +33,7 @@ class ListFieldTemplate extends Template {
     Object.assign(this, {
       label,
       placeholder,
-      primaryAction: { ...defaultPrimaryAction, ...primaryAction },
+      primaryActionLabel,
       value: [...value],
       exampleValue: exampleValue ? [...exampleValue] : undefined,
       type: "list",
