@@ -118,7 +118,7 @@ function ImageMagnifier({
   return (
     <TransformWrapper
       panning={{ disabled: hasPlaceholder() }}
-      wheel={{ disabled: hasPlaceholder() }}
+      wheel={{ disabled: hasPlaceholder(), step: 0.00375 }}
       pinch={{ disabled: hasPlaceholder() }}
       onZoomStop={hasPlaceholder() ? undefined : reportChange}
       onPanningStop={hasPlaceholder() ? undefined : reportChange}
