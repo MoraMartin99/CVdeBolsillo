@@ -220,11 +220,23 @@ function useFormModel(content = [], templates = {}) {
 
   const loadExamples = () => {
     const mutator = (model) => {
-      const applyTransformation = (item) => {
-        if (!hasTemplateId(item)) return;
-        const hasExampleValue = ({ exampleValue }) => !(exampleValue == null);
-        if (hasExampleValue(item)) item.value = item.exampleValue;
-        if (Array.isArray(item.value)) item.value.forEach(applyTransformation);
+      const applyTransformation = (node) => {
+        const replaceValueWithExampleValue = (node) => {
+          const hasExampleValue = ({ exampleValue }) => !(exampleValue == null);
+          if (!hasExampleValue(node)) return;
+          node.value = Array.isArray(node.exampleValue)
+            ? buildModel(node.exampleValue, templates)
+            : node.exampleValue;
+        };
+
+        const transformChildren = (node) => {
+          if (!Array.isArray(node.value)) return;
+          node.value.filter(hasTemplateId).forEach(applyTransformation);
+        };
+
+        [replaceValueWithExampleValue, transformChildren].forEach((callback) =>
+          callback(node),
+        );
       };
 
       model.forEach(applyTransformation);
