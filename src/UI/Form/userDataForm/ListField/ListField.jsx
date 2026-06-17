@@ -66,7 +66,7 @@ function ListField({
 
     return (
       <ListInput
-        value={item.inputValue}
+        value={item.value}
         key={item.id}
         id={index === value.length - 1 ? id : undefined}
         onChange={onChange}
