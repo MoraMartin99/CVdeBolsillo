@@ -136,7 +136,7 @@ function useFormModel(content = [], templates = {}) {
     [getNode, mutateModel],
   );
 
-  const buildModel = (content, templates) => {
+  const buildNode = (seed, templates) => {
     const mergeWithTemplate = (item) => {
       return { ...templates[item.templateId], ...item };
     };
@@ -144,31 +144,26 @@ function useFormModel(content = [], templates = {}) {
     const addId = (item) => ({ ...item, id: crypto.randomUUID() });
 
     const enrichChildren = (item) => {
-      const { value, actions, id: parentId } = item;
+      const { value, actions } = item;
       const hasListValue = ([, value]) => Array.isArray(value);
-      const enrich = ([key, value]) => {
-        const addParentId = (item) => ({ ...item, parentId });
-        const buildChild = (item, index) => ({ ...buildItem(item, index) });
-        return [
-          key,
-          value.filter(hasTemplateId).map(addParentId).map(buildChild),
-        ];
+      const buildChildren = ([key, value]) => {
+        const buildChild = (item) => ({ ...buildNode(item, templates) });
+        return [key, value.filter(hasTemplateId).map(buildChild)];
       };
       const hasItems = ([, value]) => Boolean(value.length);
       const enrichedEntries = Object.entries({ value, actions })
         .filter(hasListValue)
-        .map(enrich)
+        .map(buildChildren)
         .filter(hasItems);
       return { ...item, ...Object.fromEntries(enrichedEntries) };
     };
 
-    const setAction = (item) => {
-      const { targetId, parentId, action } = item;
-
+    const addOnClick = (item) => {
       const addItem = () => {
         const mutator = (model) => {
-          const [{ value: container }] = getModelItemReference(parentId, model);
-          container.push(buildItem({ templateId: targetId, parentId }));
+          const parent = getParentNode(item.id, model);
+          const container = parent ? parent.value : model;
+          container.push(buildNode({ templateId: item.targetId }, templates));
         };
 
         mutateModel(mutator);
@@ -186,30 +181,33 @@ function useFormModel(content = [], templates = {}) {
       };
 
       const actions = { addItem, removeItem };
-      return { ...item, onClick: actions[action] };
+
+      return item.action
+        ? { ...item, onClick: actions[item.action] }
+        : { ...item };
     };
 
     const addSubmitData = (item) => {
       return item.action ? { ...item } : { ...item, submitData };
     };
 
-    const buildItem = (item) => {
-      if (!hasTemplateId(item)) return item;
+    if (!hasTemplateId(seed)) return seed;
 
-      const enrichItem = (result, callback) => ({ ...callback(result) });
+    const enrichItem = (result, callback) => ({ ...callback(result) });
 
-      return {
-        ...[
-          mergeWithTemplate,
-          addId,
-          setAction,
-          addSubmitData,
-          enrichChildren,
-        ].reduce(enrichItem, item),
-      };
+    return {
+      ...[
+        mergeWithTemplate,
+        addId,
+        addOnClick,
+        addSubmitData,
+        enrichChildren,
+      ].reduce(enrichItem, seed),
     };
+  };
 
-    return content.map(buildItem);
+  const buildModel = (content, templates) => {
+    return content.map((seed) => buildNode(seed, templates));
   };
 
   const contentRef = useRef(content);
