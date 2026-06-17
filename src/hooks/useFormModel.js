@@ -75,16 +75,51 @@ function useFormModel(content = [], templates = {}) {
     return Boolean(item.templateId);
   }, []);
 
-  const getModelItemReference = useCallback(
+  const getParentNode = useCallback(
     (id, model) => {
-      const isTargetItem = (item) => item.id === id;
-      for (const item of model) {
-        if (!hasTemplateId(item)) continue;
-        if (isTargetItem(item)) return [item, model];
-        if (!Array.isArray(item.value)) continue;
-        const recursiveResult = getModelItemReference(id, item.value);
-        if (recursiveResult) return recursiveResult;
-      }
+      const findTarget = (list) => {
+        const isTarget = ({ value = [], actions = [] }) => {
+          const isTargetId = (currentId) => currentId === id;
+          const getId = ({ id }) => id;
+          return [value, actions]
+            .filter((item) => Array.isArray(item))
+            .flat()
+            .filter(hasTemplateId)
+            .map(getId)
+            .some(isTargetId);
+        };
+        for (const item of list) {
+          if (!hasTemplateId(item)) continue;
+          if (isTarget(item)) return item;
+          const children = [item.value, item.actions]
+            .filter((item) => Array.isArray(item))
+            .flat();
+          const recursiveSearch = findTarget(children);
+          if (recursiveSearch) return recursiveSearch;
+        }
+      };
+
+      return findTarget(model);
+    },
+    [hasTemplateId],
+  );
+
+  const getNode = useCallback(
+    (id, model) => {
+      const findTarget = (list) => {
+        const isTarget = (item) => item.id === id;
+        for (const item of list) {
+          if (!hasTemplateId(item)) continue;
+          if (isTarget(item)) return item;
+          const children = [item.value, item.actions]
+            .filter((item) => Array.isArray(item))
+            .flat();
+          const recursiveSearch = findTarget(children);
+          if (recursiveSearch) return recursiveSearch;
+        }
+      };
+
+      return findTarget(model);
     },
     [hasTemplateId],
   );
@@ -92,13 +127,13 @@ function useFormModel(content = [], templates = {}) {
   const submitData = useCallback(
     (id, data) => {
       const mutator = (model) => {
-        const [modelItem] = getModelItemReference(id, model);
-        for (const key in data) modelItem[key] = data[key];
+        const node = getNode(id, model);
+        for (const key in data) node[key] = data[key];
       };
 
       mutateModel(mutator);
     },
-    [getModelItemReference, mutateModel],
+    [getNode, mutateModel],
   );
 
   const buildModel = (content, templates) => {
@@ -141,8 +176,10 @@ function useFormModel(content = [], templates = {}) {
 
       const removeItem = () => {
         const mutator = (model) => {
-          const [item, container] = getModelItemReference(parentId, model);
-          container.splice(container.indexOf(item), 1);
+          const parent = getParentNode(item.id, model);
+          const ancestor = parent ? getParentNode(parent.id, model) : null;
+          const container = ancestor ? ancestor.value : model;
+          container.splice(container.indexOf(parent), 1);
         };
 
         mutateModel(mutator);
