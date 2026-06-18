@@ -45,7 +45,6 @@ function ClassicInput({
 }) {
   const inputRef = useRef(null);
   const hadFocusRef = useRef(false);
-  const hadFocus = hadFocusRef.current;
 
   const onFirstBlur = () => {
     if (hadFocusRef.current) return;
@@ -54,9 +53,9 @@ function ClassicInput({
   };
 
   useEffect(() => {
-    const errorMessage = isInvalid && hadFocus ? tip : "";
+    const errorMessage = isInvalid && hadFocusRef.current ? tip : "";
     inputRef.current.setCustomValidity(errorMessage);
-  }, [isInvalid, tip, hadFocus]);
+  }, [isInvalid, tip]);
 
   return (
     <input
