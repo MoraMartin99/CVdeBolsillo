@@ -7,19 +7,22 @@ import { defineConfig, globalIgnores } from "eslint/config";
 import globals from "globals";
 
 export default defineConfig([
+  globalIgnores(["dist/", "doc/", "notes/"]),
   {
+    files: ["**/*.{js,jsx,mjs,cjs,ts,tsx}"],
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+        ...globals.vitest,
+      },
+    },
     settings: {
       react: {
         version: "detect",
       },
     },
-    languageOptions: { globals: { ...globals.browser, ...globals.vitest } },
   },
-  globalIgnores(["dist/", "doc/", "notes/"]),
-  {
-    files: ["**/*.{js,jsx,mjs,cjs,ts,tsx}"],
-    rules: js.configs.recommended.rules,
-  },
+  js.configs.recommended,
   reactPlugin.configs.flat.recommended,
   reactPlugin.configs.flat["jsx-runtime"],
   reactHooks.configs.flat.recommended,
