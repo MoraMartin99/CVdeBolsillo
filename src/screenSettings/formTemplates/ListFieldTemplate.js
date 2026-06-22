@@ -17,7 +17,7 @@ class ListFieldTemplate extends Template {
    * @param {string} [settings.label = "Lista"] The visible tittle
    * @param {string} [settings.placeholder = "item"]
    * @param {string} [settings.primaryActionLabel = "Agregar item"]
-   * @param {Array<listItem>} [settings.value = [{ value: "", id: self.crypto.randomUUID() }]]
+   * @param {Array<listItem>} [settings.value = [{ value: "", id: crypto.randomUUID() }]]
    * @param {Array<listItem>} [settings.exampleValue]
    */
   constructor({
@@ -25,7 +25,7 @@ class ListFieldTemplate extends Template {
     label = "Lista",
     placeholder = "item",
     primaryActionLabel = "Agregar item",
-    value = [{ value: "", id: self.crypto.randomUUID() }],
+    value = [{ value: "", id: crypto.randomUUID() }],
     exampleValue,
   }) {
     super({ templateId, component: "field" });

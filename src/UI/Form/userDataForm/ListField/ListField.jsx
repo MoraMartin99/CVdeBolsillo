@@ -25,7 +25,7 @@ import Icon from "../../../../assets/images/plus.svg?react";
  * @param {string} [value = ""]
  * @returns {item}}
  */
-const buildItem = (value = "") => ({ value, id: self.crypto.randomUUID() });
+const buildItem = (value = "") => ({ value, id: crypto.randomUUID() });
 
 /**
  * The ListField componente represents a field that contains a list of items

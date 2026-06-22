@@ -14,7 +14,7 @@ const screens = [
     label: "tab2",
     component: <div>component2</div>,
   },
-].map((item) => ({ ...item, id: self.crypto.randomUUID() }));
+].map((item) => ({ ...item, id: crypto.randomUUID() }));
 
 describe("Carrousel", () => {
   beforeEach(() => render(<SUT screens={screens}></SUT>));

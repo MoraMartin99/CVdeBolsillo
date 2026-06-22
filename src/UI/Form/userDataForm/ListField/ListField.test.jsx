@@ -31,7 +31,7 @@ describe("ListField", () => {
       value: inputValues.map((inputValue) => {
         return {
           value: inputValue,
-          id: self.crypto.randomUUID(),
+          id: crypto.randomUUID(),
         };
       }),
       targetIndex: inputValues.length - 1,

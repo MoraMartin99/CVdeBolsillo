@@ -49,7 +49,7 @@ class Image {
 
 class ListItem {
   constructor(value) {
-    Object.assign(this, { value, id: self.crypto.randomUUID() });
+    Object.assign(this, { value, id: crypto.randomUUID() });
   }
 }
 
