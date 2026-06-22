@@ -1,5 +1,4 @@
 import Template from "./Template";
-import TaskIcon from "../../assets/images/TaskIcon.svg?react";
 
 /**
  * @typedef {object} listItem
