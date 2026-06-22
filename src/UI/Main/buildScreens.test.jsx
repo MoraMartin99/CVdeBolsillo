@@ -12,29 +12,24 @@ const TemplateFormMock = vi.fn(() => <div data-testid={templateId}></div>);
 const PreviewMock = vi.fn(() => <div data-testid={previewId}></div>);
 const onChangeMock = vi.fn(() => {});
 const TestMock = vi.fn(() => {});
-const screensData = {
-  screen1: {
-    label: "UserFormsManager",
-    data: {
-      component: userFormId,
-    },
-    id: "screen1",
-  },
-  screen2: {
-    label: "TemplateForm",
-    data: {
-      component: templateId,
-    },
-    id: "screen2",
-  },
-  screen3: {
-    label: "Preview",
-    data: { component: previewId },
-    id: "screen3",
-  },
-};
 
-const testSubjects = Object.values(screensData);
+const cases = [
+  {
+    label: "UserFormsManager",
+    id: "userForm",
+    componentId: userFormId,
+  },
+  {
+    label: "TemplateForm",
+    id: "templateForm",
+    componentId: templateId,
+  },
+  {
+    label: "Preview",
+    id: "preview",
+    componentId: previewId,
+  },
+];
 
 describe("buildScreens", () => {
   beforeEach(async () => {
@@ -63,20 +58,15 @@ describe("buildScreens", () => {
 
   afterEach(() => vi.resetAllMocks());
 
-  it.each(testSubjects)("builds the $label component", async (screenData) => {
-    const {
-      id,
-      label,
-      data: { component: componentId },
-    } = screenData;
+  it.each(cases)("builds the $label component", async (currentCase) => {
     await render(
       <TestMock
-        {...{ screensData: [screenData], userData, onChange: onChangeMock }}
+        {...{ screensData: [currentCase], userData, onChange: onChangeMock }}
       ></TestMock>,
     );
-    const target = page.getByTestId(id);
-    const component = page.getByTestId(componentId);
-    await expect.element(target).toContainHTML(label);
+    const target = page.getByTestId(currentCase.id);
+    const component = page.getByTestId(currentCase.componentId);
+    await expect.element(target).toContainHTML(currentCase.label);
     await expect.element(target).toContainElement(component);
   });
 });

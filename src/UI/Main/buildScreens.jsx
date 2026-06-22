@@ -17,6 +17,57 @@ import Preview from "../Preview/Preview";
  */
 
 /**
+ * isUserFormsManager
+ * @param {string} id
+ * @returns {boolean}
+ */
+const isUserFormsManager = (id) => id === "userForm";
+
+/**
+ * buildUserFormsManager
+ * @param {object} props
+ * @returns {JSX.Element}
+ */
+const buildUserFormsManager = ({ content, templates, onChange }) => {
+  return (
+    <UserFormsManager {...{ content, templates, onChange }}></UserFormsManager>
+  );
+};
+
+/**
+ * isTemplateForm
+ * @param {string} id
+ * @returns {boolean}
+ * @returns {boolean}
+ */
+const isTemplateForm = (id) => id === "templateForm";
+
+/**
+ * buildTemplateForm
+ * @param {object} [props = {}]
+ * @returns {JSX.Element}
+ */
+const buildTemplateForm = (props = {}) => {
+  return <TemplateForm {...props}></TemplateForm>;
+};
+
+/**
+ * isPreview
+ * @param {string} id
+ * @returns {boolean}
+ */
+const isPreview = (id) => id === "preview";
+
+/**
+ * buildPreview
+ * @param {object} [props = {}]
+ * @returns {JSX.Element}
+ */
+const buildPreview = (props = {}) => {
+  return <Preview {...props}></Preview>;
+};
+
+/**
  *  The data required to build the screens
  * @memberof module:Main
  * @typedef {object} settings
@@ -32,25 +83,22 @@ import Preview from "../Preview/Preview";
  * @returns {Array<JSX.Element>|Array<JSX.Element, JSX.Element>} An array with 2 Carrousel components if hasIndependentLastPanel is truthy or 1 if it's falsy
  */
 function buildScreens({ screensData, userData, onChange }) {
-  const COMPONENT_1 = "UserFormsManager";
-  const COMPONENT_2 = "TemplateForm";
-  const COMPONENT_3 = "Preview";
-
   const buildComponent = (data) => {
-    const { component: componentId } = data;
-    switch (componentId) {
-      case COMPONENT_1:
-        return <UserFormsManager {...{ ...data, onChange }}></UserFormsManager>;
-      case COMPONENT_2:
-        return <TemplateForm {...{ ...data, onChange }}></TemplateForm>;
-      case COMPONENT_3:
-        return <Preview {...{ ...data, userData }}></Preview>;
+    if (isUserFormsManager(data.id)) {
+      return buildUserFormsManager({ ...data, onChange });
     }
+    if (isTemplateForm(data.id)) return buildTemplateForm(data);
+    if (isPreview(data.id)) return buildPreview(data);
   };
 
-  const buildScreen = ({ label, data, id }) => {
-    return { label, component: buildComponent(data), id };
+  const buildScreen = (data) => {
+    return {
+      id: data.id,
+      label: data.label,
+      component: buildComponent(data),
+    };
   };
+
   return screensData.map(buildScreen);
 }
 
