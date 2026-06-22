@@ -17,7 +17,7 @@ export default defineConfig([
   },
   globalIgnores(["dist/", "doc/", "notes/"]),
   {
-    files: ["**/*.js"],
+    files: ["**/*.{js,jsx,mjs,cjs,ts,tsx}"],
     rules: js.configs.recommended.rules,
   },
   reactPlugin.configs.flat.recommended,
