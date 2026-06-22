@@ -1,5 +1,11 @@
 import Template from "./Template";
-import Date from "./DateFieldTemplate";
+
+/**
+ * The date value
+ * @typedef {object} Date
+ * @property {number} month
+ * @property {number} year
+ */
 
 /**
  * The dateRange value
