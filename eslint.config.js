@@ -23,8 +23,15 @@ export default defineConfig([
     },
   },
   js.configs.recommended,
-  reactPlugin.configs.flat.recommended,
-  reactPlugin.configs.flat["jsx-runtime"],
+  {
+    ...reactPlugin.configs.flat.recommended,
+    ...reactPlugin.configs.flat["jsx-runtime"],
+    rules: {
+      ...reactPlugin.configs.flat.recommended.rules,
+      ...reactPlugin.configs.flat["jsx-runtime"].rules,
+      "react/prop-types": 0,
+    },
+  },
   reactHooks.configs.flat.recommended,
   reactRefresh.configs.vite,
   eslintPluginPrettierRecommended,
