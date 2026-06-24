@@ -5,6 +5,7 @@ import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended"
 import reactPlugin from "eslint-plugin-react";
 import { defineConfig, globalIgnores } from "eslint/config";
 import globals from "globals";
+import eslintConfigPrettier from "eslint-config-prettier/flat";
 
 export default defineConfig([
   globalIgnores(["dist/", "doc/", "notes/"]),
@@ -35,4 +36,5 @@ export default defineConfig([
   reactHooks.configs.flat.recommended,
   reactRefresh.configs.vite,
   eslintPluginPrettierRecommended,
+  eslintConfigPrettier,
 ]);
