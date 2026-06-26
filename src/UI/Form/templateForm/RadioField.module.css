@@ -1,0 +1,102 @@
+.main {
+  --fontSize: 0.75rem;
+  --color: var(--primary700color);
+  --colorHover: var(--primary500color);
+  --colorChecked: var(--primary300color);
+  --paddingInline: 30px;
+  --gap: 20px;
+
+  --thumbnailWidth: 120px;
+  --thumbnailHeight: 160px;
+  --thumbnailBorderWidth: 3px;
+  --thumbnailBorderColor: var(--primary800color);
+  --thumbnailBorderColorHover: var(--primary700color);
+  --thumbnailBorderColorChecked: var(--primary600color);
+
+  --currentBadgeWidth: calc(100% - (2 * var(--thumbnailBorderWidth)));
+  --currentBadgeHeight: 18px;
+  --currentBadgeBottom: var(--thumbnailBorderWidth);
+  --currentBadgeLeft: var(--thumbnailBorderWidth);
+  --currentBadgeFontSize: 0.688rem;
+  --currentBadgeColor: var(--secondary1500color);
+  --currentBadgeBGC: var(--thumbnailBorderColorChecked);
+  --currentBadgeBGCAlpha: 0.35;
+
+  --labelGap: 10px;
+
+  padding-inline: var(--paddingInline);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap);
+}
+
+.label {
+  display: flex;
+  flex-direction: column;
+  font-size: var(--fontSize);
+  font-weight: 400;
+  color: var(--color);
+  gap: var(--labelGap);
+  align-items: center;
+  cursor: pointer;
+}
+
+.label:hover {
+  color: var(--colorHover);
+}
+
+.input:checked ~ .label {
+  color: var(--colorChecked);
+  font-weight: 500;
+}
+
+.input {
+  display: none;
+}
+
+.thumbnailContainer {
+  position: relative;
+  overflow: hidden;
+}
+
+.thumbnail {
+  width: var(--thumbnailWidth);
+  height: var(--thumbnailHeight);
+  border: var(--thumbnailBorderWidth) var(--thumbnailBorderColor) solid;
+}
+
+.label:hover .thumbnail {
+  border-color: var(--thumbnailBorderColorHover);
+}
+
+.input:checked ~ .label .thumbnail {
+  border-color: var(--thumbnailBorderColorChecked);
+}
+
+@keyframes fromBottom {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.input:checked ~ .label .currentBadge {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--currentBadgeColor);
+  width: var(--currentBadgeWidth);
+  height: var(--currentBadgeHeight);
+  font-style: italic;
+  font-size: var(--currentBadgeFontSize);
+  position: absolute;
+  bottom: var(--currentBadgeBottom);
+  left: var(--currentBadgeLeft);
+  background-color: var(--currentBadgeBGC);
+  font-weight: 400;
+  line-height: 1;
+  animation-name: fromBottom;
+  animation-duration: 0.25s;
+}
