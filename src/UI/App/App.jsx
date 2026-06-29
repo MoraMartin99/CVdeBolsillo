@@ -15,6 +15,7 @@ import { reduceToClassName } from "../../utils";
  * @property {string} repoUrl The URL of the source code of the app
  * @property {CurrentColorIcon} RepoIcon The icon component that represents the repo
  * @property {Array} content An ordered list containing the data required to build the views
+ * @property {Array<object>} cvTemplates The list of CV templates
  */
 
 /**
@@ -31,6 +32,7 @@ function App({
     RepoIcon,
     screens,
     minDualPanelScreenWidth,
+    cvTemplates,
   },
 }) {
   const className = reduceToClassName(["app", css.layout]);
@@ -46,6 +48,7 @@ function App({
       <Main
         screens={screens}
         minDualPanelScreenWidth={minDualPanelScreenWidth}
+        cvTemplates={cvTemplates}
       ></Main>
     </div>
   );

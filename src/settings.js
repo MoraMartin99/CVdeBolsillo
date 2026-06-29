@@ -2,6 +2,7 @@ import ScreenData from "./screenSettings/ScreenData";
 import userDataScreen from "./screenSettings/userDataScreen";
 import templateScreen from "./screenSettings/templateScreen";
 import previewScreen from "./screenSettings/previewScreen";
+import cvTemplates from "./cvTemplates/index";
 
 /**
  * The AppSettings class defines the main parameters for the app
@@ -21,6 +22,7 @@ class AppSettings {
     repoUrl = "https://github.com/MoraMartin99/CVdeBolsillo",
     screens = [],
     minDualPanelScreenWidth = 700,
+    cvTemplates = [],
   }) {
     Object.assign(this, {
       name,
@@ -28,10 +30,12 @@ class AppSettings {
       repoUrl,
       screens: [...screens],
       minDualPanelScreenWidth,
+      cvTemplates,
     });
   }
 }
 
 export default new AppSettings({
   screens: [userDataScreen, templateScreen, previewScreen],
+  cvTemplates,
 });

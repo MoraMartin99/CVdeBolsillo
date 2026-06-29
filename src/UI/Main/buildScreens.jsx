@@ -8,21 +8,6 @@ import Preview from "../Preview/Preview";
  * @callback onChange
  */
 
-/** The data required to build a screen
- * @memberof module:Main
- * @typedef {object} screenData
- * @property {string} label The name of the screen
- * @property {object} data The data required to build the screen component
- * @property {string} id The screen identifier
- */
-
-/**
- * isUserFormsManager
- * @param {string} id
- * @returns {boolean}
- */
-const isUserFormsManager = (id) => id === "userForm";
-
 /**
  * buildUserFormsManager
  * @param {object} props
@@ -35,28 +20,22 @@ const buildUserFormsManager = ({ content, templates, onChange }) => {
 };
 
 /**
- * isTemplateForm
- * @param {string} id
- * @returns {boolean}
- * @returns {boolean}
- */
-const isTemplateForm = (id) => id === "templateForm";
-
-/**
  * buildTemplateForm
  * @param {object} [props = {}]
  * @returns {JSX.Element}
  */
-const buildTemplateForm = (props = {}) => {
-  return <TemplateForm {...props}></TemplateForm>;
+const buildTemplateForm = ({ id, cvTemplates, onChange, userData }) => {
+  return (
+    <TemplateForm
+      {...{
+        id,
+        templates: cvTemplates,
+        onChange,
+        cvTemplateId: userData.cvTemplateId,
+      }}
+    ></TemplateForm>
+  );
 };
-
-/**
- * isPreview
- * @param {string} id
- * @returns {boolean}
- */
-const isPreview = (id) => id === "preview";
 
 /**
  * buildPreview
@@ -74,6 +53,7 @@ const buildPreview = (props = {}) => {
  * @property {Array<screenData>} screensData A list containing the data required to build the screens
  * @property {onChange} onChange A function passed to the screens that reports value's changes to the parent
  * @property {object} userData The data recollected from the forms
+ * @property {Array<object>} cvTemplates The list of CV templates
  */
 
 /**
@@ -82,24 +62,40 @@ const buildPreview = (props = {}) => {
  * @param {settings} settings
  * @returns {Array<JSX.Element>|Array<JSX.Element, JSX.Element>} An array with 2 Carrousel components if hasIndependentLastPanel is truthy or 1 if it's falsy
  */
-function buildScreens({ screensData, userData, onChange }) {
-  const buildComponent = (data) => {
-    if (isUserFormsManager(data.id)) {
-      return buildUserFormsManager({ ...data, onChange });
-    }
-    if (isTemplateForm(data.id)) return buildTemplateForm(data);
-    if (isPreview(data.id)) return buildPreview(data);
-  };
+function buildScreens({ screensData, userData, onChange, cvTemplates }) {
+  const addUserData = (data) => ({ ...data, userData });
 
-  const buildScreen = (data) => {
+  const addOnChange = (data) => ({ ...data, onChange });
+
+  const addCVTemplates = (data) => ({ ...data, cvTemplates });
+
+  const addComponent = (data) => {
+    const builders = {
+      userForm: buildUserFormsManager,
+      templateForm: buildTemplateForm,
+      preview: buildPreview,
+    };
+
     return {
-      id: data.id,
-      label: data.label,
-      component: buildComponent(data),
+      ...data,
+      component: builders[data.id]?.(data),
     };
   };
 
-  return screensData.map(buildScreen);
+  const buildScreen = ({ id, label, component }) => {
+    return {
+      id,
+      label,
+      component,
+    };
+  };
+
+  return screensData
+    .map(addUserData)
+    .map(addOnChange)
+    .map(addCVTemplates)
+    .map(addComponent)
+    .map(buildScreen);
 }
 
 export default buildScreens;
