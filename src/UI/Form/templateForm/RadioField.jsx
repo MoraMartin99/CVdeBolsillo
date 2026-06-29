@@ -23,7 +23,7 @@ const name = crypto.randomUUID();
  */
 
 /**
- * A function run on change events of the inputs
+ * A function that runs on change events of the inputs
  * @callback onChange
  * @param {string} value The selected option id
  */
