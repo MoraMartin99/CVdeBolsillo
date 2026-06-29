@@ -1,8 +1,11 @@
 import { reduceToClassName } from "../../../utils";
 import css from "./RadioField.module.css";
 
+/**@module RadioField */
+
 /**
  * The text show in the current badge
+ * @type {string}
  */
 const currentBadgeText = "Plantilla actual";
 
