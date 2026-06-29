@@ -7,6 +7,12 @@ import css from "./RadioField.module.css";
 const currentBadgeText = "Plantilla actual";
 
 /**
+ * The name attribute of the input radios
+ * @type {string}
+ */
+const name = crypto.randomUUID();
+
+/**
  * @typedef {object} option
  * @property {string} id
  * @property {string} thumbnail A path to an image
@@ -22,7 +28,6 @@ const currentBadgeText = "Plantilla actual";
 /**
  * The RadioField component allows you to capture a user selected option from a list of options
  * @param {object} props
- * @param {string} props.id
  * @param {Array<option>} props.options
  * @param {string} [props.value = options[0].id] An option id
  * @param {onChange} props.onChange
@@ -30,7 +35,6 @@ const currentBadgeText = "Plantilla actual";
  * @returns {JSX.Element}
  */
 function RadioField({
-  id,
   options = [],
   value = options[0].id,
   onChange,
@@ -43,7 +47,7 @@ function RadioField({
     };
   };
 
-  const addName = (option) => ({ ...option, name: id });
+  const addName = (option) => ({ ...option, name });
 
   const onRadioSelection = ({ target: { value: radioValue } }) => {
     if (radioValue !== value) onChange(radioValue);
