@@ -1,5 +1,5 @@
 import styles from "./Carrousel.module.css";
-import Tab from "./Tab";
+import Tab from "../Tabs/Tab/Tab";
 import Track from "./Track";
 import { reduceToClassName } from "../../utils";
 import { useState } from "react";

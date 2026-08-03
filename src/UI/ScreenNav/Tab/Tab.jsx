@@ -1,5 +1,5 @@
 import styles from "./Tab.module.css";
-import { reduceToClassName } from "../../utils";
+import { reduceToClassName } from "../../../utils";
 
 /**
  * This callback must mutate [Carrousel]{@link module:Carrousel~Carrousel} state on click events
