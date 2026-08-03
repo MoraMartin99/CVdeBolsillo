@@ -8,32 +8,25 @@ import { reduceToClassName } from "../../utils";
 /**@module App */
 
 /**
- * The configuration of the entire application
- * @typedef {Object} settings
- * @property {string} name The app name
- * @property {string} repoLabel A text that represents the repo
- * @property {string} repoUrl The URL of the source code of the app
- * @property {CurrentColorIcon} RepoIcon The icon component that represents the repo
- * @property {Array} content An ordered list containing the data required to build the views
- * @property {Array<object>} cvTemplates The list of CV templates
- */
-
-/**
  * The App component contains the entire application
  * @param {Object} props
- * @param {settings} props.settings
- * @returns {JSX.Element} The entire app
+ * @param {string} props.name The app name
+ * @param {string} props.repoLabel A text that represents the repo
+ * @param {string} props.repoUrl The URL of the source code of the app
+ * @param {CurrentColorIcon} props.RepoIcon The icon component that represents the repo
+ * @param {Array<object>} props.screens The data required to build the app content
+ * @param {number} props.minDualPanelScreenWidth The min width in px of the viewport at which the dual screen layout is displayed
+ * @param {Array<object>} cvTemplates A collection of CV templates
+ * @returns {JSX.Element}
  */
 function App({
-  settings: {
-    name,
-    repoLabel,
-    repoUrl,
-    RepoIcon,
-    screens,
-    minDualPanelScreenWidth,
-    cvTemplates,
-  },
+  name,
+  repoLabel,
+  repoUrl,
+  RepoIcon,
+  screens,
+  minDualPanelScreenWidth,
+  cvTemplates,
 }) {
   const className = reduceToClassName(["app", css.layout]);
 

@@ -3,10 +3,9 @@ import { createRoot } from "react-dom/client";
 import settings from "./settings";
 import App from "./UI/App/App";
 
-/* createRoot(document.querySelector("body")).render(
+createRoot(document.querySelector("body")).render(
   <StrictMode>
-    <App settings={settings} />
+    <App {...settings} />
   </StrictMode>,
-); */
+);
 
-createRoot(document.querySelector("body")).render(<App settings={settings} />);
