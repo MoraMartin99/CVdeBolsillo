@@ -6,11 +6,11 @@ import styles from "./Header.module.css";
 
 /**
  * The Header component
- * @param {object} prop The Header properties
- * @param {string} [prop.appName] A string to displays as the app name
- * @param {string} [prop.repoLabel] A string to displays as the repo label on some screen sizes
- * @param {string} [prop.repoUrl = ""] A url to the repo of the project
- * @param {CurrentColorIcon} [prop.RepoIcon] A Icon component that represents the git server icon
+ * @param {object} props The Header properties
+ * @param {string} [props.appName] A string to displays as the app name
+ * @param {string} [props.repoLabel] A string to displays as the repo label on some screen sizes
+ * @param {string} [props.repoUrl = ""] A url to the repo of the project
+ * @param {CurrentColorIcon} [props.RepoIcon] A Icon component that represents the git server icon
  * @returns {JSX.Element}
  */
 function Header({ appName, repoLabel, repoUrl = "", RepoIcon }) {
