@@ -11,11 +11,12 @@ import styles from "./Header.module.css";
  * @param {string} [props.repoLabel] A string to displays as the repo label on some screen sizes
  * @param {string} [props.repoUrl = ""] A url to the repo of the project
  * @param {CurrentColorIcon} [props.RepoIcon] A Icon component that represents the git server icon
+ * @param {HTMLElement} props.ref
  * @returns {JSX.Element}
  */
-function Header({ appName, repoLabel, repoUrl = "", RepoIcon }) {
+function Header({ appName, repoLabel, repoUrl = "", RepoIcon, ref }) {
   return (
-    <header className={styles.layout}>
+    <header ref={ref} className={styles.layout}>
       <Home classArr={[styles.center]}>{appName}</Home>
       <RepoBadge
         Icon={RepoIcon}
