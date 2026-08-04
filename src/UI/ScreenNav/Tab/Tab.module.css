@@ -1,4 +1,4 @@
-.container {
+.main {
   --bgColor: var(--primary800color);
   --color: var(--primary1100color);
   --width: 95px;
@@ -14,12 +14,12 @@
   cursor: pointer;
 }
 
-.current {
+.isCurrent {
   --bgColor: var(--primary500color);
   --color: var(--primary1400color);
 }
 
-.container:hover:not(.current) {
+.main:hover:not(.isCurrent) {
   --bgColor: var(--primary700color);
   --color: var(--primary1400color);
 }

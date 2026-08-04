@@ -1,46 +1,24 @@
-import { describe, expect, it, beforeEach, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import Tab from "./Tab";
 import { render } from "vitest-browser-react";
 import { page } from "vitest/browser";
+import "../../../global.css";
+import "../../../variables.css";
 
-let onClickCallback = vi.fn();
+let onClickCallback = vi.fn(() => {});
 
-const propList = [
-  {},
-  { label: "test", value: 1, onClickCallback, isCurrentTab: true },
-];
-
-describe.each(propList)(
-  "Tab component with props: {label: $label, value: $value, onClickCallback: $onClickCallback, isCurrentTab: $isCurrentTab}",
-  ({ label, value, onClickCallback, isCurrentTab }) => {
-    beforeEach(() =>
-      render(
-        <Tab
-          label={label}
-          value={value}
-          onClickCallback={onClickCallback}
-          isCurrentTab={isCurrentTab}
-        ></Tab>,
-      ),
+describe("Tab", () => {
+  it("runs onClick on click events", async () => {
+    const text = "soy un tab";
+    const value = "soy un valor";
+    await render(
+      <Tab value={value} onClick={onClickCallback}>
+        {text}
+      </Tab>,
     );
+    const target = page.getByText(text);
 
-    it("renders the parent element", async () => {
-      const target = page.getByRole("button");
-      await expect.element(target).toBeInTheDocument();
-    });
-
-    it("has the correct label", async () => {
-      const target = page.getByRole("button", { name: label });
-      await expect.element(target).toBeInTheDocument();
-    });
-
-    it.skipIf(!onClickCallback)(
-      "runs onClickCallback on click event",
-      async () => {
-        const target = page.getByRole("button");
-        await target.click();
-        expect(onClickCallback).toHaveBeenCalled();
-      },
-    );
-  },
-);
+    await target.click();
+    expect(onClickCallback).toHaveBeenCalledExactlyOnceWith(value);
+  });
+});
