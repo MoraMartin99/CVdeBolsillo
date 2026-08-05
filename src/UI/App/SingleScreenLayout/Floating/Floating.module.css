@@ -1,0 +1,6 @@
+.main {
+  position: fixed;
+  top: var(--offsetY);
+  display: flex;
+  flex-direction: column;
+}
