@@ -1,0 +1,11 @@
+.main {
+  --width: 100%;
+  --paddingBlock: 10px;
+  --backgroundColor: inherit;
+
+  width: var(--width);
+  padding-block: var(--paddingBlock);
+  background-color: var(--backgroundColor);
+  display: flex;
+  justify-content: center;
+}
