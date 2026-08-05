@@ -1,5 +1,7 @@
 import css from "./Tab.module.css";
 
+/**@module Tab */
+
 /**
  * This callback must mutate [Carrousel]{@link module:Carrousel~Carrousel} state on click events
  * @callback onClick
