@@ -3,84 +3,91 @@ import { useState } from "react";
 /** @module  useAccordion*/
 
 /**
- *  A function that coerced its parameter to a boolean that sets the isExpanded variable
- * @callback setIsExpanded
- * @param {*} value
+ * @typedef {import('react').CSSProperties} CSSProperties
+ * @typedef {import('react').SetStateAction<Array<visibility>>} VisibilityState
  */
 
 /**
- * @typedef {Object} style An object that define inline css properties
+ * The visibility state of a childContainer
+ * @typedef {object} visibility
+ * @property {boolean} isHidden
  */
 
 /**
- * @typedef {Array<boolean|setIsExpanded|style|style>} resultArray The return value of the hook
- * @property {boolean} isExpanded A state variable that represents if true that the components is expanded, if false represents the oposite
- * @property {setIsExpanded} setIsExpanded The setter of the isExpanded variable
- * @property {style} parentStyle The inline css properties object for the parent element
- * @property {style} contentStyle The inline css properties object for the content element
+ * @typedef {object} styles
+ * @property {CSSProperties} parent
+ * @property {CSSProperties} childContainer
  */
 
 /**
  * @description
  * The useAccordion hook lets you set a component as collapsible
  * The target component must have the following structure:
- * <some parent>
- *  <some header>
- *  <some content>
- * </some parent>
- * @param {Boolean} [initialValue = false] If truthy initialize the component as collapsible, if falsy do the oposite
- * @returns {resultArray}
+ * <parent>
+ *  <childContainer>
+ *    <child>
+ *  <childContainer>
+ *  ...
+ * </parent>
+ * @param {object} settings
+ * @param {Array<visibility>} [settings.visibilities = []] The visibility states of the childContainers. The index of each visibility must match the index of the childContainer
+ * @param {boolean} [settings.isHorizontal = false] if true sets the parent as a column-only container, if false sets it as row-only
+ * @returns {[styles,import('react').Dispatch<import('react').SetStateAction<Array<visibility>>>]}
  *
  * @example
- * const TestElement = () => {
- *const [isExpanded, setIsExpanded, parentStyle, contentStyle] = useAccordion(false);
+ * function Target({
+ *   visibilities: initialVisibilities,
+ *   isHorizontal,
+ *   items,
+ * }) {
+ *   const [styles, setVisibilities] = useAccordion({
+ *     visibilities: initialVisibilities,
+ *     isHorizontal,
+ * });
  *
- *const onClick = () => setIsExpanded(!isExpanded);
- *return (
- *  <div style={parentStyle} data-testid="parent">
- *    <header
- *      style={{
- *        width: "130px",
- *        height: "30px",
- *        backgroundColor: "LightSalmon",
- *      }}
- *      onClick={onClick}
- *    ></header>
- *    <main
- *      style={{
- *        width: "130px",
- *        backgroundColor: "YellowGreen",
- *        ...contentStyle,
- *      }}
- *    >
- *      <h1 style={{ fontSize: "12px" }}>Esto es un test</h1>
- *        <div
- *        style={{ width: "60px", height: "60px", backgroundColor: "cyan" }}
- *      ></div>
- *    </main>
- *  </div>
- *);
- *};
+ * const buildChildContainer = (child, index) => {
+ *   return (
+ *    <div key={index} style={styles.childContainer}>
+ *       {child}
+ *     </div>
+ *   );
+ * };
+ *
+ * return (
+ *   <div style={styles.parent}>
+ *       {items.map(buildChildContainer)}
+ *     </div>
+ * );
+ * }
  */
-const useAccordion = (initialValue = false) => {
-  const [isExpanded, setIsExpanded] = useState(Boolean(initialValue));
-  let parentStyle = {
-    display: "grid",
-    gridTemplateColumns: "1fr",
-    gridTemplateRows: "min-content 0fr",
-    transition: "grid-template-rows var(--transitionTime, 0.15s) linear",
-  };
-  const contentStyle = { overflow: "hidden" };
+const useAccordion = ({
+  visibilities: initialVisibilities = [],
+  isHorizontal = false,
+}) => {
+  const [visibilities, setVisibilities] = useState(initialVisibilities);
 
-  if (isExpanded) {
-    parentStyle = { ...parentStyle, gridTemplateRows: "min-content 1fr" };
-  }
-  return [
-    isExpanded,
-    (value) => setIsExpanded(Boolean(value)),
-    parentStyle,
-    contentStyle,
-  ];
+  const setSize = ({ isHidden }) => (isHidden ? "0fr" : "1fr");
+
+  const getColumnValue = () => {
+    return isHorizontal ? visibilities.map(setSize).join(" ") : "1fr";
+  };
+
+  const getRowValue = () => {
+    return isHorizontal ? "1fr" : visibilities.map(setSize).join(" ");
+  };
+
+  const getTransitionValue = () => {
+    return `${isHorizontal ? "grid-template-columns" : "grid-template-rows"} var(--transitionTime, 0.15s) linear`;
+  };
+
+  const parent = {
+    display: "grid",
+    gridTemplateColumns: getColumnValue(),
+    gridTemplateRows: getRowValue(),
+    transition: getTransitionValue(),
+  };
+
+  return [{ parent, childContainer: { overflow: "hidden" } }, setVisibilities];
 };
 
 export default useAccordion;

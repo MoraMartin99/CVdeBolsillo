@@ -1,67 +1,142 @@
 import useAccordion from "./useAccordion";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { render } from "vitest-browser-react";
 import { page } from "vitest/browser";
 
-const parentId = "parent";
-const headerId = "header";
-const containerId = "container";
+const visibleChildHeight = "50px";
+const hiddenChildContainerHeight = "0px";
 
-const TestElement = ({ initialValue }) => {
-  const [isExpanded, setIsExpanded, parentStyle, contentStyle] =
-    useAccordion(initialValue);
-  const onClick = () => setIsExpanded(!isExpanded);
-  return (
-    <div style={parentStyle} data-testid={parentId}>
-      <header
-        style={{
-          width: "130px",
-          height: "30px",
-          backgroundColor: "LightSalmon",
-        }}
-        onClick={onClick}
-        data-testid={headerId}
-      ></header>
-      <main
-        style={{
-          width: "130px",
-          backgroundColor: "YellowGreen",
-          ...contentStyle,
-        }}
-        data-testid={containerId}
-      >
-        <h1 style={{ fontSize: "12px" }}>Esto es un test</h1>
-        <div
-          style={{ width: "60px", height: "60px", backgroundColor: "cyan" }}
-        ></div>
-      </main>
-    </div>
-  );
+const addExpectedResult = (item) => {
+  const getExpectedResult = ({ isHidden }, index) => {
+    return {
+      label: `item ${index}`,
+      expectedHeight: isHidden
+        ? hiddenChildContainerHeight
+        : visibleChildHeight,
+    };
+  };
+  return { ...item, expectedResult: item.visibilities.map(getExpectedResult) };
 };
 
-const collapseValues = [undefined, false];
+const buttonCases = [
+  { label: "Mostrar solo slot 0", visibilities: [{}, { isHidden: true }] },
+  { label: "Mostrar slot 0 y 1", visibilities: [{}, {}] },
+  {
+    label: "No mostrar slots",
+    visibilities: [{ isHidden: true }, { isHidden: true }],
+  },
+].map(addExpectedResult);
+
+function Target({
+  visibilities: initialVisibilities,
+  isHorizontal,
+  items,
+  onTransition,
+}) {
+  const [styles, setVisibilities] = useAccordion({
+    visibilities: initialVisibilities,
+    isHorizontal,
+  });
+  const buildButton = ({ label, visibilities }, index) => {
+    const onClick = () => setVisibilities(visibilities);
+    return (
+      <button key={index} onClick={onClick} type="button">
+        {label}
+      </button>
+    );
+  };
+
+  const buildChildContainer = (child, index) => {
+    return (
+      <div key={index} style={styles.childContainer}>
+        {child}
+      </div>
+    );
+  };
+
+  return (
+    <div>
+      <div onTransitionEnd={onTransition} style={styles.parent}>
+        {items.map(buildChildContainer)}
+      </div>
+      {buttonCases.map(buildButton)}
+    </div>
+  );
+}
+
+const addItems = (item) => {
+  const buildChild = ({ label }) => (
+    <div style={{ height: visibleChildHeight }}>{label}</div>
+  );
+  return { ...item, items: item.expectedResult.map(buildChild) };
+};
+
+const propCases = [
+  { visibilities: [{ isHidden: true }, {}] },
+  { visibilities: [{ isHidden: true }, { isHidden: true }] },
+  { visibilities: [{}, { isHidden: true }] },
+]
+  .map(addExpectedResult)
+  .map(addItems);
 
 describe("useAccordion", () => {
-  it.each(collapseValues)(
-    "collapse the target container if initialValue is %s",
-    async (initialValue) => {
-      render(<TestElement {...{ initialValue }}></TestElement>);
-      const target = page.getByTestId(containerId);
-      await expect.element(target).not.toBeVisible();
-    },
-  );
+  describe("sets the visibility of the child", () => {
+    const setVisibilityExpectation = async (expectedResult) => {
+      const setExpectation = async ({ expectedHeight, label }) => {
+        const target = await page.getByText(label, { exact: true }).element()
+          .parentNode;
+        await expect(target).toHaveStyle({ height: expectedHeight });
+      };
+      await Promise.all(expectedResult.map(setExpectation));
+    };
 
-  it("expand the target container if initialValue is truthy", async () => {
-    render(<TestElement {...{ initialValue: true }}></TestElement>);
-    const target = page.getByTestId(containerId);
-    await expect.element(target).toBeVisible();
-  });
+    it.each(propCases)(
+      "using the visibilities prop, visibilities = $visibilities",
+      async ({ visibilities, items, expectedResult }) => {
+        await render(
+          <Target visibilities={visibilities} items={items}></Target>,
+        );
+        await setVisibilityExpectation(expectedResult);
+      },
+    );
 
-  it("sets the visibility of target container using setIsExpanded", async () => {
-    render(<TestElement {...{ initialValue: true }}></TestElement>);
-    const header = page.getByTestId(headerId);
-    await header.click(header);
-    const target = page.getByTestId(containerId);
-    await expect.element(target).toBeVisible();
+    it.each(buttonCases)(
+      "on setting visibility using setVisibilities($visibilities)",
+      async ({ label, expectedResult }) => {
+        const props = [addExpectedResult, addItems].reduce(
+          (total, current) => current(total),
+          {
+            visibilities: [{ isHidden: true }, {}],
+          },
+        );
+        let hasTransitioned = false;
+        const onTransition = () => {
+          hasTransitioned = true;
+        };
+        await render(
+          <Target
+            visibilities={props.visibilities}
+            items={props.items}
+            onTransition={onTransition}
+          ></Target>,
+        );
+        const button = await page.getByText(label);
+
+        await button.click();
+
+        await vi.waitFor(
+          () => {
+            if (hasTransitioned) return;
+            throw new Error("parent has not transitioned");
+          },
+          {
+            timeout: 1000,
+            interval: 25,
+          },
+        );
+
+        await setVisibilityExpectation(expectedResult);
+      },
+    );
   });
 });
