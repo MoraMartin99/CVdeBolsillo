@@ -5,7 +5,7 @@ import { afterEach, describe, expect, vi, it } from "vitest";
 import { render } from "vitest-browser-react";
 import { page } from "vitest/browser";
 
-const setCurrentSlotMock = vi.fn(() => {});
+const setCurrentScreenMock = vi.fn(() => {});
 const tabs = [
   { label: "tab 1", id: "tab1" },
   { label: "tab 2", id: "tab2" },
@@ -18,11 +18,14 @@ describe("ScreenNav", () => {
     "reports the tab`s index on click events, index = %d",
     async (index) => {
       await render(
-        <ScreenNav setCurrentSlot={setCurrentSlotMock} tabs={tabs}></ScreenNav>,
+        <ScreenNav
+          setCurrentScreen={setCurrentScreenMock}
+          tabs={tabs}
+        ></ScreenNav>,
       );
       const target = page.getByText(tabs[index].label);
       await target.click();
-      expect(setCurrentSlotMock).toHaveBeenCalledExactlyOnceWith(index);
+      expect(setCurrentScreenMock).toHaveBeenCalledExactlyOnceWith(index);
     },
   );
 });

@@ -4,8 +4,8 @@ import css from "./ScreenNav.module.css";
 /**@module ScreenNav */
 
 /**
- * The setCurrentSlot callback is call on tab`s click events
- * @callback setCurrentSlot
+ * The setCurrentScreen callback is call on tab`s click events
+ * @callback setCurrentScreen
  * @param {number} value The index of the clicked tab
  */
 
@@ -20,16 +20,16 @@ import css from "./ScreenNav.module.css";
 /**
  * The ScreenNav component manages a collection of [tabs]{@link module:Tab~Tab}
  * @param {Object} props The component props
- * @param {setCurrentSlot} props.setCurrentSlot A callback that runs on tab`s click events
+ * @param {setCurrentScreen} props.setCurrentScreen A callback that runs on tab`s click events
  * @param {Array<Tab>} props.tabs A collection of props required to build Tab components
  * @returns {JSX.Element}
  */
-function ScreenNav({ setCurrentSlot, tabs = [] }) {
+function ScreenNav({ setCurrentScreen, tabs = [] }) {
   const buildTab = ({ label, id, isCurrentTab }, index) => {
     return (
       <Tab
         key={id}
-        onClick={setCurrentSlot}
+        onClick={setCurrentScreen}
         value={index}
         isCurrentTab={isCurrentTab}
       >
