@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { render } from "vitest-browser-react";
 import { page } from "vitest/browser";
-import SUT from "./Carrousel";
+import SUT from "./ScreenCarrousel";
 
 const carrouselId = "carrousel";
 

@@ -1,15 +1,15 @@
-import styles from "./Carrousel.module.css";
-import Tab from "../Tabs/Tab/Tab";
+import styles from "./ScreenCarrousel.module.css";
+import Tab from "../ScreenNav/Tab/Tab";
 import Track from "./Track";
 import { reduceToClassName } from "../../utils";
 import { useState } from "react";
 
 /**
- * @module Carrousel
+ * @module ScreenCarrousel
  */
 
 /**
- * @typedef {object} screen The data required to display a screen in the Carrousel
+ * @typedef {object} screen The data required to display a screen in the ScreenCarrousel
  * @property {string} label The visible text of the Tab component that represents the screen component
  * @property {JSX.Element} component The component to display
  * @property {string} id An identifier that differentiates screens from each other
@@ -17,7 +17,7 @@ import { useState } from "react";
 
 /**
  * The Carousel component lets you create slidable interfaces
- * @param {object} props The Carrousel properties
+ * @param {object} props The ScreenCarrousel properties
  * @param {Array<screen>} props.screens The list of data required to display the screens
  * @example
  * const screens = [
@@ -32,10 +32,10 @@ import { useState } from "react";
     id: 2
   },
 ]
-  <Carrousel screens={screens}></Carrousel>
+  <ScreenCarrousel screens={screens}></ScreenCarrousel>
  * @return {JSX.Element}
  */
-function Carrousel({ screens = [] }) {
+function ScreenCarrousel({ screens = [] }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const onClickCallback = (value) => setCurrentIndex(value);
   const buildTab = ({ label, id: key, index }) => {
@@ -61,7 +61,7 @@ function Carrousel({ screens = [] }) {
   return (
     <div
       data-testid="carrousel"
-      className={reduceToClassName([styles.Carrousel, "carrousel"])}
+      className={reduceToClassName([styles.Carrousel, "ScreenCarrousel"])}
     >
       <nav className={styles.tabContainer}>{tabs}</nav>
       <Track currentIndex={currentIndex} componentsData={componentData}></Track>
@@ -69,4 +69,4 @@ function Carrousel({ screens = [] }) {
   );
 }
 
-export default Carrousel;
+export default ScreenCarrousel;
