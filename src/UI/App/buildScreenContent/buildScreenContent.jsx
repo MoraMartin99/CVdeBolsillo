@@ -52,11 +52,10 @@ const buildPreview = (props = {}) => {
 
 /**
  * The buildScreens factory builds the main screens
- * @memberof module:Main
  * @param {settings} settings
  * @returns {Array<JSX.Element>|Array<JSX.Element, JSX.Element>} An array with 2 Carrousel components if hasIndependentLastPanel is truthy or 1 if it's falsy
  */
-function buildScreenContent({ screensData, userData, onChange, cvTemplates }) {
+function buildScreenContent({ screens, userData, onChange, cvTemplates }) {
   const addUserData = (data) => ({ ...data, userData });
 
   const addOnChange = (data) => ({ ...data, onChange });
@@ -84,7 +83,7 @@ function buildScreenContent({ screensData, userData, onChange, cvTemplates }) {
     };
   };
 
-  return screensData
+  return screens
     .map(addUserData)
     .map(addOnChange)
     .map(addCVTemplates)
