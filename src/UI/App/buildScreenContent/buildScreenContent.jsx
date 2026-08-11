@@ -62,7 +62,7 @@ const buildPreview = (props = {}) => {
  * @param {settings} settings
  * @returns {Array<JSX.Element>|Array<JSX.Element, JSX.Element>} An array with 2 Carrousel components if hasIndependentLastPanel is truthy or 1 if it's falsy
  */
-function buildScreens({ screensData, userData, onChange, cvTemplates }) {
+function buildScreenContent({ screensData, userData, onChange, cvTemplates }) {
   const addUserData = (data) => ({ ...data, userData });
 
   const addOnChange = (data) => ({ ...data, onChange });
@@ -98,4 +98,4 @@ function buildScreens({ screensData, userData, onChange, cvTemplates }) {
     .map(buildScreen);
 }
 
-export default buildScreens;
+export default buildScreenContent;
