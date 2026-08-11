@@ -2,6 +2,8 @@ import UserFormsManager from "../../Form/userDataForm/FormsManager";
 import TemplateForm from "../../Form/templateForm/TemplateForm";
 import Preview from "../../Preview/Preview";
 
+/**@module buildScreenContent*/
+
 /**
  * buildUserFormsManager
  * @param {object} props
@@ -41,19 +43,18 @@ const buildPreview = (props = {}) => {
 };
 
 /**
- *  The data required to build the screens
- * @memberof module:Main
+ *  The data required to build the screens content
  * @typedef {object} settings
- * @property {Array<screenData>} screensData A list containing the data required to build the screens
+ * @property {Array<import("../../../screenSettings/ScreenData").ScreenData>} screens A list containing the main data required to build the screens content
  * @property {onChange} onChange A function passed to the screens that reports value's changes to the parent
  * @property {object} userData The data recollected from the forms
  * @property {Array<object>} cvTemplates The list of CV templates
  */
 
 /**
- * The buildScreens factory builds the main screens
+ * The buildScreenContent factory builds the main screens content
  * @param {settings} settings
- * @returns {Array<JSX.Element>|Array<JSX.Element, JSX.Element>} An array with 2 Carrousel components if hasIndependentLastPanel is truthy or 1 if it's falsy
+ * @returns {Array<JSX.Element>}
  */
 function buildScreenContent({ screens, userData, onChange, cvTemplates }) {
   const addUserData = (data) => ({ ...data, userData });
