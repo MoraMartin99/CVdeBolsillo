@@ -1,12 +1,6 @@
-import UserFormsManager from "../Form/userDataForm/FormsManager";
-import TemplateForm from "../Form/templateForm/TemplateForm";
-import Preview from "../Preview/Preview";
-
-/**
- * A functions to report changes from the screen to the parent
- * @memberof module:Main
- * @callback onChange
- */
+import UserFormsManager from "../../Form/userDataForm/FormsManager";
+import TemplateForm from "../../Form/templateForm/TemplateForm";
+import Preview from "../../Preview/Preview";
 
 /**
  * buildUserFormsManager
