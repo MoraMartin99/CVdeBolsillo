@@ -31,18 +31,18 @@ const cases = [
   },
 ];
 
-describe("buildScreens", () => {
+describe("buildScreenContent", () => {
   beforeEach(async () => {
     const mocks = [
-      ["../Form/userDataForm/FormsManager", UserFormsManagerMock],
-      ["../Form/templateForm/TemplateForm", TemplateFormMock],
-      ["../Preview/Preview", PreviewMock],
+      ["../../Form/userDataForm/FormsManager", UserFormsManagerMock],
+      ["../../Form/templateForm/TemplateForm", TemplateFormMock],
+      ["../../Preview/Preview", PreviewMock],
     ];
     const setMocks = ([path, mock]) => {
       vi.doMock(import(path), () => ({ default: mock }));
     };
     mocks.forEach(setMocks);
-    const buildScreens = (await import("./buildScreens")).default;
+    const buildScreenContent = (await import("./buildScreenContent")).default;
     TestMock.mockImplementation((props) => {
       const mapper = ({ id, component, label }) => {
         return (
@@ -52,7 +52,9 @@ describe("buildScreens", () => {
           </div>
         );
       };
-      return <div data-testid="Test">{buildScreens(props).map(mapper)}</div>;
+      return (
+        <div data-testid="Test">{buildScreenContent(props).map(mapper)}</div>
+      );
     });
   });
 
@@ -61,7 +63,7 @@ describe("buildScreens", () => {
   it.each(cases)("builds the $label component", async (currentCase) => {
     await render(
       <TestMock
-        {...{ screensData: [currentCase], userData, onChange: onChangeMock }}
+        {...{ screens: [currentCase], userData, onChange: onChangeMock }}
       ></TestMock>,
     );
     const target = page.getByTestId(currentCase.id);
