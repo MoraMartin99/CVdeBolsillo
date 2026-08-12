@@ -1,9 +1,7 @@
-import Header from "../Header/Header";
-import Main from "../Main/Main";
 import "../../variables.css";
 import "../../global.css";
-import css from "./App.module.css";
-import { reduceToClassName } from "../../utils";
+import SingleScreenLayout from "./SingleScreenLayout/SingleScreenLayout";
+import useScreenSize from "../../hooks/useScreenSize";
 
 /**@module App */
 
@@ -28,22 +26,17 @@ function App({
   minDualPanelScreenWidth,
   cvTemplates,
 }) {
-  const className = reduceToClassName(["app", css.layout]);
+  const screenSize = useScreenSize();
 
-  return (
-    <div className={className}>
-      <Header
-        appName={name}
-        repoLabel={repoLabel}
-        repoUrl={repoUrl}
-        RepoIcon={RepoIcon}
-      ></Header>
-      <Main
-        screens={screens}
-        minDualPanelScreenWidth={minDualPanelScreenWidth}
-        cvTemplates={cvTemplates}
-      ></Main>
-    </div>
+  return screenSize > minDualPanelScreenWidth ? null : (
+    <SingleScreenLayout
+      name={name}
+      repoLabel={repoLabel}
+      repoUrl={repoUrl}
+      RepoIcon={RepoIcon}
+      screens={screens}
+      cvTemplates={cvTemplates}
+    ></SingleScreenLayout>
   );
 }
 
