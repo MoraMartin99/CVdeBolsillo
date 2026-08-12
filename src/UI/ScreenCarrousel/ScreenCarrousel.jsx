@@ -1,70 +1,54 @@
-import styles from "./ScreenCarrousel.module.css";
-import Tab from "../ScreenNav/Tab/Tab";
-import Track from "./Track";
-import { reduceToClassName } from "../../utils";
-import { useState } from "react";
+import { useEffect, useCallback, useRef } from "react";
+import useAccordion from "../../hooks/useAccordion";
+import { isEqual } from "lodash";
+import Screen from "./Screen/Screen";
 
-/**
- * @module ScreenCarrousel
- */
+function ScreenCarrousel({
+  screensContent = [],
+  currentScreen,
+  style: externalStyle,
+  onCollapseStart,
+  onScreenScroll,
+}) {
+  const contentRef = useRef(null);
+  const getVisibilities = useCallback(
+    (_, index) => {
+      return index === currentScreen ? {} : { isHidden: true };
+    },
+    [currentScreen],
+  );
 
-/**
- * @typedef {object} screen The data required to display a screen in the ScreenCarrousel
- * @property {string} label The visible text of the Tab component that represents the screen component
- * @property {JSX.Element} component The component to display
- * @property {string} id An identifier that differentiates screens from each other
- */
+  const [styles, setVisibilities] = useAccordion({
+    visibilities: screensContent.map(getVisibilities),
+    isHorizontal: true,
+  });
 
-/**
- * The Carousel component lets you create slidable interfaces
- * @param {object} props The ScreenCarrousel properties
- * @param {Array<screen>} props.screens The list of data required to display the screens
- * @example
- * const screens = [
-  {
-    label: "tab1",
-    component: <div>component1</div>,
-    id: 1
-  },
-  {
-    label: "tab2",
-    component: <div>component2</div>,
-    id: 2
-  },
-]
-  <ScreenCarrousel screens={screens}></ScreenCarrousel>
- * @return {JSX.Element}
- */
-function ScreenCarrousel({ screens = [] }) {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const onClickCallback = (value) => setCurrentIndex(value);
-  const buildTab = ({ label, id: key, index }) => {
-    const isCurrentTab = index === currentIndex;
-    return (
-      <Tab
-        label={label}
-        key={key}
-        value={index}
-        onClickCallback={onClickCallback}
-        isCurrentTab={isCurrentTab}
-      ></Tab>
-    );
-  };
-  const screenReducer = (result, { label, component, id }, index) => {
-    result[0].push(buildTab({ label, id, index }));
-    result[1].push({ component, id });
-    return result;
+  const onTransitionStart = (e) => {
+    if (e.currentTarget !== contentRef.current || !onCollapseStart) return;
+    onCollapseStart(contentRef.current);
   };
 
-  const [tabs, componentData] = screens.reduce(screenReducer, [[], []]);
+  const buildScreen = (child) => {
+    return <Screen onScroll={onScreenScroll}>{child}</Screen>;
+  };
+
+  useEffect(() => {
+    const stateSetter = (lastValue) => {
+      const newValue = screensContent.map(getVisibilities);
+
+      return isEqual(lastValue, newValue) ? lastValue : newValue;
+    };
+    setVisibilities(stateSetter);
+  }, [getVisibilities, screensContent, setVisibilities]);
 
   return (
     <div
-      data-testid="carrousel"
-      className={reduceToClassName([styles.Carrousel, "ScreenCarrousel"])}
+      ref={contentRef}
+      // eslint-disable-next-line react/no-unknown-property
+      onTransitionStart={onTransitionStart}
+      style={{ ...externalStyle, ...styles.parent }}
     >
-      <nav className={styles.tabContainer}>{tabs}</nav>
-      <Track currentIndex={currentIndex} componentsData={componentData}></Track>
+      {screensContent.map(buildScreen)}
     </div>
   );
 }
