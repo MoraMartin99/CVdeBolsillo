@@ -1,74 +1,56 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { render } from "vitest-browser-react";
 import { page } from "vitest/browser";
+import buildScreenContent from "./buildScreenContent";
+import UserFormsManager from "../../Form/userDataForm/FormsManager";
+import TemplateForm from "../../Form/templateForm/TemplateForm";
 
-const userData = { message: "userData" };
+const factoryNodeId = "factoryNode";
+const componentNodeId = "componentNode";
 
-const userFormId = "UserFormsManager";
-const templateId = "TemplateForm";
-const previewId = "Preview";
-const UserFormsManagerMock = vi.fn(() => <div data-testid={userFormId}></div>);
-const TemplateFormMock = vi.fn(() => <div data-testid={templateId}></div>);
-const PreviewMock = vi.fn(() => <div data-testid={previewId}></div>);
-const onChangeMock = vi.fn(() => {});
-const TestMock = vi.fn(() => {});
+const renderNodes = async (factoryNode, componentNode) => {
+  await render(
+    <div>
+      <div data-testid={factoryNodeId}>{factoryNode}</div>
+      <div data-testid={componentNodeId}>{componentNode}</div>
+    </div>,
+  );
+};
 
 const cases = [
   {
-    label: "UserFormsManager",
     id: "userForm",
-    componentId: userFormId,
+    content: [],
+    templates: {},
+    onChange: () => {},
+    Component: UserFormsManager,
+    componentName: "UserFormsManager",
   },
   {
-    label: "TemplateForm",
     id: "templateForm",
-    componentId: templateId,
+    templates: [{ id: "cv1", label: "Estilo 1" }],
+    onChange: () => {},
+    cvTemplateId: "cv1",
+    Component: TemplateForm,
+    componentName: "TemplateForm",
   },
-  {
-    label: "Preview",
-    id: "preview",
-    componentId: previewId,
-  },
+  { id: "templateForm", cvTemplates, onChange, userData },
 ];
 
 describe("buildScreenContent", () => {
-  beforeEach(async () => {
-    const mocks = [
-      ["../../Form/userDataForm/FormsManager", UserFormsManagerMock],
-      ["../../Form/templateForm/TemplateForm", TemplateFormMock],
-      ["../../Preview/Preview", PreviewMock],
-    ];
-    const setMocks = ([path, mock]) => {
-      vi.doMock(import(path), () => ({ default: mock }));
-    };
-    mocks.forEach(setMocks);
-    const buildScreenContent = (await import("./buildScreenContent")).default;
-    TestMock.mockImplementation((props) => {
-      const mapper = ({ id, component, label }) => {
-        return (
-          <div key={id} data-testid={id}>
-            {label}
-            {component}
-          </div>
-        );
-      };
-      return (
-        <div data-testid="Test">{buildScreenContent(props).map(mapper)}</div>
-      );
-    });
-  });
-
-  afterEach(() => vi.resetAllMocks());
-
-  it.each(cases)("builds the $label component", async (currentCase) => {
-    await render(
-      <TestMock
-        {...{ screens: [currentCase], userData, onChange: onChangeMock }}
-      ></TestMock>,
+  it.each(cases)("builds $componentName component", async (settings) => {
+    await renderNodes(
+      buildScreenContent(settings),
+      <settings.Component {...settings}></settings.Component>,
     );
-    const target = page.getByTestId(currentCase.id);
-    const component = page.getByTestId(currentCase.componentId);
-    await expect.element(target).toContainHTML(currentCase.label);
-    await expect.element(target).toContainElement(component);
+    const factoryNode = await page
+      .getByTestId(factoryNodeId)
+      .element()
+      .children.item(0);
+    const node = await page
+      .getByTestId(componentNodeId)
+      .element()
+      .children.item(0);
+    expect(factoryNode.isEqualNode(node)).toBeTruthy();
   });
 });
