@@ -2,7 +2,7 @@ import ScreenData from "./ScreenData";
 import userDataScreen from "./userDataScreen/userDataScreen";
 import templateScreen from "./templateScreen/templateScreen";
 import previewScreen from "./previewScreen/previewScreen";
-import cvTemplates from "./templateScreen/cvTemplates/index";
+import cvTemplates from "./templateScreen/templates/index";
 
 /**
  * The AppSettings class defines the main parameters for the app
