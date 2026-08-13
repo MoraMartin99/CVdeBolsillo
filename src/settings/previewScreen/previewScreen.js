@@ -1,3 +1,3 @@
-import ScreenData from "../ScreenData";
+import Screen from "../Screen";
 
-export default new ScreenData({ label: "Preview", id: "preview" });
+export default new Screen({ label: "Preview", id: "preview" });

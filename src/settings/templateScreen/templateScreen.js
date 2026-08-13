@@ -1,4 +1,4 @@
-import ScreenData from "../ScreenData";
+import Screen from "../Screen";
 import templates from "./templates/index";
 
 /**@module TemplateScreen */
@@ -6,7 +6,7 @@ import templates from "./templates/index";
 /**
  * The TemplateScreen defines the properties of a template screen component
  */
-class TemplateScreen extends ScreenData {
+class TemplateScreen extends Screen {
   /**
    * Creates a template screen component
    * @param {object} settings

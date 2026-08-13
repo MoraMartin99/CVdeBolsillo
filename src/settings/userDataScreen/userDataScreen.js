@@ -1,5 +1,5 @@
 import exampleUser from "../exampleUser";
-import ScreenData from "../ScreenData";
+import Screen from "../Screen";
 import TipCardTemplate from "./formTemplates/TipCardTemplate";
 import LevelFieldTemplate from "./formTemplates/LevelFieldTemplate";
 import DateRangeFieldTemplate from "./formTemplates/DateRangeFieldTemplate";
@@ -620,7 +620,7 @@ const content = [
   softSkillsForm,
 ].map(getTemplateIdObject);
 
-class UserScreenData extends ScreenData {
+class UserScreenData extends Screen {
   constructor({ content = [], templates = {}, label }) {
     super({ label, id: "userForm" });
     Object.assign(this, { content: [...content], templates: { ...templates } });
