@@ -1,4 +1,4 @@
-import exampleUser from "../../screenSettings/exampleUser";
+import exampleUser from "../exampleUser";
 import ScreenData from "../ScreenData";
 import TipCardTemplate from "./formTemplates/TipCardTemplate";
 import LevelFieldTemplate from "./formTemplates/LevelFieldTemplate";
