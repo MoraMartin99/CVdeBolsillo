@@ -620,11 +620,11 @@ const content = [
   softSkillsForm,
 ].map(getTemplateIdObject);
 
-class UserScreenData extends Screen {
+class UserDataScreen extends Screen {
   constructor({ content = [], templates = {}, label }) {
     super({ label, id: "userForm" });
     Object.assign(this, { content: [...content], templates: { ...templates } });
   }
 }
 
-export default new UserScreenData({ label, templates, content });
+export default new UserDataScreen({ label, templates, content });
