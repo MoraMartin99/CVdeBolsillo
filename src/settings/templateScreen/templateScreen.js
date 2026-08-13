@@ -1,3 +1,3 @@
-import ScreenData from "../settings/ScreenData";
+import ScreenData from "../ScreenData";
 
 export default new ScreenData({ label: "Plantillas", id: "templateForm" });
