@@ -1,5 +1,5 @@
 import exampleUser from "./exampleUser";
-import ScreenData from "./ScreenData";
+import ScreenData from "../settings/ScreenData";
 import TipCardTemplate from "./formTemplates/TipCardTemplate";
 import LevelFieldTemplate from "./formTemplates/LevelFieldTemplate";
 import DateRangeFieldTemplate from "./formTemplates/DateRangeFieldTemplate";

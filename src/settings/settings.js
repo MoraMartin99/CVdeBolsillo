@@ -1,4 +1,4 @@
-import ScreenData from ".././screenSettings/ScreenData";
+import ScreenData from "./ScreenData";
 import userDataScreen from ".././screenSettings/userDataScreen";
 import templateScreen from ".././screenSettings/templateScreen";
 import previewScreen from ".././screenSettings/previewScreen";
