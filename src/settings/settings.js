@@ -1,7 +1,7 @@
 import ScreenData from "./ScreenData";
 import userDataScreen from "./userDataScreen/userDataScreen";
 import templateScreen from "./templateScreen/templateScreen";
-import previewScreen from ".././screenSettings/previewScreen";
+import previewScreen from "./previewScreen/previewScreen";
 import cvTemplates from ".././cvTemplates/index";
 
 /**
