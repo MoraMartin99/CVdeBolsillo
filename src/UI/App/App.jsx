@@ -14,7 +14,6 @@ import useScreenSize from "../../hooks/useScreenSize";
  * @param {CurrentColorIcon} props.RepoIcon The icon component that represents the repo
  * @param {Array<object>} props.screens The data required to build the app content
  * @param {number} props.minDualPanelScreenWidth The min width in px of the viewport at which the dual screen layout is displayed
- * @param {Array<object>} cvTemplates A collection of CV templates
  * @returns {JSX.Element}
  */
 function App({
@@ -24,7 +23,6 @@ function App({
   RepoIcon,
   screens,
   minDualPanelScreenWidth,
-  cvTemplates,
 }) {
   const screenSize = useScreenSize();
 
@@ -35,7 +33,6 @@ function App({
       repoUrl={repoUrl}
       RepoIcon={RepoIcon}
       screens={screens}
-      cvTemplates={cvTemplates}
     ></SingleScreenLayout>
   );
 }

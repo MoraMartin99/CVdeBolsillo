@@ -6,14 +6,7 @@ import ScreenNav from "../../ScreenNav/ScreenNav";
 import ScreenCarrousel from "../../ScreenCarrousel/ScreenCarrousel";
 import buildScreenContent from "../buildScreenContent/buildScreenContent";
 
-function SingleScreenLayout({
-  name,
-  repoLabel,
-  repoUrl,
-  RepoIcon,
-  screens,
-  cvTemplates,
-}) {
+function SingleScreenLayout({ name, repoLabel, repoUrl, RepoIcon, screens }) {
   const [currentScreen, setCurrentScreen] = useState(0);
   const lastScrolledScreenRef = useRef(currentScreen);
   const floatingOffsetIsLockedRef = useRef(false);
