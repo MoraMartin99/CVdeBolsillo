@@ -1,5 +1,5 @@
 import ActionTemplate from "./ActionTemplate";
-import TrashIcon from "../../assets/images/trashIcon.svg?react";
+import TrashIcon from "../../../assets/images/trashIcon.svg?react";
 
 /**
  * The RemoveItemTemplate class defines the properties of the remove item action

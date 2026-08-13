@@ -1,5 +1,5 @@
 import Template from "./Template";
-import { hasSource } from "../../validators";
+import { hasSource } from "../../../validators";
 
 /**
  * A function that evaluates if the field's value is valid

@@ -1,5 +1,5 @@
 import ClassicFieldTemplate from "./ClassicFieldTemplate";
-import { isValidMail } from "../../validators";
+import { isValidMail } from "../../../validators";
 
 const defaultTip = "Escriba un mail valido. Por ejemplo: nombre@dominio.com";
 const type = "email";

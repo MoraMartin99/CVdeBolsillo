@@ -1,5 +1,5 @@
 import ClassicFieldTemplate from "./ClassicFieldTemplate";
-import { containsText } from "../../validators";
+import { containsText } from "../../../validators";
 
 /**
  * A function that evaluates if the field's value is valid

@@ -1,5 +1,5 @@
 import ClassicFieldTemplate from "./ClassicFieldTemplate";
-import { isValidURL } from "../../validators";
+import { isValidURL } from "../../../validators";
 
 /**
  * A function that evaluates if the field's value is valid

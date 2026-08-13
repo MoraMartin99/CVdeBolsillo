@@ -1,5 +1,5 @@
 import ClassicFieldTemplate from "./ClassicFieldTemplate";
-import { isValidTelNumber } from "../../validators";
+import { isValidTelNumber } from "../../../validators";
 
 /**
  * The TelFieldTemplate class defines the properties of the telephone field
