@@ -1,4 +1,4 @@
-import imagePlaceholder from "../assets/images/imagePlaceholder.svg";
+import imagePlaceholder from "../../../assets/images/imagePlaceholder.svg";
 
 /**
  * A CV template
