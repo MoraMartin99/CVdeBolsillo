@@ -2,6 +2,8 @@ import "../../variables.css";
 import "../../global.css";
 import SingleScreenLayout from "./SingleScreenLayout/SingleScreenLayout";
 import useScreenSize from "../../hooks/useScreenSize";
+import useFormModel from "../../hooks/useFormModel";
+import { useState } from "react";
 
 /**@module App */
 
@@ -21,10 +23,15 @@ function App({
   repoLabel,
   repoUrl,
   RepoIcon,
-  screens,
+  screens = [],
   minDualPanelScreenWidth,
 }) {
+  const getUserDataScreen = (screens) => {
+    return screens.find(({ id }) => id === "userForm");
+  };
+  const { content, templates } = getUserDataScreen(screens);
   const screenSize = useScreenSize();
+  const { model, resetModel, loadExamples } = useFormModel(content, templates);
 
   return screenSize > minDualPanelScreenWidth ? null : (
     <SingleScreenLayout
