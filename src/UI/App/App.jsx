@@ -70,8 +70,8 @@ function App({
   );
 
   const buildScreenContentSettings = (screen) => {
-    const buildUserDataScreenSettings = () => {
-      return { model, resetModel, loadExamples };
+    const buildUserDataScreenSettings = ({ id }) => {
+      return { model, resetModel, loadExamples, id };
     };
 
     const buildTemplateScreenSettings = ({ id, templates }) => {
