@@ -6,6 +6,7 @@ import useFormModel from "../../hooks/useFormModel";
 import { useRef, useState } from "react";
 import Header from "../Header/Header";
 import ScreenNav from "../ScreenNav/ScreenNav";
+import buildScreenContent from "./buildScreenContent/buildScreenContent";
 
 /**@module App */
 
@@ -66,6 +67,27 @@ function App({
       tabs={screens.map(createTab)}
     ></ScreenNav>
   );
+
+  const buildScreenContentSettings = (screen) => {
+    const buildUserDataScreenSettings = () => {
+      return { model, resetModel, loadExamples };
+    };
+
+    const buildTemplateScreenSettings = ({ id, templates }) => {
+      return { id, templates, setCVTemplateId, cvTemplateId };
+    };
+
+    const builders = {
+      userForm: buildUserDataScreenSettings,
+      templateForm: buildTemplateScreenSettings,
+    };
+
+    return builders[screen.id]?.(screen);
+  };
+
+  const screensContent = screens
+    .map(buildScreenContentSettings)
+    .map(buildScreenContent);
 
   return screenSize > minDualPanelScreenWidth ? null : (
     <SingleScreenLayout
