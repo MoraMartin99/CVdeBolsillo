@@ -29,9 +29,15 @@ function App({
   const getUserDataScreen = (screens) => {
     return screens.find(({ id }) => id === "userForm");
   };
+  const getTemplateScreen = (screens) => {
+    return screens.find(({ id }) => id === "templateForm");
+  };
   const { content, templates } = getUserDataScreen(screens);
   const screenSize = useScreenSize();
   const { model, resetModel, loadExamples } = useFormModel(content, templates);
+  const [cvTemplateId, setCVTemplateId] = useState(
+    getTemplateScreen(screens).id,
+  );
 
   return screenSize > minDualPanelScreenWidth ? null : (
     <SingleScreenLayout
