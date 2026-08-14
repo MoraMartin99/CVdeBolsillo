@@ -1,7 +1,7 @@
-import useAccordion from "../../../hooks/useAccordion";
+import useAccordion from "../../../../hooks/useAccordion";
 import Header from "./Header";
 import css from "./Accordion.module.css";
-import { reduceToClassName } from "../../../utils";
+import { reduceToClassName } from "../../../../utils";
 
 /**@module Accordion */
 

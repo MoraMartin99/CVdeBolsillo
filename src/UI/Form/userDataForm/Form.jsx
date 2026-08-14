@@ -1,5 +1,5 @@
 import { reduceToClassName } from "../../../utils";
-import Accordion from "./Accordion";
+import Accordion from "./Accordion/Accordion";
 
 /**@module  Form */
 

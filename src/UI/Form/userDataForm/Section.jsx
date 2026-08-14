@@ -1,4 +1,4 @@
-import Accordion from "./Accordion";
+import Accordion from "./Accordion/Accordion";
 import { reduceToClassName } from "../../../utils";
 
 /**@module Section */

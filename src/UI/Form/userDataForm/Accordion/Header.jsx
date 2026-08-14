@@ -1,5 +1,5 @@
-import VisibilityIcon from "../../../assets/images/leftArrow.svg?react";
-import { reduceToClassName } from "../../../utils";
+import VisibilityIcon from "../../../../assets/images/leftArrow.svg?react";
+import { reduceToClassName } from "../../../../utils";
 import css from "./Header.module.css";
 
 /**
