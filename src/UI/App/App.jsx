@@ -3,7 +3,8 @@ import "../../global.css";
 import SingleScreenLayout from "./SingleScreenLayout/SingleScreenLayout";
 import useScreenSize from "../../hooks/useScreenSize";
 import useFormModel from "../../hooks/useFormModel";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import Header from "../Header/Header";
 
 /**@module App */
 
@@ -37,6 +38,17 @@ function App({
   const { model, resetModel, loadExamples } = useFormModel(content, templates);
   const [cvTemplateId, setCVTemplateId] = useState(
     getTemplateScreen(screens).id,
+  );
+  const headerRef = useRef(null);
+
+  const myHeader = (
+    <Header
+      ref={headerRef}
+      appName={name}
+      repoLabel={repoLabel}
+      repoUrl={repoUrl}
+      RepoIcon={RepoIcon}
+    ></Header>
   );
 
   return screenSize > minDualPanelScreenWidth ? null : (
