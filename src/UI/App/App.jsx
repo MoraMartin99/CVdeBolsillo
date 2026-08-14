@@ -41,6 +41,7 @@ function App({
   const [cvTemplateId, setCVTemplateId] = useState(
     getTemplateScreen(screens).id,
   );
+  const [currentScreen, setCurrentScreen] = useState(0);
   const headerRef = useRef(null);
 
   const myHeader = (
