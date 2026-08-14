@@ -5,6 +5,7 @@ import useScreenSize from "../../hooks/useScreenSize";
 import useFormModel from "../../hooks/useFormModel";
 import { useRef, useState } from "react";
 import Header from "../Header/Header";
+import ScreenNav from "../ScreenNav/ScreenNav";
 
 /**@module App */
 
@@ -49,6 +50,21 @@ function App({
       repoUrl={repoUrl}
       RepoIcon={RepoIcon}
     ></Header>
+  );
+
+  const createTab = ({ label, id }, index) => {
+    return {
+      label,
+      id,
+      isCurrentTab: index === currentScreen,
+    };
+  };
+
+  const myScreenNav = (
+    <ScreenNav
+      setCurrentScreen={setCurrentScreen}
+      tabs={screens.map(createTab)}
+    ></ScreenNav>
   );
 
   return screenSize > minDualPanelScreenWidth ? null : (
