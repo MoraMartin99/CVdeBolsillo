@@ -11,6 +11,8 @@ import { useState } from "react";
  * The visibility state of a childContainer
  * @typedef {object} visibility
  * @property {boolean} isHidden
+ * @property {boolean} isStatic If true the corresponding item only takes the space that it needs and ignores isHidden.
+ * This is often require in the most common accordion use case: A header and a content
  */
 
 /**
@@ -73,7 +75,9 @@ const useAccordion = ({
 }) => {
   const [visibilities, setVisibilities] = useState(initialVisibilities);
 
-  const setSize = ({ isHidden }) => (isHidden ? "0fr" : "1fr");
+  const setSize = ({ isHidden, isStatic }) => {
+    return isStatic ? "max-content" : isHidden ? "0fr" : "1fr";
+  };
 
   const getColumnValue = () => {
     return isHorizontal ? visibilities.map(setSize).join(" ") : "1fr";

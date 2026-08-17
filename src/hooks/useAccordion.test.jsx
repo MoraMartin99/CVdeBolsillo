@@ -7,12 +7,11 @@ const visibleChildHeight = "50px";
 const hiddenChildContainerHeight = "0px";
 
 const addExpectedResult = (item) => {
-  const getExpectedResult = ({ isHidden }, index) => {
+  const getExpectedResult = ({ isHidden, isStatic }, index) => {
     return {
       label: `item ${index}`,
-      expectedHeight: isHidden
-        ? hiddenChildContainerHeight
-        : visibleChildHeight,
+      expectedHeight:
+        isStatic || !isHidden ? visibleChildHeight : hiddenChildContainerHeight,
     };
   };
   return { ...item, expectedResult: item.visibilities.map(getExpectedResult) };
@@ -20,6 +19,11 @@ const addExpectedResult = (item) => {
 
 const buttonCases = [
   { label: "Mostrar solo slot 0", visibilities: [{}, { isHidden: true }] },
+  {
+    label:
+      "Mostrar slot 0 y mostrar slot 1 por estar configurada como estática",
+    visibilities: [{}, { isStatic: true, isHidden: true }],
+  },
   { label: "Mostrar slot 0 y 1", visibilities: [{}, {}] },
   {
     label: "No mostrar slots",
@@ -72,9 +76,13 @@ const addItems = (item) => {
 };
 
 const propCases = [
-  { visibilities: [{ isHidden: true }, {}] },
-  { visibilities: [{ isHidden: true }, { isHidden: true }] },
-  { visibilities: [{}, { isHidden: true }] },
+  { visibilities: [{ isHidden: true }, {}, { isStatic: true }] },
+  {
+    visibilities: [{ isHidden: true }, { isHidden: true }, { isStatic: true }],
+  },
+  {
+    visibilities: [{}, { isHidden: true }, { isStatic: true, isHidden: true }],
+  },
 ]
   .map(addExpectedResult)
   .map(addItems);
