@@ -1,7 +1,6 @@
 import useAccordion from "../../../../hooks/useAccordion";
 import Header from "./Header";
 import css from "./Accordion.module.css";
-import { reduceToClassName } from "../../../../utils";
 
 /**@module Accordion */
 
@@ -20,35 +19,43 @@ import { reduceToClassName } from "../../../../utils";
 function Accordion({
   name,
   Icon,
-  isExpanded: isExpandedProp = false,
+  isExpanded = false,
   children,
   actions = [],
   variant = "child",
   classArr = [],
 }) {
-  const [isExpanded, setIsExpanded, parentStyle, contentStyle] =
-    useAccordion(isExpandedProp);
-  const toggleIsExpanded = () => setIsExpanded(!isExpanded);
+  const headerVisibility = { isStatic: true };
+  const getVisibilities = (isExpanded) => {
+    return isExpanded
+      ? [headerVisibility, {}]
+      : [headerVisibility, { isHidden: true }];
+  };
+  const { styles, setVisibilities, visibilities } = useAccordion({
+    visibilities: getVisibilities(isExpanded),
+  });
+  const toggleContentVisibility = () => {
+    setVisibilities((lastValue) => {
+      return [headerVisibility, { isHidden: !lastValue[1].isHidden }];
+    });
+  };
 
   return (
     <div
-      className={reduceToClassName([
-        ...classArr,
-        css.base,
-        css[variant],
-        "section",
-      ])}
-      style={{ ...parentStyle }}
+      className={[...classArr, css.base, css[variant]].join(" ")}
+      style={styles.parent}
     >
-      <Header
-        isExpanded={isExpanded}
-        Icon={Icon}
-        onClick={toggleIsExpanded}
-        classArr={[css.header]}
-      >
-        {name}
-      </Header>
-      <div className="collapsableContainer" style={{ ...contentStyle }}>
+      <div style={styles.childContainer}>
+        <Header
+          isExpanded={!visibilities[1].isHidden}
+          Icon={Icon}
+          onClick={toggleContentVisibility}
+          classArr={[css.header]}
+        >
+          {name}
+        </Header>
+      </div>
+      <div style={styles.childContainer}>
         <div className={css.content}>
           <div className={css.elementContainer}>{children}</div>
           {actions.length ? (
