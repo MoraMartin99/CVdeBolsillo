@@ -33,7 +33,7 @@ function Target({
   items,
   onTransition,
 }) {
-  const [styles, setVisibilities] = useAccordion({
+  const { styles, setVisibilities } = useAccordion({
     visibilities: initialVisibilities,
     isHorizontal,
   });

@@ -18,7 +18,7 @@ function ScreenCarrousel({
     [currentScreen],
   );
 
-  const [styles, setVisibilities] = useAccordion({
+  const { styles, setVisibilities } = useAccordion({
     visibilities: screensContent.map(getVisibilities),
     isHorizontal: true,
   });

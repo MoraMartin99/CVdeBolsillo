@@ -20,6 +20,13 @@ import { useState } from "react";
  */
 
 /**
+ * @typedef {object} result
+ * @property {Array<visibility>} visibilities
+ * @property {import('react').Dispatch<import('react').SetStateAction<Array<visibility>>>} setVisibilities
+ * @property {styles} styles
+ */
+
+/**
  * @description
  * The useAccordion hook lets you set a component as collapsible
  * The target component must have the following structure:
@@ -32,7 +39,7 @@ import { useState } from "react";
  * @param {object} settings
  * @param {Array<visibility>} [settings.visibilities = []] The visibility states of the childContainers. The index of each visibility must match the index of the childContainer
  * @param {boolean} [settings.isHorizontal = false] if true sets the parent as a column-only container, if false sets it as row-only
- * @returns {[styles,import('react').Dispatch<import('react').SetStateAction<Array<visibility>>>]}
+ * @returns {result}
  *
  * @example
  * function Target({
@@ -87,7 +94,11 @@ const useAccordion = ({
     transition: getTransitionValue(),
   };
 
-  return [{ parent, childContainer: { overflow: "hidden" } }, setVisibilities];
+  return {
+    styles: { parent, childContainer: { overflow: "hidden" } },
+    visibilities,
+    setVisibilities,
+  };
 };
 
 export default useAccordion;
