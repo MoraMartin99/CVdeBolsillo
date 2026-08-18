@@ -7,9 +7,11 @@ import Preview from "../../Preview/Preview";
  * @param {object} props
  * @returns {JSX.Element}
  */
-const buildUserFormsManager = ({ content, templates, onChange }) => {
+const buildUserFormsManager = ({ model, resetModel, loadExamples }) => {
   return (
-    <UserFormsManager {...{ content, templates, onChange }}></UserFormsManager>
+    <UserFormsManager
+      {...{ model, resetModel, loadExamples }}
+    ></UserFormsManager>
   );
 };
 
