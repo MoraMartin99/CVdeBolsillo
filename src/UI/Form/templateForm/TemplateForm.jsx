@@ -1,4 +1,5 @@
 import RadioField from "./RadioField";
+import css from "./TemplateForm.module.css";
 
 /**@module TemplateForm */
 
@@ -35,7 +36,7 @@ function TemplateForm({
   cvTemplateId = templates[0].id,
 }) {
   return (
-    <form className={[...classArr].join(" ")} id={id} action="">
+    <form className={[...classArr, css.main].join(" ")} id={id} action="">
       {
         <RadioField
           options={templates}

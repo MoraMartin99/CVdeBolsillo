@@ -3,7 +3,6 @@
   --color: var(--primary700color);
   --colorHover: var(--primary500color);
   --colorChecked: var(--primary300color);
-  --paddingInline: 30px;
   --gap: 20px;
 
   --thumbnailWidth: 120px;
@@ -24,10 +23,10 @@
 
   --labelGap: 10px;
 
-  padding-inline: var(--paddingInline);
   display: flex;
   flex-wrap: wrap;
   gap: var(--gap);
+  min-width: max-content;
 }
 
 .label {
