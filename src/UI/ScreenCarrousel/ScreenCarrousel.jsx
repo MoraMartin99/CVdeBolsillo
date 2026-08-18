@@ -36,6 +36,13 @@ function ScreenCarrousel({
       </Screen>
     );
   };
+
+  const buildChildContainer = (child, index) => {
+    return (
+      <div style={styles.childContainer} key={index}>
+        {child}
+      </div>
+    );
   };
 
   useEffect(() => {
@@ -55,7 +62,7 @@ function ScreenCarrousel({
       onTransitionStart={onTransitionStart}
       style={{ ...externalStyle, ...styles.parent }}
     >
-      {screensContent.map(buildScreen)}
+      {screensContent.map(buildScreen).map(buildChildContainer)}
     </div>
   );
 }
