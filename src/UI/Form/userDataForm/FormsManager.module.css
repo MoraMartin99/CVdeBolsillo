@@ -2,9 +2,12 @@
   --mainGap: 30px;
   --formsContainerGap: 10px;
   --buttonsContainerGap: 5px;
+  --paddingBottom: 10px;
+
   display: flex;
   flex-direction: column;
   gap: var(--mainGap);
+  padding-bottom: var(--paddingBottom);
 }
 
 .formsContainer {
