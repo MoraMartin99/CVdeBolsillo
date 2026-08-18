@@ -8,7 +8,7 @@ function ScreenCarrousel({
   screensContent = [],
   currentScreen,
   style: externalStyle,
-  onCollapseStart,
+  onScreenNavigation,
   onScreenScroll,
 }) {
   const contentRef = useRef(null);
@@ -25,8 +25,8 @@ function ScreenCarrousel({
   });
 
   const onTransitionStart = (e) => {
-    if (e.currentTarget !== contentRef.current || !onCollapseStart) return;
-    onCollapseStart(contentRef.current);
+    if (e.currentTarget !== contentRef.current || !onScreenNavigation) return;
+    onScreenNavigation(contentRef.current);
   };
 
   const buildScreen = (child) => {
