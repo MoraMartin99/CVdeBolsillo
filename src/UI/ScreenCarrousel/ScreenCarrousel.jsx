@@ -2,6 +2,7 @@ import { useEffect, useCallback, useRef } from "react";
 import useAccordion from "../../hooks/useAccordion";
 import { isEqual } from "lodash";
 import Screen from "./Screen/Screen";
+import css from "./ScreenCarrousel.module.css";
 
 function ScreenCarrousel({
   screensContent = [],
@@ -43,6 +44,7 @@ function ScreenCarrousel({
 
   return (
     <div
+      className={css.main}
       ref={contentRef}
       // eslint-disable-next-line react/no-unknown-property
       onTransitionStart={onTransitionStart}
