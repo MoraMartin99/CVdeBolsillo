@@ -20,14 +20,19 @@ const buildUserFormsManager = ({ model, resetModel, loadExamples }) => {
  * @param {object} [props = {}]
  * @returns {JSX.Element}
  */
-const buildTemplateForm = ({ id, cvTemplates, onChange, userData }) => {
+const buildTemplateForm = ({
+  id,
+  templates,
+  setCVTemplateId,
+  cvTemplateId,
+}) => {
   return (
     <TemplateForm
       {...{
         id,
-        templates: cvTemplates,
-        onChange,
-        cvTemplateId: userData.cvTemplateId,
+        templates,
+        setCVTemplateId,
+        cvTemplateId,
       }}
     ></TemplateForm>
   );
