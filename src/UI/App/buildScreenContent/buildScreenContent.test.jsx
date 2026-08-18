@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 import { render } from "vitest-browser-react";
 import { page } from "vitest/browser";
 import buildScreenContent from "./buildScreenContent";
@@ -34,7 +34,6 @@ const cases = [
     Component: TemplateForm,
     componentName: "TemplateForm",
   },
-  { id: "templateForm", cvTemplates, onChange, userData },
 ];
 
 describe("buildScreenContent", () => {
