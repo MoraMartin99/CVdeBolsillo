@@ -29,8 +29,13 @@ function ScreenCarrousel({
     onScreenNavigation(contentRef.current);
   };
 
-  const buildScreen = (child) => {
-    return <Screen onScroll={onScreenScroll}>{child}</Screen>;
+  const buildScreen = (child, index) => {
+    return (
+      <Screen key={index} onScroll={(e) => onScreenScroll(e, index)}>
+        {child}
+      </Screen>
+    );
+  };
   };
 
   useEffect(() => {
