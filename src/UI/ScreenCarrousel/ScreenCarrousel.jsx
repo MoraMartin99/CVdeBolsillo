@@ -26,7 +26,10 @@ function ScreenCarrousel({
 
   const onTransitionStart = (e) => {
     if (e.currentTarget !== componentRef.current || !onScreenNavigation) return;
-    onScreenNavigation(componentRef.current);
+    const getScreenElement = (item) => item.children.item(0);
+    onScreenNavigation(
+      [...componentRef.current.children].map(getScreenElement),
+    );
   };
 
   const buildScreen = (child, index) => {
