@@ -1,35 +1,79 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { render } from "vitest-browser-react";
 import { page } from "vitest/browser";
-import SUT from "./ScreenCarrousel";
+import ScreenCarrousel from "./ScreenCarrousel";
+import { useState } from "react";
 
-const carrouselId = "carrousel";
+const buildSettings = (label, index) => {
+  const buildNode = (label, index) => {
+    return (
+      <div
+        style={{ width: "10px", height: "10px", fontSize: "12px" }}
+        key={index}
+      >
+        {label}
+      </div>
+    );
+  };
 
-const screens = [
-  {
-    label: "tab1",
-    component: <div>component1</div>,
-  },
-  {
-    label: "tab2",
-    component: <div>component2</div>,
-  },
-].map((item) => ({ ...item, id: crypto.randomUUID() }));
+  return { label, node: buildNode(label, index) };
+};
 
-describe("Carrousel", () => {
-  beforeEach(() => render(<SUT screens={screens}></SUT>));
+const screensSettings = ["screen 1", "screen 2"].map(buildSettings);
 
-  it("renders", async () => {
-    const carrousel = page.getByTestId(carrouselId);
-    await expect.element(carrousel).toBeInTheDocument();
-  });
+const onScreenNavigationMock = vi.fn(() => {});
 
-  it("displays the correct screen on tab's click events", async () => {
-    const steps = [...screens.slice(1), ...screens.slice(0, -1).toReversed()];
-    steps.forEach(async ({ label, component }) => {
-      const tab = page.getByText(label);
-      await tab.click();
-      expect.element(component).toBeVisible();
-    });
-  });
+const Test = ({ currentScreen: currentScreenProp = 0 }) => {
+  const [currentScreen, setCurrentScreen] = useState(currentScreenProp);
+  const onClick = () => setCurrentScreen(currentScreen ? 0 : 1);
+  return (
+    <>
+      <ScreenCarrousel
+        onScreenNavigation={onScreenNavigationMock}
+        screensContent={screensSettings.map(({ node }) => node)}
+        currentScreen={currentScreen}
+        style={{ "--transitionTime": "150ms" }}
+      ></ScreenCarrousel>
+      <button onClick={onClick} type="button">
+        switch screen
+      </button>
+    </>
+  );
+};
+
+const cases = [0, 1];
+
+describe("ScreenCarrousel", () => {
+  afterEach(() => vi.resetAllMocks());
+
+  it.each(cases)(
+    "runs onScreenNavigation when some screen changes its visibility, initial screen = %d",
+    async (currentScreen) => {
+      let hasNewCurrentScreen = false;
+      const timeout = 200;
+      setTimeout(() => {
+        hasNewCurrentScreen = true;
+      }, timeout);
+      await render(<Test currentScreen={currentScreen}></Test>);
+      const button = page.getByRole("button");
+      await button.click();
+      await vi.waitFor(
+        () => {
+          if (!hasNewCurrentScreen) throw new Error(":(");
+        },
+        {
+          timeout: 1000,
+          interval: timeout + 2,
+        },
+      );
+      const setCallExpectation = async ({ label }, index) => {
+        const content = page.getByText(label);
+        await expect(
+          onScreenNavigationMock.mock.lastCall[0][index],
+        ).toContainElement(content);
+      };
+      expect(onScreenNavigationMock).toHaveBeenCalledOnce();
+      await Promise.all(screensSettings.map(setCallExpectation));
+    },
+  );
 });
