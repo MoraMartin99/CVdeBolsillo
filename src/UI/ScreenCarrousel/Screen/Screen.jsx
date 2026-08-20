@@ -17,7 +17,7 @@ import css from "./Screen.module.css";
  * @param {import("react").ReactNode} props.children
  * @param {number} [props.throttlingTimer = 15] The time in ms that the props.onScroll has to wait before it can be run again
  * @param {onScroll} props.onScroll A callback that runs on scroll events. The scroll event is throttle, so the function only runs after props.throttlingTimer
- * @param {import('react').CSSProperties} style An style object. You must set the --paddingTop and --minHeight custom properties
+ * @param {import('react').CSSProperties} style An style object. The --paddingTop and --minHeight custom properties gives you granular control if needed
  * @returns {JSX.Element}
  */
 function Screen({

@@ -12,7 +12,7 @@
 .scrollItem {
   padding-top: calc(var(--paddingTop, 0px) + var(--minPaddingTop));
   width: 100%;
-  min-height: var(--minHeight);
+  min-height: var(--minHeight, 100%);
   display: flex;
   justify-content: center;
   align-items: start;
