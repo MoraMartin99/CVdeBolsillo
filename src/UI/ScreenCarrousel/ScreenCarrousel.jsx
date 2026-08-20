@@ -11,7 +11,7 @@ function ScreenCarrousel({
   onScreenNavigation,
   onScreenScroll,
 }) {
-  const contentRef = useRef(null);
+  const componentRef = useRef(null);
   const getVisibilities = useCallback(
     (_, index) => {
       return index === currentScreen ? {} : { isHidden: true };
@@ -25,8 +25,8 @@ function ScreenCarrousel({
   });
 
   const onTransitionStart = (e) => {
-    if (e.currentTarget !== contentRef.current || !onScreenNavigation) return;
-    onScreenNavigation(contentRef.current);
+    if (e.currentTarget !== componentRef.current || !onScreenNavigation) return;
+    onScreenNavigation(componentRef.current);
   };
 
   const buildScreen = (child, index) => {
@@ -57,7 +57,7 @@ function ScreenCarrousel({
   return (
     <div
       className={css.main}
-      ref={contentRef}
+      ref={componentRef}
       // eslint-disable-next-line react/no-unknown-property
       onTransitionStart={onTransitionStart}
       style={{ ...externalStyle, ...styles.parent }}
