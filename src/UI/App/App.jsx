@@ -39,7 +39,7 @@ function App({
   const screenSize = useScreenSize();
   const { model, resetModel, loadExamples } = useFormModel(content, templates);
   const [cvTemplateId, setCVTemplateId] = useState(
-    getTemplateScreen(screens).id,
+    getTemplateScreen(screens).cvTemplateId,
   );
   const [currentScreen, setCurrentScreen] = useState(0);
   const headerRef = useRef(null);
