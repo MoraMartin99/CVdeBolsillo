@@ -94,11 +94,10 @@ function App({
 
   return screenSize > minDualPanelScreenWidth ? null : (
     <SingleScreenLayout
-      name={name}
-      repoLabel={repoLabel}
-      repoUrl={repoUrl}
-      RepoIcon={RepoIcon}
-      screens={screens}
+      floatingItems={[myHeader, myScreenNav]}
+      headerRef={headerRef}
+      screensContent={screensContent}
+      currentScreen={currentScreen}
     ></SingleScreenLayout>
   );
 }
