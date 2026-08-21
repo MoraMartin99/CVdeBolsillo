@@ -78,6 +78,24 @@ function SingleScreenLayout({ name, repoLabel, repoUrl, RepoIcon, screens }) {
   };
 
   const getScreenContentSettings = () => {};
+  const onScreenNavigation = (screens) => {
+    const getDelta = (a, b) => (b - a) * -1;
+    const delta = getDelta(
+      screensScrollInfoRef.current[currentScreen].floatingOffsetY,
+      floatingOffsetY,
+    );
+
+    if (!delta) return;
+
+    screens[currentScreen].scrollBy({
+      top: delta,
+      behavior: "instant",
+    });
+    updateSlotScrollInfo(currentScreen, {
+      ...screensScrollInfoRef.current[currentScreen],
+      floatingOffsetY,
+    });
+  };
 
   return (
     <div className={css.main}>
