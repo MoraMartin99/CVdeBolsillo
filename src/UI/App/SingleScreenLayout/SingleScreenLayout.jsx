@@ -48,7 +48,33 @@ function SingleScreenLayout({ name, repoLabel, repoUrl, RepoIcon, screens }) {
       label,
       id,
       isCurrentTab: index === currentScreen,
+  const onScroll = ({ target }, screenIndex) => {
+    const isSameSlot = () => lastScrolledScreenRef.current === currentScreen;
+    const isCloseEnough = (a, b) => {
+      const tolerance = 5;
+      return Math.abs(Math.abs(a) - Math.abs(b)) <= tolerance;
     };
+    const stateSetter = (lastValue) => {
+      const estimatedValue =
+        -1 * Math.min(headerRef.current.offsetHeight, target.scrollTop);
+      if (!isSameSlot()) floatingOffsetIsLockedRef.current = true;
+      if (
+        isCloseEnough(estimatedValue, lastValue) &&
+        floatingOffsetIsLockedRef.current
+      ) {
+        floatingOffsetIsLockedRef.current = false;
+      }
+
+      lastScrolledScreenRef.current = currentScreen;
+
+      return floatingOffsetIsLockedRef.current ? lastValue : estimatedValue;
+    };
+
+    updateSlotScrollInfo(screenIndex, {
+      ...screensScrollInfoRef.current[screenIndex],
+      scrollTop: target.scrollTop,
+    });
+    setFloatingOffsetY(stateSetter);
   };
 
   const getScreenContentSettings = () => {};
