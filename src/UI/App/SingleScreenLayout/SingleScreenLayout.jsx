@@ -15,8 +15,8 @@ function SingleScreenLayout({ name, repoLabel, repoUrl, RepoIcon, screens }) {
   const [headerHeight, setHeaderHeight] = useState(null);
   const headerRef = useRef(null);
   const floatingRef = useRef(null);
-  const slotsScrollInfoRef = useRef(
-    screens.map(() => {
+  const screensScrollInfoRef = useRef(
+    screensContent.map(() => {
       return { scrollTop: 0, floatingOffsetY };
     }),
   );
@@ -26,7 +26,8 @@ function SingleScreenLayout({ name, repoLabel, repoUrl, RepoIcon, screens }) {
       return settingsIndex === index ? settings : item;
     };
 
-    slotsScrollInfoRef.current = slotsScrollInfoRef.current.map(updateSettings);
+    screensScrollInfoRef.current =
+      screensScrollInfoRef.current.map(updateSettings);
   };
 
   useLayoutEffect(() => {
@@ -37,7 +38,7 @@ function SingleScreenLayout({ name, repoLabel, repoUrl, RepoIcon, screens }) {
   useEffect(() => {
     if (currentScreen !== lastScrolledScreenRef.current) return;
     updateSlotScrollInfo(currentScreen, {
-      ...slotsScrollInfoRef.current[currentScreen],
+      ...screensScrollInfoRef.current[currentScreen],
       floatingOffsetY,
     });
   }, [floatingOffsetY, currentScreen]);
