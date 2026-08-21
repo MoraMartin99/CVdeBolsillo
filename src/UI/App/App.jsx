@@ -44,7 +44,7 @@ function App({
   const [currentScreen, setCurrentScreen] = useState(0);
   const headerRef = useRef(null);
 
-  const myHeader = (
+  const header = (
     <Header
       key={"header"}
       ref={headerRef}
@@ -63,7 +63,7 @@ function App({
     };
   };
 
-  const myScreenNav = (
+  const screenNav = (
     <ScreenNav
       key={"screenNav"}
       setCurrentScreen={setCurrentScreen}
@@ -94,7 +94,7 @@ function App({
 
   return screenSize > minDualPanelScreenWidth ? null : (
     <SingleScreenLayout
-      floatingItems={[myHeader, myScreenNav]}
+      floatingItems={[header, screenNav]}
       headerRef={headerRef}
       screensContent={screensContent}
       currentScreen={currentScreen}
