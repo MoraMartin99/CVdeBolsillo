@@ -1,6 +1,9 @@
 .main {
+  --backgroundColor: var(--primary1300color);
+
   height: 100%;
   width: 100%;
+  background-color: var(--backgroundColor);
 }
 
 .carrouselContainer {
