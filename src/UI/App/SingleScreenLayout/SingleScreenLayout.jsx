@@ -1,10 +1,10 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import css from "./SingleScreenLayout.module.css";
 import Header from "../../Header/Header";
 import Floating from "./Floating/Floating";
 import ScreenNav from "../../ScreenNav/ScreenNav";
 import ScreenCarrousel from "../../ScreenCarrousel/ScreenCarrousel";
 import buildScreenContent from "../buildScreenContent/buildScreenContent";
+import css from "./SingleScreenLayout.module.css";
 
 function SingleScreenLayout({ name, repoLabel, repoUrl, RepoIcon, screens }) {
   const [currentScreen, setCurrentScreen] = useState(0);
@@ -53,7 +53,7 @@ function SingleScreenLayout({ name, repoLabel, repoUrl, RepoIcon, screens }) {
   const getScreenContentSettings = () => {};
 
   return (
-    <div>
+    <div className={css.main}>
       <Floating ref={floatingRef} offsetY={floatingOffsetY}>
         <Header
           ref={headerRef}
