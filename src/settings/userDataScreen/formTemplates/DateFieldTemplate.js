@@ -20,6 +20,7 @@ class DateFieldTemplate extends Template {
    * @param {number} settings.startYear
    * @param {number} settings.finishYear
    * @param {Date} settings.exampleValue
+   * @param {boolean} [settings.allowCurrentlyOption = false] If true renders a checkbox that allow the user to report "currently" as the field value
    */
   constructor({
     templateId,
@@ -28,6 +29,7 @@ class DateFieldTemplate extends Template {
     startYear,
     finishYear,
     exampleValue,
+    allowCurrentlyOption = false,
   }) {
     super({ templateId, component: "field" });
     this.type = "date";
@@ -36,6 +38,7 @@ class DateFieldTemplate extends Template {
     this.startYear = startYear;
     this.finishYear = finishYear;
     this.exampleValue = exampleValue ? { ...exampleValue } : undefined;
+    this.allowCurrentlyOption = allowCurrentlyOption;
   }
 }
 

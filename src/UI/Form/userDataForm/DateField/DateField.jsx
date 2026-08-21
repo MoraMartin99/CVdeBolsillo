@@ -39,6 +39,7 @@ import css from "./DateField.module.css";
  * @param {string} props.id An identifier
  * @param {submitData} props.submitData
  * @param {Array<string>} [props.classArr = []] A list of CSS classes to apply to the component
+ * @param {boolean} props.allowCurrentlyOption If true renders a checkbox that allow the user to report "currently" as the component value
  * @returns {JSX.Element}
  */
 function DateField({
@@ -49,6 +50,7 @@ function DateField({
   id,
   submitData,
   classArr = [],
+  allowCurrentlyOption,
 }) {
   const onChange = (date) => {
     if (!isEqual(date, value)) submitData(id, { value: date });
@@ -65,6 +67,7 @@ function DateField({
         onChange={onChange}
         startYear={startYear}
         finishYear={finishYear}
+        allowCurrentlyOption={allowCurrentlyOption}
       ></DateInput>
     </div>
   );

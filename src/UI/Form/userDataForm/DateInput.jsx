@@ -35,6 +35,7 @@ import CalendarIcon from "../../../assets/images/calendarIcon.svg?react";
  * @param {Array<string>} [props.classArr = []] A list of CSS classes to apply to the component
  * @param {number} [props.startYear] The first value of the year selector interface
  * @param {number} [props.finishYear] The last value of the year selector interface
+ * @param {boolean} props.allowCurrentlyOption If true renders a checkbox that allow the user to report "currently" as the component value
  * @returns {JSX.Element}
  */
 function DateInput({
@@ -44,6 +45,7 @@ function DateInput({
   classArr = [],
   startYear,
   finishYear,
+  allowCurrentlyOption,
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const getInputText = () => {
@@ -79,6 +81,7 @@ function DateInput({
           startYear={startYear}
           finishYear={finishYear}
           isInView={isOpen}
+          allowCurrentlyOption={allowCurrentlyOption}
         ></MonthYearControl>
       </Modal>
     </div>
