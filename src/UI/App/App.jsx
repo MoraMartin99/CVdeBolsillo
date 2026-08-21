@@ -46,6 +46,7 @@ function App({
 
   const myHeader = (
     <Header
+      key={"header"}
       ref={headerRef}
       appName={name}
       repoLabel={repoLabel}
@@ -64,6 +65,7 @@ function App({
 
   const myScreenNav = (
     <ScreenNav
+      key={"screenNav"}
       setCurrentScreen={setCurrentScreen}
       tabs={screens.map(createTab)}
     ></ScreenNav>
