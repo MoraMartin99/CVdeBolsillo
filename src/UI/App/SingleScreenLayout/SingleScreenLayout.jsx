@@ -1,19 +1,19 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import Header from "../../Header/Header";
 import Floating from "./Floating/Floating";
-import ScreenNav from "../../ScreenNav/ScreenNav";
 import ScreenCarrousel from "../../ScreenCarrousel/ScreenCarrousel";
-import buildScreenContent from "../buildScreenContent/buildScreenContent";
 import css from "./SingleScreenLayout.module.css";
 
-function SingleScreenLayout({ name, repoLabel, repoUrl, RepoIcon, screens }) {
-  const [currentScreen, setCurrentScreen] = useState(0);
+function SingleScreenLayout({
+  floatingItems,
+  headerRef,
+  screensContent,
+  currentScreen,
+}) {
   const lastScrolledScreenRef = useRef(currentScreen);
   const floatingOffsetIsLockedRef = useRef(false);
   const [floatingHeight, setFloatingHeight] = useState(null);
   const [floatingOffsetY, setFloatingOffsetY] = useState(0);
   const [headerHeight, setHeaderHeight] = useState(null);
-  const headerRef = useRef(null);
   const floatingRef = useRef(null);
   const screensScrollInfoRef = useRef(
     screensContent.map(() => {
@@ -33,7 +33,7 @@ function SingleScreenLayout({ name, repoLabel, repoUrl, RepoIcon, screens }) {
   useLayoutEffect(() => {
     setFloatingHeight(floatingRef.current.offsetHeight);
     setHeaderHeight(headerRef.current.offsetHeight);
-  }, []);
+  }, [headerRef]);
 
   useEffect(() => {
     if (currentScreen !== lastScrolledScreenRef.current) return;
@@ -94,23 +94,20 @@ function SingleScreenLayout({ name, repoLabel, repoUrl, RepoIcon, screens }) {
   return (
     <div className={css.main}>
       <Floating ref={floatingRef} offsetY={floatingOffsetY}>
-        <Header
-          ref={headerRef}
-          appName={name}
-          repoLabel={repoLabel}
-          repoUrl={repoUrl}
-          RepoIcon={RepoIcon}
-        ></Header>
-        <ScreenNav
-          setCurrentScreen={setCurrentScreen}
-          tabs={screens.map(createTab)}
-        ></ScreenNav>
+        {floatingItems}
       </Floating>
-      <ScreenCarrousel
-        screensContent={screens
-          .map(getScreenContentSettings)
-          .map(buildScreenContent)}
-      ></ScreenCarrousel>
+      <main className={css.carrouselContainer}>
+        <ScreenCarrousel
+          currentScreen={currentScreen}
+          screensContent={screensContent}
+          onScreenScroll={onScroll}
+          onScreenNavigation={onScreenNavigation}
+          style={{
+            "--paddingTop": `${floatingHeight}px`,
+            "--minHeight": `calc(100% + (${headerHeight}px))`,
+          }}
+        ></ScreenCarrousel>
+      </main>
     </div>
   );
 }
