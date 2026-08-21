@@ -43,11 +43,6 @@ function SingleScreenLayout({ name, repoLabel, repoUrl, RepoIcon, screens }) {
     });
   }, [floatingOffsetY, currentScreen]);
 
-  const createTab = ({ label, id }, index) => {
-    return {
-      label,
-      id,
-      isCurrentTab: index === currentScreen,
   const onScroll = ({ target }, screenIndex) => {
     const isSameSlot = () => lastScrolledScreenRef.current === currentScreen;
     const isCloseEnough = (a, b) => {
@@ -77,7 +72,6 @@ function SingleScreenLayout({ name, repoLabel, repoUrl, RepoIcon, screens }) {
     setFloatingOffsetY(stateSetter);
   };
 
-  const getScreenContentSettings = () => {};
   const onScreenNavigation = (screens) => {
     const getDelta = (a, b) => (b - a) * -1;
     const delta = getDelta(
@@ -120,5 +114,5 @@ function SingleScreenLayout({ name, repoLabel, repoUrl, RepoIcon, screens }) {
     </div>
   );
 }
-d;
+
 export default SingleScreenLayout;
