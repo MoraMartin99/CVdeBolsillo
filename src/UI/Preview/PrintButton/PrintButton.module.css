@@ -1,0 +1,24 @@
+.main {
+  --iconSize: 15px;
+  --paddingInline: 7px;
+
+  height: var(--buttonHeight);
+  font-size: var(--buttonFontSize);
+  font-weight: var(--buttonFontWeight);
+  cursor: pointer;
+  color: var(--buttonColor);
+  background-color: var(--buttonBackgroundColor);
+  border: var(--buttonBorderWidth) var(--buttonBorderColor) solid;
+  padding-inline: var(--paddingInline);
+  gap: var(--buttonGap);
+  align-items: center;
+}
+
+.main:hover {
+  background-color: var(--buttonBackgroundColorHover);
+}
+
+.icon {
+  width: var(--iconSize);
+  height: var(--iconSize);
+}
