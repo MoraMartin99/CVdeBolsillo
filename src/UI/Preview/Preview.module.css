@@ -1,0 +1,47 @@
+.main {
+  --width: 280px;
+  --height: 370px;
+  --borderColor: var(--primary700color);
+  --borderWidth: 2px;
+  --backgroundColor: white;
+  --printButtonTop: 20px;
+  --printButtonRight: 10px;
+  --buttonFontSize: 11px;
+  --buttonFontWeight: 400;
+  --buttonColor: var(--primary300color);
+  --buttonBackgroundColor: var(--primary1400color);
+  --buttonBackgroundColorHover: var(--primary1300color);
+  --buttonBorderColor: var(--primary400color);
+  --buttonBorderWidth: 1px;
+  --buttonHeight: 26px;
+  --zoomControlsBottom: 20px;
+  --zoomControlsLeft: 50%;
+  --buttonGap: 3.5px;
+
+  position: relative;
+}
+
+.frame {
+  width: var(--width);
+  height: var(--height);
+  border: var(--borderColor) var(--borderWidth) solid;
+  background-color: var(--backgroundColor);
+  cursor: grab;
+}
+
+.printButton,
+.zoomControls {
+  position: absolute;
+  z-index: 10;
+}
+
+.printButton {
+  top: var(--printButtonTop);
+  right: var(--printButtonRight);
+}
+
+.zoomControls {
+  bottom: var(--zoomControlsBottom);
+  left: var(--zoomControlsLeft);
+  transform: translateX(-50%);
+}
