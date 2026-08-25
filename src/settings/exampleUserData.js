@@ -27,7 +27,7 @@ import {
   SocialProfile,
 } from "./UserData";
 
-/**@module ExampleUser */
+/**@module ExampleUserData */
 
 const projects = [
   new Project({
@@ -276,7 +276,7 @@ const studies = [
   }),
 ];
 
-const exampleUser = new UserData({
+const exampleData = new UserData({
   name: "Oscar Martin",
   lastName: "Mora",
   title: "Ingeniero industrial y estudiante autodidacta de Desarrollo web",
@@ -380,4 +380,4 @@ const exampleUser = new UserData({
   ].map((value) => new ListItem(value)),
 });
 
-export default exampleUser;
+export default exampleData;

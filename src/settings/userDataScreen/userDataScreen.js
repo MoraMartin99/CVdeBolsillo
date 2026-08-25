@@ -1,4 +1,4 @@
-import exampleUser from "../exampleUser";
+import exampleData from "../exampleUserData";
 import Screen from "../Screen";
 import TipCardTemplate from "./formTemplates/TipCardTemplate";
 import LevelFieldTemplate from "./formTemplates/LevelFieldTemplate";
@@ -41,28 +41,28 @@ const nameField = new TextFieldTemplate({
   templateId: "name",
   label: "Nombres",
   placeholder: "Flora",
-  exampleValue: exampleUser.name,
+  exampleValue: exampleData.name,
 });
 
 const lastNameField = new TextFieldTemplate({
   templateId: "lastName",
   label: "Apellidos",
   placeholder: "Flores",
-  exampleValue: exampleUser.lastName,
+  exampleValue: exampleData.lastName,
 });
 
 const titleField = new TextFieldTemplate({
   templateId: "tittle",
   label: "Titulo",
   placeholder: "Escritora",
-  exampleValue: exampleUser.title,
+  exampleValue: exampleData.title,
 });
 
 const descriptionField = new TextFieldTemplate({
   templateId: "description",
   label: "Descripción",
   placeholder: "Hola soy Flora Flores, escritora de ciencia ficción",
-  exampleValue: exampleUser.description,
+  exampleValue: exampleData.description,
 });
 
 const avatarField = new ImageFieldTemplate({
@@ -71,7 +71,7 @@ const avatarField = new ImageFieldTemplate({
   destructiveActionLabel: "Eliminar avatar",
   alt: "Tu imagen de perfil",
   label: "Avatar",
-  exampleValue: exampleUser.avatar,
+  exampleValue: exampleData.avatar,
 });
 
 const personForm = new FormTemplate({
@@ -94,12 +94,12 @@ contact
 
 const mailField = new EmailFieldTemplate({
   templateId: "mail",
-  exampleValue: exampleUser.mail,
+  exampleValue: exampleData.mail,
 });
 
 const phoneNumberField = new TelFieldTemplate({
   templateId: "phoneNumber",
-  exampleValue: exampleUser.phoneNumber,
+  exampleValue: exampleData.phoneNumber,
 });
 
 const addressField = new TextFieldTemplate({
@@ -107,7 +107,7 @@ const addressField = new TextFieldTemplate({
   placeholder: "Del parque central, 3 cuadras al norte",
   label: "Dirección",
   tip: "Escriba la dirección donde se le pueda encontrar",
-  exampleValue: exampleUser.address,
+  exampleValue: exampleData.address,
 });
 
 const userField = new TextFieldTemplate({
@@ -131,8 +131,8 @@ const linkedInSection = new SectionTemplate({
   Icon: LinkedInIcon,
   name: "LinkedIn",
   value: [
-    [userField, exampleUser.linkedIn.user],
-    [urlField, exampleUser.linkedIn.URL],
+    [userField, exampleData.linkedIn.user],
+    [urlField, exampleData.linkedIn.URL],
   ].map(([{ templateId }, exampleValue]) => ({ templateId, exampleValue })),
 });
 
@@ -141,8 +141,8 @@ const githubSection = new SectionTemplate({
   Icon: GithubIcon,
   name: "Github",
   value: [
-    [userField, exampleUser.github.user],
-    [urlField, exampleUser.github.URL],
+    [userField, exampleData.github.user],
+    [urlField, exampleData.github.URL],
   ].map(([{ templateId }, exampleValue]) => ({ templateId, exampleValue })),
 });
 
@@ -151,8 +151,8 @@ const webSiteSection = new SectionTemplate({
   Icon: WebSiteIcon,
   name: "Sitio web",
   value: [
-    [webSiteNameField, exampleUser.webSite.name],
-    [urlField, exampleUser.webSite.URL],
+    [webSiteNameField, exampleData.webSite.name],
+    [urlField, exampleData.webSite.URL],
   ].map(([{ templateId }, exampleValue]) => ({ templateId, exampleValue })),
 });
 
@@ -257,14 +257,14 @@ const jobSection = new SectionTemplate({
   actions: [removeJobAction].map(getTemplateIdObject),
 });
 
-const exampleProjects = exampleUser.projects.map((item) => {
+const exampleProjects = exampleData.projects.map((item) => {
   return {
     templateId: projectSection.templateId,
     value: createProjectValue(item),
   };
 });
 
-const exampleJobs = exampleUser.jobs.map((item) => {
+const exampleJobs = exampleData.jobs.map((item) => {
   return {
     templateId: jobSection.templateId,
     value: createJobValue(item),
@@ -338,7 +338,7 @@ const studySection = new SectionTemplate({
   actions: [removeStudyAction].map(getTemplateIdObject),
 });
 
-const exampleStudies = exampleUser.studies.map((study) => {
+const exampleStudies = exampleData.studies.map((study) => {
   return {
     templateId: studySection.templateId,
     value: createEducationValue(study),
@@ -399,7 +399,7 @@ const awardSection = new SectionTemplate({
   actions: [removeAwardAction].map(getTemplateIdObject),
 });
 
-const exampleAwards = exampleUser.awards.map((item) => {
+const exampleAwards = exampleData.awards.map((item) => {
   return { templateId: awardSection.templateId, value: createAwardValue(item) };
 });
 
@@ -507,7 +507,7 @@ const hardSkillsForm = new FormTemplate({
   Icon: LightBulbIcon,
   value: createHardSkillsFormValue(),
   actions: [addSkillAction].map(getTemplateIdObject),
-  exampleValue: createHardSkillsFormValue(exampleUser.hardSkills),
+  exampleValue: createHardSkillsFormValue(exampleData.hardSkills),
 });
 
 /* 
@@ -536,7 +536,7 @@ const skillListField = new ListFieldTemplate({
   label: "Habilidades",
   placeholder: "Trabajo en equipo",
   primaryActionLabel: "Agregar habilidad",
-  exampleValue: exampleUser.softSkills,
+  exampleValue: exampleData.softSkills,
 });
 
 const softSkillsForm = new FormTemplate({
