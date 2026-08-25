@@ -1,0 +1,31 @@
+.main {
+  --iconSize: 21px;
+
+  display: flex;
+  font-size: var(--buttonFontSize);
+  font-weight: var(--buttonFontWeight);
+  color: var(--buttonColor);
+  background-color: var(--buttonBackgroundColor);
+  align-items: center;
+  border: var(--buttonBorderWidth) var(--buttonBorderColor) solid;
+  gap: var(--buttonGap);
+}
+
+.button {
+  width: var(--buttonHeight);
+  height: var(--buttonHeight);
+  background-color: inherit;
+  color: inherit;
+  cursor: pointer;
+  justify-content: center;
+  align-items: center;
+}
+
+.button:hover {
+  background-color: var(--buttonBackgroundColorHover);
+}
+
+.icon {
+  width: var(--iconSize);
+  height: var(--iconSize);
+}
