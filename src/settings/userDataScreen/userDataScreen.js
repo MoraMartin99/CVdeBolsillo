@@ -52,7 +52,7 @@ const lastNameField = new TextFieldTemplate({
 });
 
 const titleField = new TextFieldTemplate({
-  templateId: "tittle",
+  templateId: "title",
   label: "Titulo",
   placeholder: "Escritora",
   exampleValue: exampleData.title,
