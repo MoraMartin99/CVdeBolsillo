@@ -30,9 +30,18 @@ class Image {
   }
 }
 
+/**
+ * The ListItem class defines a list member
+ */
 class ListItem {
-  constructor(value) {
-    Object.assign(this, { value, id: crypto.randomUUID() });
+  /**
+   * Creates a list member
+   * @param {object} settings
+   * @param {*} settings.value
+   * @param {string} [settings.id = crypto.randomUUID()]
+   */
+  constructor({ value, id = crypto.randomUUID() }) {
+    Object.assign(this, { value, id });
   }
 }
 

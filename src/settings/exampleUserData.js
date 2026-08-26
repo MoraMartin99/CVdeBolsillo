@@ -132,7 +132,7 @@ const jobs = [
       "Diseño, formulación, desarrollo e implementación de automatización de alta de correos electrónicos (reducción de 24h de trabajo a 5 min).",
       "Diseño, formulación, desarrollo e implementación de aplicativo para creación masiva de memorandum de entrega de uniformes (reducción de 5h de trabajo a 1 min).",
       "Actividades del puesto Auxiliar RH.",
-    ].map((value) => new ListItem(value)),
+    ].map((value) => new ListItem({ value })),
   }),
   new Job({
     organization: "Punto Ideal S.A",
@@ -150,7 +150,7 @@ const jobs = [
       "Automatización de la creación masiva y llenado de formatos de solicitud al area de TI",
       "Administración y remisión de soporte de cheques.",
       "Actividades del puesto Practicante RH.",
-    ].map((value) => new ListItem(value)),
+    ].map((value) => new ListItem({ value })),
   }),
   new Job({
     organization: "Punto Ideal S.A",
@@ -168,7 +168,7 @@ const jobs = [
       "Entrega de liquidaciones.",
       "Administración de inventario de cheques.",
       "Altas, bajas y reposiciones de tarjetas Monibyte.",
-    ].map((value) => new ListItem(value)),
+    ].map((value) => new ListItem({ value })),
   }),
   new Job({
     organization: "KAISEN S.A",
@@ -181,7 +181,7 @@ const jobs = [
       "Desarrollo de aplicativo de control de Ausentismo para 1500 empleados.",
       "Proyecto de mejoramiento de 5S de 15 Módulos de producción, de unos 13 trabajadores cada uno.",
       "Proyecto de teoría de colas en el puesto de atención al asociado.",
-    ].map((value) => new ListItem(value)),
+    ].map((value) => new ListItem({ value })),
   }),
 ];
 
@@ -377,7 +377,7 @@ const exampleData = new UserData({
     "Curiosidad",
     "Flexibilidad",
     "Pragmatismo",
-  ].map((value) => new ListItem(value)),
+  ].map((value) => new ListItem({ value })),
 });
 
 export default exampleData;
