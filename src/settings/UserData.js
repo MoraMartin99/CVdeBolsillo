@@ -4,11 +4,11 @@
 class Link {
   /**
    * CReates a link to a webpage
-   * @param {object} settings
+   * @param {object} [settings = {}]
    * @param {string} settings.label The visible representation of the link
    * @param {string} settings.url
    */
-  constructor({ url, label = url }) {
+  constructor({ url, label = url } = {}) {
     Object.assign(this, { url, label });
   }
 }
@@ -19,13 +19,13 @@ class Link {
 class Image {
   /**
    * Creates an image and its display properties
-   * @param {object} settings
+   * @param {object} [settings = {}]
    * @param {string} settings.source A path to an image
    * @param {number} settings.positionX The horizontal offset of the image relative to the left upper corner of the wrapper
    * @param {number} settings.positionY The vertical offset of the image relative to the left upper corner of the wrapper
    * @param {number} settings.scale The ratio of the computed size to the size defined in the styles
    */
-  constructor({ source, positionX, positionY, scale }) {
+  constructor({ source, positionX, positionY, scale } = {}) {
     Object.assign(this, { source, positionX, positionY, scale });
   }
 }
@@ -99,7 +99,7 @@ class Project {
    * @param {string} settings.role The role/s the user had in the project
    * @param {DateRange} settings.dateRange The dates the project took place
    */
-  constructor({ name, description, role, dateRange }) {
+  constructor({ name, description, role, dateRange } = {}) {
     Object.assign(this, { name, description, role, dateRange });
   }
 }
@@ -116,7 +116,7 @@ class Job {
    * @param {DateRange} settings.dateRange
    * @param {Array<ListItem>} settings.tasks
    */
-  constructor({ organization, role, dateRange, tasks }) {
+  constructor({ organization, role, dateRange, tasks } = {}) {
     Object.assign(this, { organization, role, dateRange, tasks });
   }
 }
@@ -132,7 +132,7 @@ class Study {
    * @param {string} settings.study
    * @param {DateRange} settings.dateRange
    */
-  constructor({ issuingOrganization, study, dateRange }) {
+  constructor({ issuingOrganization, study, dateRange } = {}) {
     Object.assign(this, { issuingOrganization, study, dateRange });
   }
 }
@@ -143,12 +143,12 @@ class Study {
 class Award {
   /**
    * Creates an award
-   * @param {object} settings
+   * @param {object} [settings = {}]
    * @param {string} settings.issuingOrganization
    * @param {string} settings.motive
    * @param {BasicDate} settings.date
    */
-  constructor({ issuingOrganization, motive, date }) {
+  constructor({ issuingOrganization, motive, date } = {}) {
     Object.assign(this, { issuingOrganization, motive, date });
   }
 }
@@ -164,7 +164,7 @@ class HardSkill {
    * @param {Image} settings.icon
    * @param {number} settings.level A number between 1 and 10 that represents the expertise in some skill
    */
-  constructor({ skill, icon, level }) {
+  constructor({ skill, icon, level } = {}) {
     Object.assign(this, { skill, icon, level });
   }
 }
@@ -180,13 +180,13 @@ class UserData {
    * @param {string} settings.lastName
    * @param {string} settings.title A short sentence defining your profession
    * @param {string} settings.description
-   * @param {Image} [settings.avatar = {}]
+   * @param {Image} [settings.avatar = new Image()]
    * @param {string} settings.mail
    * @param {string} settings.phoneNumber
    * @param {string} settings.address
-   * @param {Link} [settings.linkedIn = {}]
-   * @param {Link} [settings.github = {}]
-   * @param {Link} [settings.webSite = {}]
+   * @param {Link} [settings.linkedIn = new Link()]
+   * @param {Link} [settings.github = new Link()]
+   * @param {Link} [settings.webSite = new Link()]
    * @param {Array<Project>} [settings.projects = []]
    * @param {Array<Job>} [settings.jobs = []]
    * @param {Array<Award>} [settings.awards = []]
@@ -199,13 +199,13 @@ class UserData {
     lastName,
     title,
     description,
-    avatar = {},
+    avatar = new Image(),
     mail,
     phoneNumber,
     address,
-    linkedIn = {},
-    github = {},
-    webSite = {},
+    linkedIn = new Link(),
+    github = new Link(),
+    webSite = new Link(),
     projects = [],
     jobs = [],
     awards = [],
