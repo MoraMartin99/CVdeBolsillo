@@ -24,7 +24,7 @@ import {
   BasicDate,
   ListItem,
   Image,
-  SocialProfile,
+  Link,
 } from "./UserData";
 
 /**@module ExampleUserData */
@@ -289,13 +289,13 @@ const exampleData = new UserData({
   avatar: new Image({ source: avatar }),
   mail: "moramartin99@gmail.com",
   address: "Carazo",
-  linkedIn: new SocialProfile({
-    user: "Oscar Martin Mora",
-    URL: "https://www.linkedin.com/in/oscar-martin-m-892299152/",
+  linkedIn: new Link({
+    label: "Oscar Martin Mora",
+    url: "https://www.linkedin.com/in/oscar-martin-m-892299152/",
   }),
-  github: new SocialProfile({
-    user: "MoraMartin99",
-    URL: "https://github.com/MoraMartin99",
+  github: new Link({
+    label: "MoraMartin99",
+    url: "https://github.com/MoraMartin99",
   }),
   projects,
   jobs,

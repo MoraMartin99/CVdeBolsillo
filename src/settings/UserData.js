@@ -1,15 +1,15 @@
 /**
- * The SocialProfile class defines the properties of a generic social network profile
+ * The Link class defines the properties of a link to a webpage
  */
-class SocialProfile {
+class Link {
   /**
-   * Creates a generic social network profile
+   * CReates a link to a webpage
    * @param {object} settings
-   * @param {string} settings.user The visible user/profile name
-   * @param {string} settings.URL
+   * @param {string} settings.label The visible representation of the link
+   * @param {string} settings.url
    */
-  constructor({ user, URL }) {
-    Object.assign(this, { user, URL });
+  constructor({ url, label = url }) {
+    Object.assign(this, { url, label });
   }
 }
 
@@ -184,9 +184,9 @@ class UserData {
    * @param {string} settings.mail
    * @param {string} settings.phoneNumber
    * @param {string} settings.address
-   * @param {SocialProfile} [settings.linkedIn = {}]
-   * @param {SocialProfile} [settings.github = {}]
-   * @param {SocialProfile} [settings.webSite = {}]
+   * @param {Link} [settings.linkedIn = {}]
+   * @param {Link} [settings.github = {}]
+   * @param {Link} [settings.webSite = {}]
    * @param {Array<Project>} [settings.projects = []]
    * @param {Array<Job>} [settings.jobs = []]
    * @param {Array<Award>} [settings.awards = []]
@@ -247,5 +247,5 @@ export {
   BasicDate,
   ListItem,
   Image,
-  SocialProfile,
+  Link,
 };

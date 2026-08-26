@@ -131,8 +131,8 @@ const linkedInSection = new SectionTemplate({
   Icon: LinkedInIcon,
   name: "LinkedIn",
   value: [
-    [userField, exampleData.linkedIn.user],
-    [urlField, exampleData.linkedIn.URL],
+    [userField, exampleData.linkedIn.label],
+    [urlField, exampleData.linkedIn.url],
   ].map(([{ templateId }, exampleValue]) => ({ templateId, exampleValue })),
 });
 
@@ -141,8 +141,8 @@ const githubSection = new SectionTemplate({
   Icon: GithubIcon,
   name: "Github",
   value: [
-    [userField, exampleData.github.user],
-    [urlField, exampleData.github.URL],
+    [userField, exampleData.github.label],
+    [urlField, exampleData.github.url],
   ].map(([{ templateId }, exampleValue]) => ({ templateId, exampleValue })),
 });
 
@@ -151,8 +151,8 @@ const webSiteSection = new SectionTemplate({
   Icon: WebSiteIcon,
   name: "Sitio web",
   value: [
-    [webSiteNameField, exampleData.webSite.name],
-    [urlField, exampleData.webSite.URL],
+    [webSiteNameField, exampleData.webSite.label],
+    [urlField, exampleData.webSite.url],
   ].map(([{ templateId }, exampleValue]) => ({ templateId, exampleValue })),
 });
 
