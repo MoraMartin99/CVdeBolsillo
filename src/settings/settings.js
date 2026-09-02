@@ -1,6 +1,7 @@
 import userDataScreen from "./userDataScreen/userDataScreen";
 import templateScreen from "./templateScreen/templateScreen";
 import previewScreen from "./previewScreen/previewScreen";
+import PageSettings from "./PageSettings";
 
 /**
  * The AppSettings class defines the main parameters for the app
@@ -13,6 +14,7 @@ class AppSettings {
    * @param {string} [properties.repoUrl = "https://github.com/MoraMartin99/CVdeBolsillo"] The url to the source code of the project
    * @param {Array<import("./Screen")>} [properties.screens = []] A collection of screens
    * @param {number} [properties.minDualPanelScreenWidth = 700] The minimum viewport size in pixels at which the app must show the preview screen at all times
+   * @param {import("./PageSettings").default} properties.pageSettings The properties of a single print page of the CV.
    */
   constructor({
     name = "CVdeBolsillo",
@@ -20,6 +22,7 @@ class AppSettings {
     repoUrl = "https://github.com/MoraMartin99/CVdeBolsillo",
     screens = [],
     minDualPanelScreenWidth = 700,
+    pageSettings = new PageSettings(),
   }) {
     Object.assign(this, {
       name,
@@ -27,6 +30,7 @@ class AppSettings {
       repoUrl,
       screens: [...screens],
       minDualPanelScreenWidth,
+      pageSettings,
     });
   }
 }

@@ -19,6 +19,7 @@ import buildScreenContent from "./buildScreenContent/buildScreenContent";
  * @param {CurrentColorIcon} props.RepoIcon The icon component that represents the repo
  * @param {Array<object>} props.screens The data required to build the app content
  * @param {number} props.minDualPanelScreenWidth The min width in px of the viewport at which the dual screen layout is displayed
+ * @param {import("../../settings/PageSettings").default} props.pageSettings
  * @returns {JSX.Element}
  */
 function App({
@@ -28,6 +29,7 @@ function App({
   RepoIcon,
   screens = [],
   minDualPanelScreenWidth,
+  pageSettings,
 }) {
   const getUserDataScreen = (screens) => {
     return screens.find(({ id }) => id === "userForm");
