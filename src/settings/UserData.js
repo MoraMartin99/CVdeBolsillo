@@ -24,9 +24,31 @@ class Image {
    * @param {number} settings.positionX The horizontal offset of the image relative to the left upper corner of the wrapper
    * @param {number} settings.positionY The vertical offset of the image relative to the left upper corner of the wrapper
    * @param {number} settings.scale The ratio of the computed size to the size defined in the styles
+   * @param {number} settings.frameWidth The width of the frame that shows the image in px
+   * @param {number} settings.frameHeight The height of the frame that shows the image in px
+   * @param {number} settings.computedWidth The computed width of the image in px
+   * @param {number} settings.computedHeight The computed height of the image in px
    */
-  constructor({ source, positionX, positionY, scale } = {}) {
-    Object.assign(this, { source, positionX, positionY, scale });
+  constructor({
+    source,
+    positionX,
+    positionY,
+    scale,
+    frameWidth,
+    frameHeight,
+    computedWidth,
+    computedHeight,
+  } = {}) {
+    Object.assign(this, {
+      source,
+      positionX,
+      positionY,
+      scale,
+      frameWidth,
+      frameHeight,
+      computedWidth,
+      computedHeight,
+    });
   }
 }
 

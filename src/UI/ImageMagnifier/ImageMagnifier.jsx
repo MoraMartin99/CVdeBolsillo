@@ -25,10 +25,10 @@ const getComputedSize = (element) => {
  * @param {number} data.positionX The horizontal offset of the image relative to the left upper corner of the wrapper
  * @param {number} data.positionY The vertical offset of the image relative to the left upper corner of the wrapper
  * @param {number} data.scale The ratio of the computed size to the size defined in the styles
- * @param {number} data.wrapperWidth The magnitud of the computed width of the wrapper component in px
- * @param {number} data.wrapperHeight The magnitud of the computed height of the wrapper component in px
- * @param {number} data.contentWidth The magnitud of the computed width of the content component in px
- * @param {number} data.contentHeight The magnitud of the computed height of the content component in px
+ * @param {number} data.frameWidth The width of the frame that shows the image in px
+ * @param {number} data.frameHeight The height of the frame that shows the image in px
+ * @param {number} data.computedWidth The computed width of the image in px
+ * @param {number} data.computedHeight The computed height of the image in px
  */
 
 /**
@@ -68,10 +68,10 @@ function ImageMagnifier({
   const reportChange = ({ state, instance }) => {
     if (!hasImageManipulationStoppedRef.current) return;
 
-    const [wrapperWidth, wrapperHeight] = getComputedSize(
+    const [frameWidth, frameHeight] = getComputedSize(
       instance.wrapperComponent,
     );
-    const [contentWidth, contentHeight] = getComputedSize(
+    const [computedWidth, computedHeight] = getComputedSize(
       instance.contentComponent,
     );
     onChange({
@@ -79,10 +79,10 @@ function ImageMagnifier({
       positionX: state.positionX,
       positionY: state.positionY,
       scale: state.scale,
-      wrapperWidth,
-      wrapperHeight,
-      contentWidth,
-      contentHeight,
+      frameWidth,
+      frameHeight,
+      computedWidth,
+      computedHeight,
     });
   };
 
