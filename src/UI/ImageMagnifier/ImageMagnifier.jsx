@@ -64,17 +64,19 @@ function ImageMagnifier({
 
   const transformationRef = useRef(null);
 
-  const reportChange = ({
-    state: { scale, positionX, positionY },
-    instance: { wrapperComponent, contentComponent },
-  }) => {
-    const [wrapperWidth, wrapperHeight] = getComputedSize(wrapperComponent);
-    const [contentWidth, contentHeight] = getComputedSize(contentComponent);
+  const reportChange = ({ state, instance }) => {
+
+    const [wrapperWidth, wrapperHeight] = getComputedSize(
+      instance.wrapperComponent,
+    );
+    const [contentWidth, contentHeight] = getComputedSize(
+      instance.contentComponent,
+    );
     onChange({
       source,
-      positionX,
-      positionY,
-      scale,
+      positionX: state.positionX,
+      positionY: state.positionY,
+      scale: state.scale,
       wrapperWidth,
       wrapperHeight,
       contentWidth,
