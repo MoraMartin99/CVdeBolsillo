@@ -133,11 +133,11 @@ function ImageMagnifier({
       panning={{ disabled: hasPlaceholder() }}
       wheel={{ disabled: hasPlaceholder(), step: 0.00375 }}
       pinch={{ disabled: hasPlaceholder() }}
-      onZoomStart={hasPlaceholder() ? undefined : onImageManipulationStart}
-      onPanningStart={hasPlaceholder() ? undefined : onImageManipulationStart}
-      onZoomStop={hasPlaceholder() ? undefined : onImageManipulationStop}
-      onPanningStop={hasPlaceholder() ? undefined : onImageManipulationStop}
-      onTransform={hasPlaceholder() ? undefined : reportChange}
+      onZoomStart={onImageManipulationStart}
+      onPanningStart={onImageManipulationStart}
+      onZoomStop={onImageManipulationStop}
+      onPanningStop={onImageManipulationStop}
+      onTransform={reportChange}
       ref={transformationRef}
       centerOnInit={true}
     >
