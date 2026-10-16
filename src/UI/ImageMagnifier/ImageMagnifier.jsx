@@ -63,8 +63,10 @@ function ImageMagnifier({
   const hasPlaceholder = () => source === placeholderSrc;
 
   const transformationRef = useRef(null);
+  const hasImageManipulationStoppedRef = useRef(false);
 
   const reportChange = ({ state, instance }) => {
+    if (!hasImageManipulationStoppedRef.current) return;
 
     const [wrapperWidth, wrapperHeight] = getComputedSize(
       instance.wrapperComponent,
@@ -82,6 +84,14 @@ function ImageMagnifier({
       contentWidth,
       contentHeight,
     });
+  };
+
+  const onImageManipulationStart = () => {
+    hasImageManipulationStoppedRef.current = false;
+  };
+
+  const onImageManipulationStop = () => {
+    hasImageManipulationStoppedRef.current = true;
   };
 
   const buildTransformComponent = ({ resetTransform, setTransform }) => {
@@ -122,8 +132,11 @@ function ImageMagnifier({
       panning={{ disabled: hasPlaceholder() }}
       wheel={{ disabled: hasPlaceholder(), step: 0.00375 }}
       pinch={{ disabled: hasPlaceholder() }}
-      onZoomStop={hasPlaceholder() ? undefined : reportChange}
-      onPanningStop={hasPlaceholder() ? undefined : reportChange}
+      onZoomStart={hasPlaceholder() ? undefined : onImageManipulationStart}
+      onPanningStart={hasPlaceholder() ? undefined : onImageManipulationStart}
+      onZoomStop={hasPlaceholder() ? undefined : onImageManipulationStop}
+      onPanningStop={hasPlaceholder() ? undefined : onImageManipulationStop}
+      onTransform={hasPlaceholder() ? undefined : reportChange}
       ref={transformationRef}
       centerOnInit={true}
     >
