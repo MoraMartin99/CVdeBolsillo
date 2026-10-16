@@ -90,8 +90,9 @@ function ImageMagnifier({
     hasImageManipulationStoppedRef.current = false;
   };
 
-  const onImageManipulationStop = () => {
+  const onImageManipulationStop = (settings) => {
     hasImageManipulationStoppedRef.current = true;
+    reportChange(settings);
   };
 
   const buildTransformComponent = ({ resetTransform, setTransform }) => {
