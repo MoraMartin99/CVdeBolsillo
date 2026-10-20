@@ -286,7 +286,12 @@ const exampleData = new UserData({
    Desde que descubrí linux y el mundo FOSS no he extrañado ni un poquito las bigTech.
    Programar siempre ha estado conmigo desde la universidad y en mis primeros trabajos, donde desarrolle software (desde lo poco que sabia) que resolvía problemas reales.
    Programar era la mejor parte de esas experiencias para ser preciso, por eso decidí ser un programador profesional`,
-  avatar: new Image({ source: avatar }),
+  avatar: new Image({
+    source: avatar,
+    positionX: -2,
+    positionY: -5.68,
+    scale: 1.3375,
+  }),
   mail: "moramartin99@gmail.com",
   address: "Carazo",
   linkedIn: new Link({
