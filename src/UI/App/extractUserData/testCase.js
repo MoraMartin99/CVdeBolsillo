@@ -20,7 +20,7 @@ const testCase = {
           templateId: "lastName",
         },
         {
-          templateId: "tittle",
+          templateId: "title",
         },
         {
           templateId: "description",
