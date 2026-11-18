@@ -52,24 +52,37 @@ const getAddress = (model) => {
   return model.find(isContactForm).value.find(isAddress).value;
 };
 
-const getSocialProfile = (node) => {
-  const buildEntry = ({ templateId, value }) => [templateId, value];
-  return new Link(Object.fromEntries(node.value.map(buildEntry)));
-};
-
 const getLinkedIn = (model) => {
   const isLinkedIn = ({ templateId }) => templateId === "linkedIn";
-  return getSocialProfile(model.find(isContactForm).value.find(isLinkedIn));
+  const isUrl = ({ templateId }) => templateId === "url";
+  const isLabel = ({ templateId }) => templateId === "user";
+  const value = model.find(isContactForm).value.find(isLinkedIn).value;
+  return new Link({
+    url: value.find(isUrl).value,
+    label: value.find(isLabel).value,
+  });
 };
 
 const getGithub = (model) => {
   const isGithub = ({ templateId }) => templateId === "github";
-  return getSocialProfile(model.find(isContactForm).value.find(isGithub));
+  const isUrl = ({ templateId }) => templateId === "url";
+  const isLabel = ({ templateId }) => templateId === "user";
+  const value = model.find(isContactForm).value.find(isGithub).value;
+  return new Link({
+    url: value.find(isUrl).value,
+    label: value.find(isLabel).value,
+  });
 };
 
 const getWebSite = (model) => {
   const isWebSite = ({ templateId }) => templateId === "webSite";
-  return getSocialProfile(model.find(isContactForm).value.find(isWebSite));
+  const isUrl = ({ templateId }) => templateId === "url";
+  const isLabel = ({ templateId }) => templateId === "webSiteName";
+  const value = model.find(isContactForm).value.find(isWebSite).value;
+  return new Link({
+    url: value.find(isUrl).value,
+    label: value.find(isLabel).value,
+  });
 };
 
 const isExperienceForm = ({ templateId }) => templateId === "experienceForm";
