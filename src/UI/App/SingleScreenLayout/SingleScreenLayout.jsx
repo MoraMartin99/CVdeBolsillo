@@ -91,6 +91,8 @@ function SingleScreenLayout({
     });
   };
 
+  /* cuando unamos SingleScreenLayout con app, recordar hacer que en mobile, screenNav sea translucido  */
+
   return (
     <div className={css.main}>
       <Floating ref={floatingRef} offsetY={floatingOffsetY}>

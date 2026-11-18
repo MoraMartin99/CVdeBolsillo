@@ -1,7 +1,5 @@
-import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-import PrintButton from "./PrintButton/PrintButton";
-import ZoomControls from "./ZoomControls/ZoomControls";
 import css from "./Preview.module.css";
+import { PDFViewer } from "@react-pdf/renderer";
 
 /**
  * The Preview component allows you to visualize the CV
@@ -11,31 +9,9 @@ import css from "./Preview.module.css";
  */
 function Preview({ children }) {
   return (
-    <div className={css.main}>
-      <TransformWrapper centerOnInit>
-        {({ zoomIn, zoomOut }) => {
-          return (
-            <>
-              <PrintButton classArr={[css.printButton]}></PrintButton>
-              <ZoomControls
-                zoomIn={zoomIn}
-                zoomOut={zoomOut}
-                classArr={[css.zoomControls]}
-              ></ZoomControls>
-              <TransformComponent
-                wrapperStyle={{
-                  width: "var(--width)",
-                  height: "var(--height)",
-                }}
-                wrapperClass={css.frame}
-              >
-                {children}
-              </TransformComponent>
-            </>
-          );
-        }}
-      </TransformWrapper>
-    </div>
+    <PDFViewer style={{ width: "280px", height: "370px" }}>
+      {children}
+    </PDFViewer>
   );
 }
 export default Preview;

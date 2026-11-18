@@ -280,12 +280,8 @@ const exampleData = new UserData({
   name: "Oscar Martin",
   lastName: "Mora",
   title: "Ingeniero industrial y estudiante autodidacta de Desarrollo web",
-  description: `Mi vocación de vida es ser un eterno aprendiz y un buen hijo/hermano/nieto.
-   Me apasiona aprender de todo, incluso cosas que originalmente no me llamaban la atención. 
-   Hace un par de años descubrí que me encantaba leer y desde entonces leo varias horas al dia.
-   Desde que descubrí linux y el mundo FOSS no he extrañado ni un poquito las bigTech.
-   Programar siempre ha estado conmigo desde la universidad y en mis primeros trabajos, donde desarrolle software (desde lo poco que sabia) que resolvía problemas reales.
-   Programar era la mejor parte de esas experiencias para ser preciso, por eso decidí ser un programador profesional`,
+  description:
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi aliquam nisl et purus pharetra, at facilisis libero molestie. Aliquam in ipsum quis urna fringilla mattis. Etiam id pretium magna. Nullam facilisis dolor non quam accumsan ullamcorper. In sollicitudin tortor ligula, id consectetur odio scelerisque a.",
   avatar: new Image({
     source: avatar,
     positionX: -2,

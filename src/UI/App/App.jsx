@@ -7,6 +7,7 @@ import { useRef, useState } from "react";
 import Header from "../Header/Header";
 import ScreenNav from "../ScreenNav/ScreenNav";
 import buildScreenContent from "./buildScreenContent/buildScreenContent";
+import extractUserData from "./extractUserData/extractUserData";
 
 /**@module App */
 
@@ -82,9 +83,39 @@ function App({
       return { id, templates, setCVTemplateId, cvTemplateId };
     };
 
+    const buildPreviewScreenSettings = ({ id }) => {
+      const CV = getTemplateScreen(screens).templates.find(
+        ({ id }) => id === cvTemplateId,
+      ).Component;
+
+      return {
+        id,
+        children: <CV data={extractUserData(model)} page={pageSettings}></CV>,
+      };
+    };
+
+    /* const buildPreviewScreenSettings = ({ id }) => {
+      return {
+        id,
+        children: (
+          <div
+            style={{
+              fontSize: "12px",
+              width: "100px",
+              height: "70px",
+              backgroundColor: "salmon",
+            }}
+          >
+            Esto es una prueba
+          </div>
+        ),
+      };
+    }; */
+
     const builders = {
       userForm: buildUserDataScreenSettings,
       templateForm: buildTemplateScreenSettings,
+      preview: buildPreviewScreenSettings,
     };
 
     return builders[screen.id]?.(screen);
@@ -94,7 +125,16 @@ function App({
     .map(buildScreenContentSettings)
     .map(buildScreenContent);
 
-  return screenSize > minDualPanelScreenWidth ? null : (
+  /* return screenSize > minDualPanelScreenWidth ? null : (
+    <SingleScreenLayout
+      floatingItems={[header, screenNav]}
+      headerRef={headerRef}
+      screensContent={screensContent}
+      currentScreen={currentScreen}
+    ></SingleScreenLayout>
+  ); */
+
+  return (
     <SingleScreenLayout
       floatingItems={[header, screenNav]}
       headerRef={headerRef}

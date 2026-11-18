@@ -128,6 +128,9 @@ function ImageMagnifier({
     );
   };
 
+  /* Centeroninit no funciona. Hay comportamiento inconsistente para el centrado, cuesta un poco entender el codigo */
+  /* Tampoco funcionan las props positionX,Y y scale */
+
   return (
     <TransformWrapper
       panning={{ disabled: hasPlaceholder() }}
