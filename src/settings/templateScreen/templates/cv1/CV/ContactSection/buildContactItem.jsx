@@ -1,13 +1,8 @@
-import ContactItem from "../../../globals/ContactItem/ContactItem";
-import { styles } from "./styles";
+import ContactItem from "../../../../globals/ContactItem/ContactItem";
 import { Text } from "@react-pdf/renderer";
-import Link from "../../../globals/Link/Link";
-import LinkIcon from "./LinkIcon/Link";
-import {
-  contactItemLinkValueGap,
-  contactItemRowGap,
-  contactItemColumnGap,
-} from "./styles";
+import Link from "../../../../globals/Link/Link";
+import LinkIcon from "../LinkIcon/Link";
+import { style, rowGap, columnGap, linkGap } from "./style";
 
 /**
  * @typedef {Object} IconProps
@@ -25,21 +20,21 @@ import {
  * @returns {JSX.Element}
  */
 function buildContactItem({ label, value, url, Icon, key }) {
-  const valueComponent = <Text style={styles.contactItemValue}>{value}</Text>;
+  const valueComponent = <Text style={style.value}>{value}</Text>;
   return (
     <ContactItem
       key={key}
-      icon={<Icon style={styles.contactItemIcon}></Icon>}
-      rowGap={contactItemRowGap}
-      columnGap={contactItemColumnGap}
-      label={<Text style={styles.contactItemLabel}>{label}</Text>}
+      icon={<Icon style={style.itemIcon}></Icon>}
+      rowGap={rowGap}
+      columnGap={columnGap}
+      label={<Text style={style.label}>{label}</Text>}
       value={
         url ? (
           <Link
             text={valueComponent}
             url={url}
-            icon={<LinkIcon style={styles.contactItemLinkIcon}></LinkIcon>}
-            gap={contactItemLinkValueGap}
+            icon={<LinkIcon style={style.linkIcon}></LinkIcon>}
+            gap={linkGap}
           ></Link>
         ) : (
           valueComponent
