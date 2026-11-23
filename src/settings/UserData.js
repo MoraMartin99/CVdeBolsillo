@@ -40,7 +40,7 @@ class ListItem {
    * @param {*} settings.value
    * @param {string} [settings.id = crypto.randomUUID()]
    */
-  constructor({ value, id = crypto.randomUUID() }) {
+  constructor({ value, id = crypto.randomUUID() } = {}) {
     Object.assign(this, { value, id });
   }
 }
