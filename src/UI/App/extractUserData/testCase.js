@@ -5,7 +5,10 @@ import {
   Job,
   Project,
   Study,
+  ListItem,
 } from "../../../settings/UserData";
+
+const softSkill = new ListItem();
 
 const testCase = {
   model: [
@@ -185,11 +188,7 @@ const testCase = {
         },
         {
           templateId: "skillList",
-          value: [
-            {
-              value: "",
-            },
-          ],
+          value: [softSkill],
         },
       ],
     },
@@ -200,6 +199,7 @@ const testCase = {
     jobs: [new Job()],
     projects: [new Project()],
     studies: [new Study()],
+    softSkills: [softSkill],
   }),
 };
 

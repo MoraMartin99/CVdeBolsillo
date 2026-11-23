@@ -182,7 +182,7 @@ const getSoftSkills = (model) => {
 
   const isSkillList = ({ templateId }) => templateId === "skillList";
 
-  return model.find(isSoftSkillsForm).value.filter(isSkillList).value;
+  return model.find(isSoftSkillsForm).value.find(isSkillList).value;
 };
 
 const getStudies = (model) => {
