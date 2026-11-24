@@ -185,9 +185,10 @@ class HardSkill {
    * @param {string} settings.skill
    * @param {Image} settings.icon
    * @param {number} settings.level A number between 1 and 10 that represents the expertise in some skill
+   * @param {string} [settings.id]
    */
-  constructor({ skill, icon, level } = {}) {
-    Object.assign(this, { skill, icon, level });
+  constructor({ skill, icon, level, id } = {}) {
+    Object.assign(this, { skill, icon, level, id });
   }
 }
 

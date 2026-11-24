@@ -155,26 +155,20 @@ const getHardSkills = (model) => {
 
   const isSkill = ({ templateId }) => templateId === "skill";
 
-  const extractHardSkillSettings = (node) => {
-    const buildSettings = (settings, current) => {
-      return { ...settings, [current.templateId]: current.value };
-    };
-    return node.value.reduce(buildSettings, {});
-  };
+  const buildHardSkill = (node) => {
+    const isSkillName = ({ templateId }) => templateId === "skillName";
+    const isIcon = ({ templateId }) => templateId === "icon";
+    const isLevel = ({ templateId }) => templateId === "level";
 
-  const buildHardSkill = (settings) => {
     return new HardSkill({
-      skill: settings.skillName,
-      icon: settings.icon,
-      level: settings.level,
+      id: node.id,
+      skill: node.value.find(isSkillName).value,
+      icon: node.value.find(isIcon).value,
+      level: node.value.find(isLevel).value,
     });
   };
 
-  return model
-    .find(isHardSkillsForm)
-    .value.filter(isSkill)
-    .map(extractHardSkillSettings)
-    .map(buildHardSkill);
+  return model.find(isHardSkillsForm).value.filter(isSkill).map(buildHardSkill);
 };
 
 const getSoftSkills = (model) => {
