@@ -1,5 +1,5 @@
 import { StyleSheet } from "@react-pdf/renderer";
-import convertPxToPt from "../../convertPxToPt";
+import convertPxToPt from "../convertPxToPt";
 
 const mainSize = convertPxToPt(190);
 const contentSizeDelta = convertPxToPt(10);

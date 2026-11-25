@@ -1,6 +1,6 @@
 import { Image, View } from "@react-pdf/renderer";
 import style from "./style";
-import convertPxToPt from "../../convertPxToPt";
+import convertPxToPt from "../convertPxToPt";
 
 /**
  * Renders the user avatar in the pdf
