@@ -460,7 +460,7 @@ const skillLevel = new LevelFieldTemplate({
   maxMark: "Avanzado",
 });
 
-const createSkillValue = ({ skill, icon, level } = {}) => {
+const createSkillValue = ({ skill, icon, level = skillLevel.value } = {}) => {
   return [
     [skillField, skill],
     [iconField, icon],
