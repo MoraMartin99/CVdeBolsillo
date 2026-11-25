@@ -1,5 +1,8 @@
 import pallete from "./machiatto";
 
+const lightMauve = "#efe9f6";
+const lightGreen = "#d1dacf";
+
 const colors = {
   "base-900": pallete.colors.crust.hex,
   "base-800": pallete.colors.mantle.hex,
@@ -27,6 +30,8 @@ const colors = {
   accent12: pallete.colors.pink.hex,
   accent13: pallete.colors.flamingo.hex,
   accent14: pallete.colors.rosewater.hex,
+  accent15: lightGreen,
+  accent16: lightMauve,
 };
 
 export default colors;
